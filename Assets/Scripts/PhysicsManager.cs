@@ -47,9 +47,10 @@ public class PhysicsManager : MonoBehaviour
 	//Simulate all the physics behaviours
 	private void PhysicCalculations() 
 	{
+		physicObjects[1].ApplyForce(new Vector3(0, 1, 0), new Vector3(0.2f,-0.5f,0));
 		for (int i = 0; i < physicObjects.Count; i++) 
 		{
-			physicObjects[i].CalculateResultingForceVector();
+			
 			physicObjects[i].UpdateState(stepLength);
 		}
 	}

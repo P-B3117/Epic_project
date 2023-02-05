@@ -12,12 +12,21 @@ using UnityEngine;
  */
 public class BasicPhysicObject : MonoBehaviour
 {
+    [Header("Fondamental variables")]
     [SerializeField]
     bool isStatic = false;
     [SerializeField]
     Transform centerOfMass;
     [SerializeField]
     float mass = 5;
+
+    [Header("Slider of the correct moment of inertia : 1-Circle 2-Rectangle")]
+    [Range(1,2)]
+    [SerializeField]
+    int typeOfMomentOfInertia = 1;
+
+
+    [Header("Property of the material of the object")]
     [SerializeField]
     float dynamicFriction = 0.5f;
     [SerializeField]
@@ -25,39 +34,111 @@ public class BasicPhysicObject : MonoBehaviour
     [SerializeField]
     float bounciness = 0.5f;
 
-    Vector2 resultingForce;
-    Vector2 velocity;
+
+
+    Vector3 resultingForce;
+    float torque;
+    
+
+    Vector3 velocity;
     float angularVelocity;
 
-    Collider objectCollider;
+    
 
 
 	public void Start()
 	{
+        resultingForce = Vector3.zero;
+        torque = 0;
+
         velocity = Vector2.zero;
+        angularVelocity = 0;
 	}
 
-	public void CalculateResultingForceVector() 
+    //Debug la force à l'écran, à effacer
+	private void OnDrawGizmos()
+	{
+
+        Gizmos.color = Color.red;
+        Vector3 force = new Vector3(0, 1, 0);
+        Vector3 r = new Vector3(0.2f, -0.5f, 0);
+        float theta = transform.rotation.eulerAngles.z * Mathf.Deg2Rad;
+        Vector3 rotatedForce = new Vector3(force.x * Mathf.Cos(theta) - force.y * Mathf.Sin(theta), force.x * Mathf.Sin(theta) + force.y * Mathf.Cos(theta), 0);
+        Vector3 rotatedR = new Vector3(r.x * Mathf.Cos(theta) - r.y * Mathf.Sin(theta), r.x * Mathf.Sin(theta) + r.y * Mathf.Cos(theta), 0);
+        Gizmos.DrawLine(transform.position + rotatedR, transform.position + rotatedR - rotatedForce);
+	}
+
+	public void UpdateState(float timeStep) 
     {
+        if (isStatic) { return; }
         
 
-        resultingForce = Vector3.zero;
-        if (isStatic) { return; }
 
-        //F = mg
-        resultingForce += Vector2.down * mass * UniversalVariable.GetGravity();
-    }
+        Vector3 acceleration = resultingForce / mass;
+        
+        float angularAcceleration = torque / GetMomentOfInertia();
+        
+        
 
-    public void UpdateState(float timeStep) 
-    {
-        if (isStatic) { return; }
-
-        Vector2 acceleration = resultingForce / mass;
         velocity += acceleration * timeStep;
-        Vector2 shift = velocity * timeStep;
-        transform.position += new Vector3(shift.x, shift.y, 0);
+        angularVelocity += angularAcceleration * timeStep;
+
+
+        transform.position += velocity * timeStep;
+        transform.Rotate(Vector3.forward * angularVelocity * Mathf.Rad2Deg * timeStep);
+
+       
+        //Reset les forces pour le next updateCall
+        resultingForce = Vector3.zero;
+        torque = 0;
 
     }
+
+
+    public void ApplyForceAtCenterOfMass(Vector3 force) 
+    {
+        resultingForce += force;
+    }
+
+    public void ApplyForceGravity() 
+    {
+        //F = mg
+        resultingForce += Vector3.down * UniversalVariable.GetGravity() * mass;
+    }
+
+
+    //Apply force at another point other than the center of mass where :
+    //force is the force applied
+    //r is the vector from the center of mass towards the position of where the force is applied
+    public void ApplyForce(Vector3 force, Vector3 r) 
+    {
+        float theta = transform.rotation.eulerAngles.z * Mathf.Deg2Rad;
+        Vector3 rotatedForce = new Vector3(force.x * Mathf.Cos(theta) - force.y * Mathf.Sin(theta), force.x * Mathf.Sin(theta) + force.y * Mathf.Cos(theta), 0);
+        resultingForce += rotatedForce;
+
+
+        torque += (r.x * force.y) - (r.y * force.x);
+        
+
+    }
+
+
+    private float GetMomentOfInertia() 
+    {
+        switch (typeOfMomentOfInertia)
+        {
+            //Pour un cercle  I = 1/2 * Mr^2
+            case 1:
+                
+                return 0.5f * mass * (transform.localScale.x/2 * transform.localScale.x / 2);
+            case 2:
+            //Pour un rectangle     I = 1/12 * M * (H^2 + W^2)
+                return 1/12f * mass * (transform.localScale.x*transform.localScale.x + transform.localScale.y * transform.localScale.y);
+            default:
+                return 0.5f * mass * (transform.localScale.x / 2 * transform.localScale.x / 2);
+        }
+    }
+    
 
 
 
