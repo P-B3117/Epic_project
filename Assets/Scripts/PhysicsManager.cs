@@ -52,6 +52,7 @@ public class PhysicsManager : MonoBehaviour
 		{
 			
 			physicObjects[i].UpdateState(stepLength);
+			physicObjects[i].ApplyForceGravity();
 		}
 	}
 

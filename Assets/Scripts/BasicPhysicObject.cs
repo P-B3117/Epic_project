@@ -122,6 +122,10 @@ public class BasicPhysicObject : MonoBehaviour
 
     }
 
+    void OnCollisionEnter(Collision collision)
+    {
+        UnityEngine.Debug.Log("We hit something!");
+    }
 
     private float GetMomentOfInertia() 
     {
