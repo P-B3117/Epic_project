@@ -10,8 +10,8 @@ using UnityEngine;
  */
 public static class GameConstants
 {
-    public static float MusicVolume = 0;
-    public static float SoundEffectVolume = 0;
+    public static float MusicVolume = 100;
+    public static float SoundEffectVolume = 100;
     public static bool Fullscreen = true;
 
 }

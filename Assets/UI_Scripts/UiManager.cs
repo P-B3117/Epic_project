@@ -8,6 +8,10 @@ public class UiManager : MonoBehaviour
     public GameObject MenuPanel;
     public GameObject SettingsPanel;
     public GameObject FullscreenToggle;
+    public GameObject MusicSlider;
+    public GameObject SoundEffectSlider;
+    public Text MusicVolumeText;
+    public Text SoundEffectVolumeText;
     // Start is called before the first frame update
     void Start()
     {
@@ -15,6 +19,8 @@ public class UiManager : MonoBehaviour
         SettingsPanel.SetActive(false);
         Screen.SetResolution(1920, 1080, GameConstants.Fullscreen, 60); //int width, int height, bool fullscreen, int preferredRefreshRate (0 = unlimited)
         FullscreenToggle.GetComponent<Toggle>().isOn = true;
+        MusicSlider.GetComponent<Slider>().value = GameConstants.MusicVolume;
+        SoundEffectSlider.GetComponent<Slider>().value = GameConstants.SoundEffectVolume;
     }
 
     public void ShowSettingsPanel()
@@ -33,12 +39,22 @@ public class UiManager : MonoBehaviour
     {
         if (GameConstants.Fullscreen == false) { 
             GameConstants.Fullscreen = true;
-            Debug.Log("Fullscreen state changed to true");
         }
         else { 
             GameConstants.Fullscreen = false;
-            Debug.Log("Fullscreen state changed to false");
         }
         Screen.SetResolution(1920, 1080, GameConstants.Fullscreen, 60);
+    }
+
+    public void MusicVolumeUpdate(float value)
+    {
+        MusicVolumeText.text = Mathf.RoundToInt(value * 100) + "%";
+        GameConstants.MusicVolume = value * 100;
+    }
+
+    public void SoundEffectVolumeUpdate(float value)
+    {
+        SoundEffectVolumeText.text = Mathf.RoundToInt(value * 100) + "%";
+        GameConstants.SoundEffectVolume = value * 100;
     }
 }
