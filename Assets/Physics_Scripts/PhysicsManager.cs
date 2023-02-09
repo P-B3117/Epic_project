@@ -19,10 +19,25 @@ public class PhysicsManager : MonoBehaviour
 
 	//List of all physics objects
 	[SerializeField]
+	List<GameObject> objects;
+
+	List<MeshColliderScript> meshColliders;
 	List<BasicPhysicObject> physicObjects;
+
+	public Material test;
 
 	public void Start()
 	{
+
+		meshColliders = new List<MeshColliderScript>();
+		physicObjects = new List<BasicPhysicObject>();
+
+		for (int i = 0; i < objects.Count; i++) 
+		{
+			meshColliders.Add(objects[i].GetComponent<MeshColliderScript>());
+			physicObjects.Add(objects[i].GetComponent<BasicPhysicObject>());
+		}
+
 		ChangeNumberOfStepsPerSecond(numberOfStepsPerSecond);
 		numberOfUpdateCounter = 0;
 
@@ -47,12 +62,32 @@ public class PhysicsManager : MonoBehaviour
 	//Simulate all the physics behaviours
 	private void PhysicCalculations() 
 	{
-		physicObjects[1].ApplyForce(new Vector3(0, 1, 0), new Vector3(0.2f,-0.5f,0));
-		for (int i = 0; i < physicObjects.Count; i++) 
+		//ApplyForces
+		for (int i = 0; i < objects.Count; i++) 
 		{
 			
 			physicObjects[i].UpdateState(stepLength);
 			physicObjects[i].ApplyForceGravity();
+			physicObjects[i].ApplyForce(new Vector3(0, 1, 0), new Vector3(0.2f, -0.5f, 0));
+
+			meshColliders[i].UpdateColliderOrientation();
+		}
+
+
+
+		//Test collisions
+		test.SetColor("_Color", Color.green);
+		for (int i = 0; i < objects.Count; i++) 
+		{
+			for (int j = i + 1; j < objects.Count; j++) 
+			{
+				
+				if (HelperFunctionClass.TestCollisionSeperateAxisTheorem(meshColliders[i].GetWorldSpacePoints(), meshColliders[j].GetWorldSpacePoints()))
+				{
+					
+					test.SetColor("_Color", Color.red);
+				}
+			}
 		}
 	}
 
