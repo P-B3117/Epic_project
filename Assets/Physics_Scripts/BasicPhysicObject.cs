@@ -15,15 +15,9 @@ public class BasicPhysicObject : MonoBehaviour
     [Header("Fondamental variables")]
     [SerializeField]
     bool isStatic = false;
-    [SerializeField]
-    Transform centerOfMass;
-    [SerializeField]
-    float mass = 5;
+    
 
-    [Header("Slider of the correct moment of inertia : 1-Circle 2-Rectangle")]
-    [Range(1,2)]
-    [SerializeField]
-    int typeOfMomentOfInertia = 1;
+    
 
 
     [Header("Property of the material of the object")]
@@ -43,7 +37,8 @@ public class BasicPhysicObject : MonoBehaviour
     Vector3 velocity;
     float angularVelocity;
 
-    
+
+    MeshColliderScript collider;
 
 
 	public void Start()
@@ -58,18 +53,18 @@ public class BasicPhysicObject : MonoBehaviour
 
 
 
-    //Debug la force à l'écran, à effacer
-	//private void OnDrawGizmos()
-	//{
+	
+	private void OnDrawGizmos()
+	{
 
- //       Gizmos.color = Color.red;
- //       Vector3 force = new Vector3(0, 1, 0);
- //       Vector3 r = new Vector3(0.2f, -0.5f, 0);
- //       float theta = transform.rotation.eulerAngles.z * Mathf.Deg2Rad;
- //       Vector3 rotatedForce = new Vector3(force.x * Mathf.Cos(theta) - force.y * Mathf.Sin(theta), force.x * Mathf.Sin(theta) + force.y * Mathf.Cos(theta), 0);
- //       Vector3 rotatedR = new Vector3(r.x * Mathf.Cos(theta) - r.y * Mathf.Sin(theta), r.x * Mathf.Sin(theta) + r.y * Mathf.Cos(theta), 0);
- //       Gizmos.DrawLine(transform.position + rotatedR, transform.position + rotatedR - rotatedForce);
-	//}
+		Gizmos.color = Color.red;
+		Vector3 force = new Vector3(0, 1, 0);
+		Vector3 r = new Vector3(0.2f, -0.5f, 0);
+		float theta = transform.rotation.eulerAngles.z * Mathf.Deg2Rad;
+		Vector3 rotatedForce = new Vector3(force.x * Mathf.Cos(theta) - force.y * Mathf.Sin(theta), force.x * Mathf.Sin(theta) + force.y * Mathf.Cos(theta), 0);
+		Vector3 rotatedR = new Vector3(r.x * Mathf.Cos(theta) - r.y * Mathf.Sin(theta), r.x * Mathf.Sin(theta) + r.y * Mathf.Cos(theta), 0);
+		Gizmos.DrawLine(transform.position + rotatedR, transform.position + rotatedR - rotatedForce);
+	}
 
 	public void UpdateState(float timeStep) 
     {
@@ -77,9 +72,9 @@ public class BasicPhysicObject : MonoBehaviour
         
 
 
-        Vector3 acceleration = resultingForce / mass;
+        Vector3 acceleration = resultingForce / collider.GetMass();
         
-        float angularAcceleration = torque / GetMomentOfInertia();
+        float angularAcceleration = torque / collider.GetInertia();
         
         
 
@@ -106,7 +101,7 @@ public class BasicPhysicObject : MonoBehaviour
     public void ApplyForceGravity() 
     {
         //F = mg
-        resultingForce += Vector3.down * UniversalVariable.GetGravity() * mass;
+        resultingForce += Vector3.down * UniversalVariable.GetGravity() * collider.GetMass();
     }
 
 
@@ -130,23 +125,11 @@ public class BasicPhysicObject : MonoBehaviour
         UnityEngine.Debug.Log("We hit something!");
     }
 
-    private float GetMomentOfInertia() 
-    {
-        switch (typeOfMomentOfInertia)
-        {
-            //Pour un cercle  I = 1/2 * Mr^2
-            case 1:
-                
-                return 0.5f * mass * (transform.localScale.x/2 * transform.localScale.x / 2);
-            case 2:
-            //Pour un rectangle     I = 1/12 * M * (H^2 + W^2)
-                return 1/12f * mass * (transform.localScale.x*transform.localScale.x + transform.localScale.y * transform.localScale.y);
-            default:
-                return 0.5f * mass * (transform.localScale.x / 2 * transform.localScale.x / 2);
-        }
-    }
-    
 
+    public void SetCollider(MeshColliderScript script) 
+    {
+        collider = script;
+    }
 
 
 }

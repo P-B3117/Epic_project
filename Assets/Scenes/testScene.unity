@@ -226,10 +226,6 @@ GameObject:
   m_Component:
   - component: {fileID: 42851061}
   - component: {fileID: 42851062}
-  - component: {fileID: 42851063}
-  - component: {fileID: 42851064}
-  - component: {fileID: 42851065}
-  - component: {fileID: 42851066}
   m_Layer: 0
   m_Name: Square
   m_TagString: Untagged
@@ -304,80 +300,6 @@ SpriteRenderer:
   m_WasSpriteAssigned: 1
   m_MaskInteraction: 0
   m_SpriteSortPoint: 0
---- !u!114 &42851063
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 42851060}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 32fc63ba019de8c49afbb984a168c65f, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
---- !u!68 &42851064
-EdgeCollider2D:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 42851060}
-  m_Enabled: 1
-  m_Density: 1
-  m_Material: {fileID: 0}
-  m_IsTrigger: 0
-  m_UsedByEffector: 0
-  m_UsedByComposite: 0
-  m_Offset: {x: 0, y: 0}
-  m_EdgeRadius: 0
-  m_Points:
-  - {x: -0.5, y: 0}
-  - {x: 0.5, y: 0}
-  m_AdjacentStartPoint: {x: 0, y: 0}
-  m_AdjacentEndPoint: {x: 0, y: 0}
-  m_UseAdjacentStartPoint: 0
-  m_UseAdjacentEndPoint: 0
---- !u!114 &42851065
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 42851060}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 9940223ae9e74af47b8d8cb660d08667, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  isStatic: 0
-  centerOfMass: {fileID: 0}
-  mass: 5
-  typeOfMomentOfInertia: 2
-  dynamicFriction: 0.5
-  staticFriction: 0.5
-  bounciness: 0.5
---- !u!50 &42851066
-Rigidbody2D:
-  serializedVersion: 4
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 42851060}
-  m_BodyType: 1
-  m_Simulated: 1
-  m_UseFullKinematicContacts: 0
-  m_UseAutoMass: 0
-  m_Mass: 1
-  m_LinearDrag: 0
-  m_AngularDrag: 0.05
-  m_GravityScale: 1
-  m_Material: {fileID: 0}
-  m_Interpolate: 0
-  m_SleepingMode: 1
-  m_CollisionDetection: 0
-  m_Constraints: 0
 --- !u!1 &309842419
 GameObject:
   m_ObjectHideFlags: 0
@@ -409,9 +331,10 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   objects:
-  - {fileID: 776748518}
   - {fileID: 1346290438}
   - {fileID: 1705548810}
+  - {fileID: 1217189135}
+  - {fileID: 776748518}
   test: {fileID: 2100000, guid: f8ea0197e3e47dd4aac55742c67427e4, type: 2}
 --- !u!4 &309842421
 Transform:
@@ -471,6 +394,7 @@ Transform:
   - {fileID: 776748519}
   - {fileID: 1346290439}
   - {fileID: 1705548811}
+  - {fileID: 1217189136}
   m_Father: {fileID: 0}
   m_RootOrder: 3
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
@@ -584,7 +508,7 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 776748518}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalPosition: {x: -6.9, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -603,6 +527,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 04d0400a5f2940746b61481fc5db2b70, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  mass: 50
   modelPoints:
   - {x: -2, y: 3, z: 0}
   - {x: 2, y: 2, z: 0}
@@ -621,10 +546,75 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 9940223ae9e74af47b8d8cb660d08667, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  isStatic: 1
-  centerOfMass: {fileID: 0}
+  isStatic: 0
+  dynamicFriction: 0.5
+  staticFriction: 0.5
+  bounciness: 0.5
+--- !u!1 &1217189135
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 1217189136}
+  - component: {fileID: 1217189138}
+  - component: {fileID: 1217189137}
+  m_Layer: 0
+  m_Name: TestPolygon4
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &1217189136
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1217189135}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: -2.61, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 391609594}
+  m_RootOrder: 3
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &1217189137
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1217189135}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 04d0400a5f2940746b61481fc5db2b70, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
   mass: 5
-  typeOfMomentOfInertia: 1
+  modelPoints:
+  - {x: -1, y: 1, z: 0}
+  - {x: 1, y: 1, z: 0}
+  - {x: 1, y: -1, z: 0}
+  - {x: -1, y: -1, z: 0}
+  material: {fileID: 2100000, guid: f8ea0197e3e47dd4aac55742c67427e4, type: 2}
+--- !u!114 &1217189138
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1217189135}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 9940223ae9e74af47b8d8cb660d08667, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  isStatic: 0
   dynamicFriction: 0.5
   staticFriction: 0.5
   bounciness: 0.5
@@ -654,7 +644,7 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1346290438}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalPosition: {x: 4.13, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -673,6 +663,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 04d0400a5f2940746b61481fc5db2b70, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  mass: 5
   modelPoints:
   - {x: 1, y: 1, z: 0}
   - {x: 1, y: -3, z: 0}
@@ -690,10 +681,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 9940223ae9e74af47b8d8cb660d08667, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  isStatic: 1
-  centerOfMass: {fileID: 0}
-  mass: 5
-  typeOfMomentOfInertia: 1
+  isStatic: 0
   dynamicFriction: 0.5
   staticFriction: 0.5
   bounciness: 0.5
@@ -707,10 +695,6 @@ GameObject:
   m_Component:
   - component: {fileID: 1449293185}
   - component: {fileID: 1449293186}
-  - component: {fileID: 1449293187}
-  - component: {fileID: 1449293188}
-  - component: {fileID: 1449293189}
-  - component: {fileID: 1449293190}
   m_Layer: 0
   m_Name: Square (1)
   m_TagString: Untagged
@@ -785,80 +769,6 @@ SpriteRenderer:
   m_WasSpriteAssigned: 1
   m_MaskInteraction: 0
   m_SpriteSortPoint: 0
---- !u!114 &1449293187
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1449293184}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 32fc63ba019de8c49afbb984a168c65f, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
---- !u!68 &1449293188
-EdgeCollider2D:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1449293184}
-  m_Enabled: 1
-  m_Density: 1
-  m_Material: {fileID: 0}
-  m_IsTrigger: 0
-  m_UsedByEffector: 0
-  m_UsedByComposite: 0
-  m_Offset: {x: 0, y: 0}
-  m_EdgeRadius: 0
-  m_Points:
-  - {x: -0.5, y: 0}
-  - {x: 0.5, y: 0}
-  m_AdjacentStartPoint: {x: 0, y: 0}
-  m_AdjacentEndPoint: {x: 0, y: 0}
-  m_UseAdjacentStartPoint: 0
-  m_UseAdjacentEndPoint: 0
---- !u!114 &1449293189
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1449293184}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 9940223ae9e74af47b8d8cb660d08667, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  isStatic: 0
-  centerOfMass: {fileID: 0}
-  mass: 5
-  typeOfMomentOfInertia: 2
-  dynamicFriction: 0.5
-  staticFriction: 0.5
-  bounciness: 0.5
---- !u!50 &1449293190
-Rigidbody2D:
-  serializedVersion: 4
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1449293184}
-  m_BodyType: 1
-  m_Simulated: 1
-  m_UseFullKinematicContacts: 0
-  m_UseAutoMass: 0
-  m_Mass: 1
-  m_LinearDrag: 0
-  m_AngularDrag: 0.05
-  m_GravityScale: 1
-  m_Material: {fileID: 0}
-  m_Interpolate: 0
-  m_SleepingMode: 1
-  m_CollisionDetection: 0
-  m_Constraints: 0
 --- !u!1 &1705548810
 GameObject:
   m_ObjectHideFlags: 0
@@ -868,8 +778,8 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 1705548811}
-  - component: {fileID: 1705548813}
   - component: {fileID: 1705548812}
+  - component: {fileID: 1705548813}
   m_Layer: 0
   m_Name: TestPolygon3
   m_TagString: Untagged
@@ -904,10 +814,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 9940223ae9e74af47b8d8cb660d08667, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  isStatic: 1
-  centerOfMass: {fileID: 0}
-  mass: 5
-  typeOfMomentOfInertia: 1
+  isStatic: 0
   dynamicFriction: 0.5
   staticFriction: 0.5
   bounciness: 0.5
@@ -923,6 +830,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 04d0400a5f2940746b61481fc5db2b70, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  mass: 5
   modelPoints:
   - {x: 0, y: 0.5, z: 0}
   - {x: 0.5, y: 0, z: 0}
@@ -940,10 +848,6 @@ GameObject:
   m_Component:
   - component: {fileID: 1840957838}
   - component: {fileID: 1840957839}
-  - component: {fileID: 1840957840}
-  - component: {fileID: 1840957841}
-  - component: {fileID: 1840957842}
-  - component: {fileID: 1840957843}
   m_Layer: 0
   m_Name: Square (3)
   m_TagString: Untagged
@@ -1018,80 +922,6 @@ SpriteRenderer:
   m_WasSpriteAssigned: 1
   m_MaskInteraction: 0
   m_SpriteSortPoint: 0
---- !u!114 &1840957840
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1840957837}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 32fc63ba019de8c49afbb984a168c65f, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
---- !u!68 &1840957841
-EdgeCollider2D:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1840957837}
-  m_Enabled: 1
-  m_Density: 1
-  m_Material: {fileID: 0}
-  m_IsTrigger: 0
-  m_UsedByEffector: 0
-  m_UsedByComposite: 0
-  m_Offset: {x: 0, y: 0}
-  m_EdgeRadius: 0
-  m_Points:
-  - {x: -0.5, y: 0}
-  - {x: 0.5, y: 0}
-  m_AdjacentStartPoint: {x: 0, y: 0}
-  m_AdjacentEndPoint: {x: 0, y: 0}
-  m_UseAdjacentStartPoint: 0
-  m_UseAdjacentEndPoint: 0
---- !u!114 &1840957842
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1840957837}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 9940223ae9e74af47b8d8cb660d08667, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  isStatic: 0
-  centerOfMass: {fileID: 0}
-  mass: 5
-  typeOfMomentOfInertia: 2
-  dynamicFriction: 0.5
-  staticFriction: 0.5
-  bounciness: 0.5
---- !u!50 &1840957843
-Rigidbody2D:
-  serializedVersion: 4
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1840957837}
-  m_BodyType: 1
-  m_Simulated: 1
-  m_UseFullKinematicContacts: 0
-  m_UseAutoMass: 0
-  m_Mass: 1
-  m_LinearDrag: 0
-  m_AngularDrag: 0.05
-  m_GravityScale: 1
-  m_Material: {fileID: 0}
-  m_Interpolate: 0
-  m_SleepingMode: 1
-  m_CollisionDetection: 0
-  m_Constraints: 0
 --- !u!1 &2050415484
 GameObject:
   m_ObjectHideFlags: 0
@@ -1102,10 +932,6 @@ GameObject:
   m_Component:
   - component: {fileID: 2050415485}
   - component: {fileID: 2050415486}
-  - component: {fileID: 2050415487}
-  - component: {fileID: 2050415488}
-  - component: {fileID: 2050415489}
-  - component: {fileID: 2050415490}
   m_Layer: 0
   m_Name: Square (2)
   m_TagString: Untagged
@@ -1180,77 +1006,3 @@ SpriteRenderer:
   m_WasSpriteAssigned: 1
   m_MaskInteraction: 0
   m_SpriteSortPoint: 0
---- !u!114 &2050415487
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 2050415484}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 32fc63ba019de8c49afbb984a168c65f, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
---- !u!68 &2050415488
-EdgeCollider2D:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 2050415484}
-  m_Enabled: 1
-  m_Density: 1
-  m_Material: {fileID: 0}
-  m_IsTrigger: 0
-  m_UsedByEffector: 0
-  m_UsedByComposite: 0
-  m_Offset: {x: 0, y: 0}
-  m_EdgeRadius: 0
-  m_Points:
-  - {x: -0.5, y: 0}
-  - {x: 0.5, y: 0}
-  m_AdjacentStartPoint: {x: 0, y: 0}
-  m_AdjacentEndPoint: {x: 0, y: 0}
-  m_UseAdjacentStartPoint: 0
-  m_UseAdjacentEndPoint: 0
---- !u!114 &2050415489
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 2050415484}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 9940223ae9e74af47b8d8cb660d08667, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  isStatic: 0
-  centerOfMass: {fileID: 0}
-  mass: 5
-  typeOfMomentOfInertia: 2
-  dynamicFriction: 0.5
-  staticFriction: 0.5
-  bounciness: 0.5
---- !u!50 &2050415490
-Rigidbody2D:
-  serializedVersion: 4
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 2050415484}
-  m_BodyType: 1
-  m_Simulated: 1
-  m_UseFullKinematicContacts: 0
-  m_UseAutoMass: 0
-  m_Mass: 1
-  m_LinearDrag: 0
-  m_AngularDrag: 0.05
-  m_GravityScale: 1
-  m_Material: {fileID: 0}
-  m_Interpolate: 0
-  m_SleepingMode: 1
-  m_CollisionDetection: 0
-  m_Constraints: 0

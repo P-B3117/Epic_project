@@ -36,6 +36,8 @@ public class PhysicsManager : MonoBehaviour
 		{
 			meshColliders.Add(objects[i].GetComponent<MeshColliderScript>());
 			physicObjects.Add(objects[i].GetComponent<BasicPhysicObject>());
+
+			physicObjects[i].SetCollider(meshColliders[i]);
 		}
 
 		ChangeNumberOfStepsPerSecond(numberOfStepsPerSecond);
@@ -67,7 +69,7 @@ public class PhysicsManager : MonoBehaviour
 		{
 			
 			physicObjects[i].UpdateState(stepLength);
-			physicObjects[i].ApplyForceGravity();
+			//physicObjects[i].ApplyForceGravity();
 			physicObjects[i].ApplyForce(new Vector3(0, 1, 0), new Vector3(0.2f, -0.5f, 0));
 
 			meshColliders[i].UpdateColliderOrientation();
