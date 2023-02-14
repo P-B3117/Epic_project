@@ -6,20 +6,35 @@ public static class HelperFunctionClass
 {
 
 
+
+
+
+
+
+
+
 	//Collision testing using the seperate axis theorem
 	//Code adapted from the C++ video : Convex Polygon Collisions #1
 	//From the Youtube Channel : javidx9
 	//URL : https://www.youtube.com/watch?v=7Ik2vowGcU0&ab_channel=javidx9
-	public static bool TestCollisionSeperateAxisTheorem(List<Vector3> polygon1 , List<Vector3> polygon2)
+	public static CollisionInfo TestCollisionSeperateAxisTheorem(List<Vector3> polygon1 , List<Vector3> polygon2)
 	{
+
+		Vector3 findingMinimumTranslationVector = Vector3.zero;
+		float findingMinimumTranslationVectorLength = Mathf.Infinity;
+
+
+		CollisionInfo col = new CollisionInfo();
 
 		//Test shape 1
 		for (int a = 0; a < polygon1.Count; a++)
 		{
 			int b = (a + 1) % polygon1.Count;
 
-			Vector3 axisProj = new Vector3(-(polygon1[b].y - polygon1[a].y), (polygon1[b].x - polygon1[a].x), 0);
+			Vector3 axisProj = new Vector3(-(polygon1[b].y - polygon1[a].y), (polygon1[b].x - polygon1[a].x), 0).normalized;
 
+
+			
 			//Projection of this specific shape
 			float min_1 = Mathf.Infinity; float max_1 = -Mathf.Infinity;
 			for (int i = 0; i < polygon1.Count; i++)
@@ -40,8 +55,22 @@ public static class HelperFunctionClass
 			}
 
 			if (!(max_2 >= min_1 && max_1 >= min_2))
-				return false;
+				return null;
 
+
+			//Find the shortest translation vector
+			float overlap = Mathf.Min(max_1, max_2) - Mathf.Max(min_1, min_2);
+			if (overlap < findingMinimumTranslationVectorLength) 
+			{
+				findingMinimumTranslationVectorLength = overlap;
+				findingMinimumTranslationVector = axisProj;
+
+				if (max_1 > max_2)
+				{
+					findingMinimumTranslationVector *= -1;
+				}
+
+			}
 
 		}
 
@@ -52,7 +81,7 @@ public static class HelperFunctionClass
 		{
 			int b = (a + 1) % polygon2.Count;
 
-			Vector3 axisProj = new Vector3(-(polygon2[b].y - polygon2[a].y), (polygon2[b].x - polygon2[a].x), 0);
+			Vector3 axisProj = new Vector3(-(polygon2[b].y - polygon2[a].y), (polygon2[b].x - polygon2[a].x), 0).normalized;
 
 			//Projection of this specific shape
 			float min_1 = Mathf.Infinity; float max_1 = -Mathf.Infinity;
@@ -74,12 +103,32 @@ public static class HelperFunctionClass
 			}
 
 			if (!(max_2 >= min_1 && max_1 >= min_2))
-				return false;
+				return null;
 
+
+
+			//Find the shortest translation vector
+			float overlap = Mathf.Min(max_1, max_2) - Mathf.Max(min_1, min_2);
+			if (overlap < findingMinimumTranslationVectorLength)
+			{
+				findingMinimumTranslationVectorLength = overlap;
+				findingMinimumTranslationVector = axisProj;
+
+				if (max_1 > max_2)
+				{
+					findingMinimumTranslationVector *= -1;
+				}
+
+			}
 
 		}
 
-		return true;
+
+		//Get the necessary MTV
+		col.SetMTV(findingMinimumTranslationVector.normalized * findingMinimumTranslationVectorLength);
+
+
+		return col;
 
 	}
 }
