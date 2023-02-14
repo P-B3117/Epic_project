@@ -54,17 +54,7 @@ public class BasicPhysicObject : MonoBehaviour
 
 
 	
-	private void OnDrawGizmos()
-	{
-
-		Gizmos.color = Color.red;
-		Vector3 force = new Vector3(0, 1, 0);
-		Vector3 r = new Vector3(0.2f, -0.5f, 0);
-		float theta = transform.rotation.eulerAngles.z * Mathf.Deg2Rad;
-		Vector3 rotatedForce = new Vector3(force.x * Mathf.Cos(theta) - force.y * Mathf.Sin(theta), force.x * Mathf.Sin(theta) + force.y * Mathf.Cos(theta), 0);
-		Vector3 rotatedR = new Vector3(r.x * Mathf.Cos(theta) - r.y * Mathf.Sin(theta), r.x * Mathf.Sin(theta) + r.y * Mathf.Cos(theta), 0);
-		Gizmos.DrawLine(transform.position + rotatedR, transform.position + rotatedR - rotatedForce);
-	}
+	
 
 	public void UpdateState(float timeStep) 
     {

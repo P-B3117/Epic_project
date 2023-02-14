@@ -46,6 +46,15 @@ public class PhysicsManager : MonoBehaviour
 		
 	}
 
+	//Just a test 
+	//TO REMOVE!!!!!
+	Vector3 MTV = Vector3.zero;
+	public void OnDrawGizmos()
+	{
+		Gizmos.color = Color.black;
+		
+		Gizmos.DrawLine(Vector3.zero, MTV);
+	}
 
 	//Update the physics objects on a fixed time rate
 	public void Update()
@@ -70,7 +79,7 @@ public class PhysicsManager : MonoBehaviour
 			
 			physicObjects[i].UpdateState(stepLength);
 			//physicObjects[i].ApplyForceGravity();
-			physicObjects[i].ApplyForce(new Vector3(0, 1, 0), new Vector3(0.2f, -0.5f, 0));
+			//physicObjects[i].ApplyForce(new Vector3(0, 1, 0), new Vector3(0.2f, -0.5f, 0));
 
 			meshColliders[i].UpdateColliderOrientation();
 		}
@@ -83,10 +92,10 @@ public class PhysicsManager : MonoBehaviour
 		{
 			for (int j = i + 1; j < objects.Count; j++) 
 			{
-				
-				if (HelperFunctionClass.TestCollisionSeperateAxisTheorem(meshColliders[i].GetWorldSpacePoints(), meshColliders[j].GetWorldSpacePoints()))
+				CollisionInfo col = HelperFunctionClass.TestCollisionSeperateAxisTheorem(meshColliders[i].GetWorldSpacePoints(), meshColliders[j].GetWorldSpacePoints());
+				if (col != null)
 				{
-					
+					MTV = col.GetMTV();
 					test.SetColor("_Color", Color.red);
 				}
 			}
