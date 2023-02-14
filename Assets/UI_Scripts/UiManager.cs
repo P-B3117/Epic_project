@@ -2,6 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
+using UnityEngine.Audio;
 
 public class UiManager : MonoBehaviour
 {
@@ -10,6 +11,7 @@ public class UiManager : MonoBehaviour
     public GameObject FullscreenToggle;
     public GameObject MusicSlider;
     public GameObject SoundEffectSlider;
+    public AudioSource MusicSource;
     public Text MusicVolumeText;
     public Text SoundEffectVolumeText;
     // Start is called before the first frame update
@@ -50,6 +52,7 @@ public class UiManager : MonoBehaviour
     {
         MusicVolumeText.text = Mathf.RoundToInt(value * 100) + "%";
         GameConstants.MusicVolume = value * 100;
+        MusicSource.volume = Mathf.Log10(double.Parse(value.ToString()));
     }
 
     public void SoundEffectVolumeUpdate(float value)
