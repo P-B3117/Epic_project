@@ -84,7 +84,7 @@ public class PhysicsManager : MonoBehaviour
 			meshColliders[i].UpdateColliderOrientation();
 		}
 
-
+		CollisionManager collisionManager = new CollisionManager();
 
 		//Test collisions
 		test.SetColor("_Color", Color.green);
@@ -97,6 +97,12 @@ public class PhysicsManager : MonoBehaviour
 				{
 					MTV = col.GetMTV();
 					test.SetColor("_Color", Color.red);
+					// modifier ici pour le coefficient de restitution @antony
+					float bouncinessAverage = (physicObjects[i].getBounciness() + physicObjects[j].getBounciness()) / 2.0f;
+
+					List<Vector3> newVelocities = collisionManager.CollisionHasHappened(physicObjects[i].getVelocity(), physicObjects[j].getVelocity(), MTV, meshColliders[i].GetMass(), meshColliders[j].GetMass(), bouncinessAverage);
+					physicObjects[i].ChangeForce(newVelocities[0]);
+					physicObjects[j].ChangeForce(newVelocities[1]);
 				}
 			}
 		}
