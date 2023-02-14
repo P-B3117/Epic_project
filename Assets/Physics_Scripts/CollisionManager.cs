@@ -7,9 +7,9 @@ public class CollisionManager
 {
     public CollisionManager() { }
 
-    public List<Vector3> CollisionHasHappened(Vector3 objectVelocity, Vector3 otherObjectVelocity, Vector3 collisionPointObject, Vector3 otherObjectPosition, int objectMass, int otherObjectMass, int coefficientOfRestitution)
+    public List<Vector3> CollisionHasHappened(Vector3 objectVelocity, Vector3 otherObjectVelocity, Vector3 normal, float objectMass, float otherObjectMass, float coefficientOfRestitution)
     {
-        Vector3 normal = (collisionPointObject - otherObjectPosition).normalized; // Calculate the normal vector
+        normal = normal.normalized; // Calculate the normal vector
         
         Vector3 relativeVelocity = objectVelocity - otherObjectVelocity; // Calculate the relative velocity
 

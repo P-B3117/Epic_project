@@ -52,7 +52,7 @@ public class UiManager : MonoBehaviour
     {
         MusicVolumeText.text = Mathf.RoundToInt(value * 100) + "%";
         GameConstants.MusicVolume = value * 100;
-        MusicSource.volume = Mathf.Log10(double.Parse(value.ToString()));
+        MusicSource.volume = Mathf.Log10(float.Parse(value.ToString()));
     }
 
     public void SoundEffectVolumeUpdate(float value)
