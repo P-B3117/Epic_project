@@ -48,13 +48,16 @@ public class PhysicsManager : MonoBehaviour
 
 	//Just a test 
 	//TO REMOVE!!!!!
-	Vector3 MTV = Vector3.zero;
-	public void OnDrawGizmos()
-	{
-		Gizmos.color = Color.black;
+	//CollisionInfo COLTEST = null;
+	//public void OnDrawGizmos()
+	//{
+	//	Gizmos.color = Color.black;
+	//	if (COLTEST != null) 
+	//	{
+	//		Gizmos.DrawLine(COLTEST.GetVertexOfCollision(), COLTEST.GetVertexOfCollision() + COLTEST.GetMTV());
+	//	}
 		
-		Gizmos.DrawLine(Vector3.zero, MTV);
-	}
+	//}
 
 	//Update the physics objects on a fixed time rate
 	public void Update()
@@ -93,9 +96,11 @@ public class PhysicsManager : MonoBehaviour
 			for (int j = i + 1; j < objects.Count; j++) 
 			{
 				CollisionInfo col = HelperFunctionClass.TestCollisionSeperateAxisTheorem(meshColliders[i].GetWorldSpacePoints(), meshColliders[j].GetWorldSpacePoints());
+				//CollisionInfo col = HelperFunctionClass.TestCollisionDiagonalsTheorem(meshColliders[i].transform.position, meshColliders[i].GetWorldSpacePoints(), 
+				//	meshColliders[j].transform.position, meshColliders[j].GetWorldSpacePoints());
 				if (col != null)
 				{
-					MTV = col.GetMTV();
+					//COLTEST = col;
 					test.SetColor("_Color", Color.red);
 				}
 			}

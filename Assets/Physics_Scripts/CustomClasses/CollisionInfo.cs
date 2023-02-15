@@ -5,11 +5,11 @@ using UnityEngine;
 public class CollisionInfo
 {
     private Vector3 minimumTranslationVector;
-    private Vector3 vertexOfCollision;
+    private Vector3 contactPoint;
     public CollisionInfo() 
     {
         minimumTranslationVector = Vector3.zero;
-        vertexOfCollision = Vector3.zero;
+        contactPoint = Vector3.zero;
     }
 
 
@@ -25,10 +25,10 @@ public class CollisionInfo
 
     public Vector3 GetVertexOfCollision() 
     {
-        return vertexOfCollision;
+        return contactPoint;
     }
     public void SetVertexOfCollision(Vector3 VOC) 
     {
-        vertexOfCollision = VOC;
+        contactPoint = VOC;
     }
 }
