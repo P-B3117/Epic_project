@@ -117,5 +117,14 @@ public class BasicPhysicObject : MonoBehaviour
         collider = script;
     }
 
+    public Vector3 GetVelocity() 
+    {
+        return velocity;
+    }
+    public void SetVelocity(Vector3 vel) 
+    {
+        velocity = vel;
+    }
+
 
 }

@@ -146,7 +146,7 @@ public static class HelperFunctionClass
 					findingMinimumTranslationVectorLength = overlap;
 					findingMinimumTranslationVector = axisProj;
 					col.SetVertexMTV(p2[minIndex]);
-
+					col.SetCollisionRef(shape);
 					if (max_1 > max_2)
 					{
 						findingMinimumTranslationVector *= -1;
