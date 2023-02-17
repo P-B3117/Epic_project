@@ -25,6 +25,8 @@ public static class HelperFunctionClass
 				Vector3 line1s = originPolygon1;
 				Vector3 line1e = p1[p];
 
+				Vector3 displacement = Vector3.zero;
+
 				for (int q = 0; q < p2.Count; q++) 
 				{
 					Vector3 line2s = p2[q];
@@ -36,10 +38,16 @@ public static class HelperFunctionClass
 
 					if (t1 >= 0.0f && t1 < 1.0f && t2 >= 0.0f && t2 < 1.0f) 
 					{
+
+						displacement.x += (1.0f - t1) * (line1e.x - line1s.x);
+						displacement.y += (1.0f - t1) * (line1e.y - line1s.y);
 						CollisionInfo col = new CollisionInfo();
+
 						return col;
 					}
 				}
+
+				
 			}
 
 		}
@@ -137,12 +145,12 @@ public static class HelperFunctionClass
 				{
 					findingMinimumTranslationVectorLength = overlap;
 					findingMinimumTranslationVector = axisProj;
-					col.SetVertexOfCollision(p2[minIndex]);
+					col.SetVertexMTV(p2[minIndex]);
 
 					if (max_1 > max_2)
 					{
 						findingMinimumTranslationVector *= -1;
-						col.SetVertexOfCollision(p2[maxIndex]);
+						col.SetVertexMTV(p2[maxIndex]);
 					}
 
 				}

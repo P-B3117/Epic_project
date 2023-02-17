@@ -48,16 +48,17 @@ public class PhysicsManager : MonoBehaviour
 
 	//Just a test 
 	//TO REMOVE!!!!!
-	//CollisionInfo COLTEST = null;
-	//public void OnDrawGizmos()
-	//{
-	//	Gizmos.color = Color.black;
-	//	if (COLTEST != null) 
-	//	{
-	//		Gizmos.DrawLine(COLTEST.GetVertexOfCollision(), COLTEST.GetVertexOfCollision() + COLTEST.GetMTV());
-	//	}
-		
-	//}
+	CollisionInfo COLTEST = null;
+	public void OnDrawGizmos()
+	{
+		Gizmos.color = Color.black;
+		if (COLTEST != null)
+		{
+			Gizmos.DrawLine(COLTEST.GetVertexMTV(), COLTEST.GetVertexMTV() + COLTEST.GetMTV());
+			//Gizmos.DrawSphere(COLTEST.GetContactPoint(), 0.05f);
+		}
+
+	}
 
 	//Update the physics objects on a fixed time rate
 	public void Update()
@@ -97,11 +98,12 @@ public class PhysicsManager : MonoBehaviour
 			{
 				CollisionInfo col = HelperFunctionClass.TestCollisionSeperateAxisTheorem(meshColliders[i].GetWorldSpacePoints(), meshColliders[j].GetWorldSpacePoints());
 				//CollisionInfo col = HelperFunctionClass.TestCollisionDiagonalsTheorem(meshColliders[i].transform.position, meshColliders[i].GetWorldSpacePoints(), 
-				//	meshColliders[j].transform.position, meshColliders[j].GetWorldSpacePoints());
+				//meshColliders[j].transform.position, meshColliders[j].GetWorldSpacePoints());
 				if (col != null)
 				{
-					//COLTEST = col;
+					COLTEST = col;
 					test.SetColor("_Color", Color.red);
+					
 				}
 			}
 		}
