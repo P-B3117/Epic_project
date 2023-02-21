@@ -129,12 +129,6 @@ public class BasicPhysicObject : MonoBehaviour
         return this.bounciness;
 	}
 
-    public void ChangeForce(Vector3 force, float newAngularVelocity)
-	{
-        resultingForce = force;
-        this.angularVelocity = newAngularVelocity;
-	}
-
     public void SetCollider(MeshColliderScript script) 
     {
         collider = script;
@@ -144,5 +138,10 @@ public class BasicPhysicObject : MonoBehaviour
         return this.angularVelocity;
     }
 
+    public void SetVelocity(Vector3 velocity, float newAngularVelocity)
+    {
+        this.velocity = velocity;
+        this.angularVelocity = newAngularVelocity;
+    }
 
 }
