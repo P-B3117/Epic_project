@@ -3,10 +3,11 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 using UnityEngine.Audio;
+using UnityEngine.SceneManagement;
 
 public class UiGameManager : MonoBehaviour
 {
-    public GameObject MenuPanel;
+    public GameObject GamePanel;
     public GameObject SettingsPanel;
     public GameObject FullscreenToggle;
     public GameObject MusicSlider;
@@ -17,7 +18,7 @@ public class UiGameManager : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
-        MenuPanel.SetActive(true);
+        GamePanel.SetActive(true);
         SettingsPanel.SetActive(false);
         Screen.SetResolution(1920, 1080, GameConstants.Fullscreen, 60); //int width, int height, bool fullscreen, int preferredRefreshRate (0 = unlimited)
         FullscreenToggle.GetComponent<Toggle>().isOn = true;
@@ -25,15 +26,28 @@ public class UiGameManager : MonoBehaviour
         SoundEffectSlider.GetComponent<Slider>().value = GameConstants.SoundEffectVolume;
     }
 
-    public void ShowSettingsPanel()
+    void Update()
     {
-        MenuPanel.SetActive(false);
-        SettingsPanel.SetActive(true);
+        if (Input.GetKeyDown(KeyCode.Escape))
+        {
+            SceneManager.LoadScene(1);
+        }
+        if (Input.GetKeyDown(KeyCode.Space))
+        {
+            ShowSettingsPanel();
+        }
     }
 
-    public void ShowMenuPanel()
+    public void ShowSettingsPanel()
     {
-        MenuPanel.SetActive(true);
+        GamePanel.SetActive(false);
+        SettingsPanel.SetActive(true);
+        Debug.Log("coucou");
+    }
+
+    public void ShowGamePanel()
+    {
+        GamePanel.SetActive(true);
         SettingsPanel.SetActive(false);
     }
 
