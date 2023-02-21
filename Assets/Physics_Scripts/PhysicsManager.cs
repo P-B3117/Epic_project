@@ -107,8 +107,8 @@ public class PhysicsManager : MonoBehaviour
 
                     List<object> newVelocities = collisionManager.CollisionHasHappened(obj1.getVelocity(), otherObj1.getVelocity(), MTV, obj2.GetMass(), otherObj2.GetMass(), 
 						bouncinessAverage, obj1.getAngularVelocity(), otherObj1.getAngularVelocity(), Vector3.zero, Vector3.zero, obj2.getInertia(), otherObj2.getInertia());
-					physicObjects[i].ChangeForce((Vector3) newVelocities[0], newVelocities[2]);
-					physicObjects[j].ChangeForce((Vector3) newVelocities[1], newVelocities[3]);
+					physicObjects[i].ChangeForce((Vector3) newVelocities[0], (float) newVelocities[2]);
+					physicObjects[j].ChangeForce((Vector3) newVelocities[1], (float) newVelocities[3]);
 				}
 			}
 		}

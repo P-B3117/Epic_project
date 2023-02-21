@@ -51,7 +51,5 @@ public class CollisionManager
 
         return new List<object> { newVelocity, newOtherVelocity, newAngularVelocity, newOtherAngularVelocity};
     }
-    
-    
 
 }
