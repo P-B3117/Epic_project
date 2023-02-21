@@ -37,7 +37,7 @@ public class CollisionManager
          * En appliquant l'impulsion aux vecteurs de vitesse des objets, nous pouvons calculer leurs nouvelles 
          * vitesses après la collision, ce qui détermine comment ils continueront à se déplacer dans l'espace.
          */
-        float j = -(1 + restitutionCollisionCoefficient) * speedAlongNormal / (normal * ( 1 / objectMass + 1 / otherObjectMass));
+        float j = (-(1 + restitutionCollisionCoefficient) * speedAlongNormal) / (Vector3.Dot(normal, normal * ( 1 / objectMass + 1 / otherObjectMass)));
 
         Vector3 impulse = j * normal;
 
