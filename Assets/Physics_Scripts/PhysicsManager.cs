@@ -48,12 +48,16 @@ public class PhysicsManager : MonoBehaviour
 
 	//Just a test 
 	//TO REMOVE!!!!!
-	Vector3 MTV = Vector3.zero;
+	CollisionInfo COLTEST = null;
 	public void OnDrawGizmos()
 	{
 		Gizmos.color = Color.black;
-		
-		Gizmos.DrawLine(Vector3.zero, MTV);
+		if (COLTEST != null)
+		{
+			Gizmos.DrawLine(Vector3.zero, COLTEST.GetMTV());
+			//Gizmos.DrawSphere(COLTEST.GetContactPoint(), 0.05f);
+		}
+
 	}
 
 	//Update the physics objects on a fixed time rate
@@ -78,13 +82,13 @@ public class PhysicsManager : MonoBehaviour
 		{
 			
 			physicObjects[i].UpdateState(stepLength);
-			//physicObjects[i].ApplyForceGravity();
+			physicObjects[i].ApplyForceGravity();
 			//physicObjects[i].ApplyForce(new Vector3(0, 1, 0), new Vector3(0.2f, -0.5f, 0));
 
 			meshColliders[i].UpdateColliderOrientation();
 		}
 
-		CollisionManager collisionManager = new CollisionManager();
+
 
 		//Test collisions
 		test.SetColor("_Color", Color.green);
@@ -93,16 +97,70 @@ public class PhysicsManager : MonoBehaviour
 			for (int j = i + 1; j < objects.Count; j++) 
 			{
 				CollisionInfo col = HelperFunctionClass.TestCollisionSeperateAxisTheorem(meshColliders[i].GetWorldSpacePoints(), meshColliders[j].GetWorldSpacePoints());
+		
 				if (col != null)
 				{
-					MTV = col.GetMTV();
-					test.SetColor("_Color", Color.red);
-					// modifier ici pour le coefficient de restitution @antony
-					float bouncinessAverage = (physicObjects[i].getBounciness() + physicObjects[j].getBounciness()) / 2.0f;
+					COLTEST = col;
+					float inverseMass = (1.0f / (meshColliders[i].GetMass() + meshColliders[j].GetMass()));
 
-					List<Vector3> newVelocities = collisionManager.CollisionHasHappened(physicObjects[i].getVelocity(), physicObjects[j].getVelocity(), MTV, meshColliders[i].GetMass(), meshColliders[j].GetMass(), bouncinessAverage);
-					physicObjects[i].ChangeForce(newVelocities[0]);
-					physicObjects[j].ChangeForce(newVelocities[1]);
+
+
+					
+
+
+					if (COLTEST.GetCollisionRef() == 0)
+					{
+						objects[j].transform.position += COLTEST.GetMTV() * meshColliders[i].GetMass() * inverseMass;
+						objects[i].transform.position -= COLTEST.GetMTV() * meshColliders[j].GetMass() * inverseMass;
+
+
+						Vector3 normal = col.GetMTV().normalized;
+						Vector3 relativeVelocity = physicObjects[j].GetVelocity() - physicObjects[i].GetVelocity();
+						float speedAlongNormal = Vector3.Dot(relativeVelocity, normal);
+						
+						if (speedAlongNormal > 0) { continue; }
+						float restitutionCollisionCoefficient = 0.8f;
+						float j2 = -(1 + restitutionCollisionCoefficient) * speedAlongNormal;
+						Vector3 impulse = j2 * normal;
+						impulse /= (1.0f / meshColliders[j].GetMass() + 1.0f / meshColliders[i].GetMass());
+						Debug.Log(impulse);
+						Vector3 newVelocity = physicObjects[j].GetVelocity() + (1.0f / meshColliders[j].GetMass()) * impulse;
+						Vector3 otherNewVelocity = physicObjects[i].GetVelocity() - (1.0f / meshColliders[i].GetMass()) * impulse;
+						physicObjects[j].SetVelocity(newVelocity);
+						physicObjects[i].SetVelocity(otherNewVelocity);
+
+						
+
+
+					}
+					else 
+					{
+						objects[j].transform.position -= COLTEST.GetMTV() * meshColliders[i].GetMass() * inverseMass;
+						objects[i].transform.position += COLTEST.GetMTV() * meshColliders[j].GetMass() * inverseMass;
+
+
+						
+
+
+						Vector3 normal = col.GetMTV().normalized;
+						Vector3 relativeVelocity = physicObjects[i].GetVelocity() - physicObjects[j].GetVelocity();
+						float speedAlongNormal = Vector3.Dot(relativeVelocity, normal);
+						
+						if (speedAlongNormal > 0) { continue; }
+						float restitutionCollisionCoefficient =1 ;
+						float j2 = -(1 + restitutionCollisionCoefficient) * speedAlongNormal;
+						Vector3 impulse = j2 * normal;
+						impulse /= (1.0f / meshColliders[j].GetMass() + 1.0f / meshColliders[i].GetMass());
+						Vector3 newVelocity = physicObjects[i].GetVelocity() + (1.0f / meshColliders[i].GetMass()) * impulse;
+						Vector3 otherNewVelocity = physicObjects[j].GetVelocity() - (1.0f / meshColliders[j].GetMass()) * impulse;
+						physicObjects[i].SetVelocity(newVelocity);
+						physicObjects[j].SetVelocity(otherNewVelocity);
+
+						
+					}
+
+					test.SetColor("_Color", Color.red);
+					
 				}
 			}
 		}
