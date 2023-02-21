@@ -572,7 +572,7 @@ MonoBehaviour:
   FullscreenToggle: {fileID: 370843453}
   MusicSlider: {fileID: 27218164}
   SoundEffectSlider: {fileID: 1335454842}
-  MusicSource: {fileID: 0}
+  MusicSource: {fileID: 1172957206}
   MusicVolumeText: {fileID: 1047217660}
   SoundEffectVolumeText: {fileID: 361262443}
 --- !u!224 &216224791
