@@ -20,7 +20,7 @@ public class CollisionManager
         {
             // The objects are moving away from each other, so there's no collision
             // for example, time tick was big and object is already moving away on second time step. we will not recalculate it
-            return new List<object> { objectVelocity, otherObjectVelocity }; ;
+            return new List<object> { objectVelocity, otherObjectVelocity, objectAngularVelocity, otherObjectAngularVelocity }; ;
         }
 
         // Calculate the new velocity vectors after the collision
@@ -36,7 +36,8 @@ public class CollisionManager
          * En appliquant l'impulsion aux vecteurs de vitesse des objets, nous pouvons calculer leurs nouvelles 
          * vitesses après la collision, ce qui détermine comment ils continueront à se déplacer dans l'espace.
          */
-        float j = (-(1 + restitutionCollisionCoefficient) * speedAlongNormal) / (Vector3.Dot(normal, normal * ( 1 / objectMass + 1 / otherObjectMass)));
+        float j = -(1 + restitutionCollisionCoefficient) * speedAlongNormal / (Vector3.Dot(normal, normal * (1 / objectMass + 1 / otherObjectMass)) + (Mathf.Pow(Vector3.Dot(rVectorObject, normal), 2) / objectInertia)
+            + (Mathf.Pow(Vector3.Dot(rVectorOtherObject, normal), 2) / otherObjectInertia));
 
         Vector3 impulse = j * normal;
 
@@ -44,7 +45,11 @@ public class CollisionManager
 
         Vector3 newOtherVelocity = otherObjectVelocity - (1 / otherObjectMass) * impulse;
 
-        return new List<object> { newVelocity, newOtherVelocity };
+        // maintenant: angular rotation
+        float newAngularVelocity = objectAngularVelocity + (Vector3.Dot(rVectorObject, normal * j) / objectInertia);
+        float newOtherAngularVelocity = otherObjectAngularVelocity + (Vector3.Dot(rVectorOtherObject, normal * j) / otherObjectInertia);
+
+        return new List<object> { newVelocity, newOtherVelocity, newAngularVelocity, newOtherAngularVelocity};
     }
     
     

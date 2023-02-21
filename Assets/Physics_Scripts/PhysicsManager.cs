@@ -105,10 +105,10 @@ public class PhysicsManager : MonoBehaviour
 
                     float bouncinessAverage = (obj1.getBounciness() + otherObj1.getBounciness()) / 2.0f;
 
-                    List<Vector3> newVelocities = collisionManager.CollisionHasHappened(obj1.getVelocity(), otherObj1.getVelocity(), MTV, obj2.GetMass(), otherObj2.GetMass(), 
+                    List<object> newVelocities = collisionManager.CollisionHasHappened(obj1.getVelocity(), otherObj1.getVelocity(), MTV, obj2.GetMass(), otherObj2.GetMass(), 
 						bouncinessAverage, obj1.getAngularVelocity(), otherObj1.getAngularVelocity(), Vector3.zero, Vector3.zero, obj2.getInertia(), otherObj2.getInertia());
-					physicObjects[i].ChangeForce(newVelocities[0]);
-					physicObjects[j].ChangeForce(newVelocities[1]);
+					physicObjects[i].ChangeForce((Vector3) newVelocities[0], newVelocities[2]);
+					physicObjects[j].ChangeForce((Vector3) newVelocities[1], newVelocities[3]);
 				}
 			}
 		}
