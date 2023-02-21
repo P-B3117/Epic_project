@@ -74,7 +74,7 @@ public class BasicPhysicObject : MonoBehaviour
 
         Vector3 acceleration = resultingForce / collider.GetMass();
         
-        float angularAcceleration = torque / collider.GetInertia();
+        float angularAcceleration = torque / collider.getInertia();
         
         
 
@@ -89,7 +89,6 @@ public class BasicPhysicObject : MonoBehaviour
         //Reset les forces pour le next updateCall
         resultingForce = Vector3.zero;
         torque = 0;
-
     }
 
 
@@ -138,6 +137,10 @@ public class BasicPhysicObject : MonoBehaviour
     public void SetCollider(MeshColliderScript script) 
     {
         collider = script;
+    }
+    public float getAngularVelocity()
+    {
+        return this.angularVelocity;
     }
 
 

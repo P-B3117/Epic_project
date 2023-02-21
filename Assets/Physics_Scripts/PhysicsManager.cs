@@ -97,10 +97,16 @@ public class PhysicsManager : MonoBehaviour
 				{
 					MTV = col.GetMTV();
 					test.SetColor("_Color", Color.red);
-					// modifier ici pour le coefficient de restitution @antony
-					float bouncinessAverage = (physicObjects[i].getBounciness() + physicObjects[j].getBounciness()) / 2.0f;
+                    // modifier ici pour le coefficient de restitution @antony
+                    BasicPhysicObject obj1 = physicObjects[i];
+                    BasicPhysicObject otherObj1 = physicObjects[j];
+                    MeshColliderScript obj2 = meshColliders[i];
+                    MeshColliderScript otherObj2 = meshColliders[j];
 
-					List<Vector3> newVelocities = collisionManager.CollisionHasHappened(physicObjects[i].getVelocity(), physicObjects[j].getVelocity(), MTV, meshColliders[i].GetMass(), meshColliders[j].GetMass(), bouncinessAverage);
+                    float bouncinessAverage = (obj1.getBounciness() + otherObj1.getBounciness()) / 2.0f;
+
+                    List<Vector3> newVelocities = collisionManager.CollisionHasHappened(obj1.getVelocity(), otherObj1.getVelocity(), MTV, obj2.GetMass(), otherObj2.GetMass(), 
+						bouncinessAverage, obj1.getAngularVelocity(), otherObj1.getAngularVelocity(), Vector3.zero, Vector3.zero, obj2.getInertia(), otherObj2.getInertia());
 					physicObjects[i].ChangeForce(newVelocities[0]);
 					physicObjects[j].ChangeForce(newVelocities[1]);
 				}

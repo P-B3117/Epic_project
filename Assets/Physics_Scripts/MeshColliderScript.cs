@@ -135,7 +135,7 @@ public class MeshColliderScript : MonoBehaviour
 	{
 		return mass;
 	}
-	public float GetInertia() 
+	public float getInertia() 
 	{
 		return inertia;
 	}
