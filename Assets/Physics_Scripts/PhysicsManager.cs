@@ -48,17 +48,17 @@ public class PhysicsManager : MonoBehaviour
 
 	//Just a test 
 	//TO REMOVE!!!!!
-	CollisionInfo COLTEST = null;
-	public void OnDrawGizmos()
-	{
-		Gizmos.color = Color.black;
-		if (COLTEST != null)
-		{
-			Gizmos.DrawLine(Vector3.zero, COLTEST.GetMTV());
-			//Gizmos.DrawSphere(COLTEST.GetContactPoint(), 0.05f);
-		}
+	//CollisionInfo COLTEST = null;
+	//public void OnDrawGizmos()
+	//{
+	//	Gizmos.color = Color.black;
+	//	if (COLTEST != null)
+	//	{
+	//		Gizmos.DrawLine(Vector3.zero, COLTEST.GetMTV());
+	//		//Gizmos.DrawSphere(COLTEST.GetContactPoint(), 0.05f);
+	//	}
 
-	}
+	//}
 
 	//Update the physics objects on a fixed time rate
 	public void Update()
@@ -119,11 +119,11 @@ public class PhysicsManager : MonoBehaviour
 						float speedAlongNormal = Vector3.Dot(relativeVelocity, normal);
 						
 						if (speedAlongNormal > 0) { continue; }
-						float restitutionCollisionCoefficient = 0.8f;
+						float restitutionCollisionCoefficient = 1.0f;
 						float j2 = -(1 + restitutionCollisionCoefficient) * speedAlongNormal;
 						Vector3 impulse = j2 * normal;
 						impulse /= (1.0f / meshColliders[j].GetMass() + 1.0f / meshColliders[i].GetMass());
-						Debug.Log(impulse);
+						
 						Vector3 newVelocity = physicObjects[j].GetVelocity() + (1.0f / meshColliders[j].GetMass()) * impulse;
 						Vector3 otherNewVelocity = physicObjects[i].GetVelocity() - (1.0f / meshColliders[i].GetMass()) * impulse;
 						physicObjects[j].SetVelocity(newVelocity);
@@ -147,7 +147,7 @@ public class PhysicsManager : MonoBehaviour
 						float speedAlongNormal = Vector3.Dot(relativeVelocity, normal);
 						
 						if (speedAlongNormal > 0) { continue; }
-						float restitutionCollisionCoefficient =1 ;
+						float restitutionCollisionCoefficient =1.0f ;
 						float j2 = -(1 + restitutionCollisionCoefficient) * speedAlongNormal;
 						Vector3 impulse = j2 * normal;
 						impulse /= (1.0f / meshColliders[j].GetMass() + 1.0f / meshColliders[i].GetMass());
