@@ -7,11 +7,10 @@ public class CollisionManager
 {
     public CollisionManager() { }
 
-    public List<Vector3> CollisionHasHappened(Vector3 objectVelocity, Vector3 otherObjectVelocity, Vector3 normal, float objectMass, float otherObjectMass, float coefficientOfRestitution)
+    public List<object> CollisionHasHappened(Vector3 objectVelocity, Vector3 otherObjectVelocity, Vector3 normal, float objectMass, float otherObjectMass, float coefficientOfRestitution, float objectAngularVelocity,
+        float otherObjectAngularVelocity, Vector3 rVectorObject, Vector3 rVectorOtherObject, float objectInertia, float otherObjectInertia)
     {
         normal = normal.normalized; // Calculate the normal vector
-
-        // I will need the moment of inertia for object and other, angular velocity for the 2, vector from center of mass to collision point for the 2
         
         Vector3 relativeVelocity = objectVelocity - otherObjectVelocity; // Calculate the relative velocity
 
@@ -21,7 +20,7 @@ public class CollisionManager
         {
             // The objects are moving away from each other, so there's no collision
             // for example, time tick was big and object is already moving away on second time step. we will not recalculate it
-            return new List<Vector3> { objectVelocity, otherObjectVelocity }; ;
+            return new List<object> { objectVelocity, otherObjectVelocity }; ;
         }
 
         // Calculate the new velocity vectors after the collision
@@ -45,7 +44,7 @@ public class CollisionManager
 
         Vector3 newOtherVelocity = otherObjectVelocity - (1 / otherObjectMass) * impulse;
 
-        return new List<Vector3> { newVelocity, newOtherVelocity};
+        return new List<object> { newVelocity, newOtherVelocity };
     }
     
     
