@@ -10,6 +10,8 @@ public class CollisionManager
     public List<Vector3> CollisionHasHappened(Vector3 objectVelocity, Vector3 otherObjectVelocity, Vector3 normal, float objectMass, float otherObjectMass, float coefficientOfRestitution)
     {
         normal = normal.normalized; // Calculate the normal vector
+
+        // I will need the moment of inertia for object and other, angular velocity for the 2, vector from center of mass to collision point for the 2
         
         Vector3 relativeVelocity = objectVelocity - otherObjectVelocity; // Calculate the relative velocity
 
@@ -35,7 +37,7 @@ public class CollisionManager
          * En appliquant l'impulsion aux vecteurs de vitesse des objets, nous pouvons calculer leurs nouvelles 
          * vitesses après la collision, ce qui détermine comment ils continueront à se déplacer dans l'espace.
          */
-        float j = -(1 + restitutionCollisionCoefficient) * speedAlongNormal;
+        float j = -(1 + restitutionCollisionCoefficient) * speedAlongNormal / (normal * ( 1 / objectMass + 1 / otherObjectMass));
 
         Vector3 impulse = j * normal;
 
