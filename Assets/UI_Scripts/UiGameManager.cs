@@ -21,7 +21,7 @@ public class UiGameManager : MonoBehaviour
         GamePanel.SetActive(true);
         SettingsPanel.SetActive(false);
         Screen.SetResolution(1920, 1080, GameConstants.Fullscreen, 60); //int width, int height, bool fullscreen, int preferredRefreshRate (0 = unlimited)
-        FullscreenToggle.GetComponent<Toggle>().isOn = true;
+        FullscreenToggle.GetComponent<Toggle>().isOn = GameConstants.Fullscreen;
         MusicSlider.GetComponent<Slider>().value = GameConstants.MusicVolume;
         SoundEffectSlider.GetComponent<Slider>().value = GameConstants.SoundEffectVolume;
     }
@@ -42,7 +42,6 @@ public class UiGameManager : MonoBehaviour
     {
         GamePanel.SetActive(false);
         SettingsPanel.SetActive(true);
-        Debug.Log("coucou");
     }
 
     public void ShowGamePanel()
