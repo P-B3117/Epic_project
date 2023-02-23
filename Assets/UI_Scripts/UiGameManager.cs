@@ -8,6 +8,8 @@ using UnityEngine.SceneManagement;
 public class UiGameManager : MonoBehaviour
 {
     public GameObject GamePanel;
+    public GameObject PausePanel;
+    public GameObject PhysicsPanel;
     public GameObject SettingsPanel;
     public GameObject FullscreenToggle;
     public GameObject MusicSlider;
@@ -18,8 +20,7 @@ public class UiGameManager : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
-        GamePanel.SetActive(true);
-        SettingsPanel.SetActive(false);
+        ShowPausePanel();
         Screen.SetResolution(1920, 1080, GameConstants.Fullscreen, 60); //int width, int height, bool fullscreen, int preferredRefreshRate (0 = unlimited)
         FullscreenToggle.GetComponent<Toggle>().isOn = GameConstants.Fullscreen;
         MusicSlider.GetComponent<Slider>().value = GameConstants.MusicVolume;
@@ -30,24 +31,51 @@ public class UiGameManager : MonoBehaviour
     {
         if (Input.GetKeyDown(KeyCode.Escape))
         {
-            SceneManager.LoadScene(1);
+            ShowPausePanel();
         }
-        if (Input.GetKeyDown(KeyCode.Space))
-        {
-            ShowSettingsPanel();
-        }
+    }
+
+    public void LoadMenuScene()
+    {
+        SceneManager.LoadScene(1);
     }
 
     public void ShowSettingsPanel()
     {
         GamePanel.SetActive(false);
+        PausePanel.SetActive(false);
+        PhysicsPanel.SetActive(false);
         SettingsPanel.SetActive(true);
+        Debug.Log("showing Settings Panel");
+    }
+
+    public void ShowPhysicsPanel()
+    {
+        GamePanel.SetActive(false);
+        PausePanel.SetActive(false);
+        SettingsPanel.SetActive(false);
+        PhysicsPanel.SetActive(true);
+        Debug.Log("showing Physics Panel");
+    }
+
+    public void ShowPausePanel()
+    {
+        Time.timeScale = 0;
+        GamePanel.SetActive(true);
+        SettingsPanel.SetActive(false);
+        PhysicsPanel.SetActive(false);
+        PausePanel.SetActive(true);
+        Debug.Log("showing Pause Panel");
     }
 
     public void ShowGamePanel()
     {
-        GamePanel.SetActive(true);
+        Time.timeScale = 1;
         SettingsPanel.SetActive(false);
+        PausePanel.SetActive(false);
+        PhysicsPanel.SetActive(false);
+        GamePanel.SetActive(true);
+        Debug.Log("showing Game Panel");
     }
 
     public void ChangeFullscreenState(bool check)
