@@ -16,9 +16,9 @@ public class MeshColliderScript : MonoBehaviour
 
 	[SerializeField]
 	Material material;
-    Vector3 centerOfMass = Vector3.zero;
 
-
+	
+  
 
 
     // Start is called before the first frame update
@@ -41,21 +41,21 @@ public class MeshColliderScript : MonoBehaviour
 		area /= 2;
 
 
-		centerOfMass= Vector3.zero;
+		Vector3 centerOfMass = Vector3.zero;
 		for (int i = 0; i < modelPoints.Count; i++) 
 		{
 			int j = (i + 1) % modelPoints.Count;
-			this.centerOfMass.x += (modelPoints[i].x + modelPoints[j].x) * ((modelPoints[i].x * modelPoints[j].y) - (modelPoints[j].x * modelPoints[i].y));
-			this.centerOfMass.y += (modelPoints[i].y + modelPoints[j].y) * ((modelPoints[i].x * modelPoints[j].y) - (modelPoints[j].x * modelPoints[i].y));
+			centerOfMass.x += (modelPoints[i].x + modelPoints[j].x) * ((modelPoints[i].x * modelPoints[j].y) - (modelPoints[j].x * modelPoints[i].y));
+			centerOfMass.y += (modelPoints[i].y + modelPoints[j].y) * ((modelPoints[i].x * modelPoints[j].y) - (modelPoints[j].x * modelPoints[i].y));
 		}
 		centerOfMass /= 6 * area;
 
 		//Offset the position of the points to match the center of mass
 		for (int i = 0; i < modelPoints.Count; i++) 
 		{
-			modelPoints[i] -= this.centerOfMass;
+			modelPoints[i] -= centerOfMass;
 		}
-		transform.position += this.centerOfMass;
+		transform.position += centerOfMass;
 
 
 
@@ -150,10 +150,6 @@ public class MeshColliderScript : MonoBehaviour
 		return inertia;
 	}
 
-	public Vector3 getCenterOfMass()
-	{
-		return this.centerOfMass;
-	}
 
 
 
