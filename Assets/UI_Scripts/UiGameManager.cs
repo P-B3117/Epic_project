@@ -3,10 +3,13 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 using UnityEngine.Audio;
+using UnityEngine.SceneManagement;
 
 public class UiGameManager : MonoBehaviour
 {
-    public GameObject MenuPanel;
+    public GameObject GamePanel;
+    public GameObject PausePanel;
+    public GameObject PhysicsPanel;
     public GameObject SettingsPanel;
     public GameObject FullscreenToggle;
     public GameObject MusicSlider;
@@ -17,24 +20,73 @@ public class UiGameManager : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
-        MenuPanel.SetActive(true);
-        SettingsPanel.SetActive(false);
+        ShowGamePanel();
         Screen.SetResolution(1920, 1080, GameConstants.Fullscreen, 60); //int width, int height, bool fullscreen, int preferredRefreshRate (0 = unlimited)
-        FullscreenToggle.GetComponent<Toggle>().isOn = true;
+        FullscreenToggle.GetComponent<Toggle>().isOn = GameConstants.Fullscreen;
         MusicSlider.GetComponent<Slider>().value = GameConstants.MusicVolume;
         SoundEffectSlider.GetComponent<Slider>().value = GameConstants.SoundEffectVolume;
     }
 
+    void Update()
+    {
+        if (Input.GetKeyDown(KeyCode.Escape))
+        {
+            ShowPausePanel();
+        }
+    }
+
+    public void ChangeTime(string time)
+    {
+        UniversalVariable.SetTime(float.Parse(time));
+    }
+
+    public void ChangeGravity(string gravity)
+    {
+        UniversalVariable.SetGravity(float.Parse(gravity));
+    }
+
+    public void ChangeAirDrag(string airDrag)
+    {
+        UniversalVariable.SetAirDrag(float.Parse(airDrag));
+    }
+
+    public void LoadMenuScene()
+    {
+        SceneManager.LoadScene(1);
+    }
+
     public void ShowSettingsPanel()
     {
-        MenuPanel.SetActive(false);
+        GamePanel.SetActive(false);
+        PausePanel.SetActive(false);
+        PhysicsPanel.SetActive(false);
         SettingsPanel.SetActive(true);
     }
 
-    public void ShowMenuPanel()
+    public void ShowPhysicsPanel()
     {
-        MenuPanel.SetActive(true);
+        GamePanel.SetActive(false);
+        PausePanel.SetActive(false);
         SettingsPanel.SetActive(false);
+        PhysicsPanel.SetActive(true);
+    }
+
+    public void ShowPausePanel()
+    {
+        Time.timeScale = 0;
+        GamePanel.SetActive(true);
+        SettingsPanel.SetActive(false);
+        PhysicsPanel.SetActive(false);
+        PausePanel.SetActive(true);
+    }
+
+    public void ShowGamePanel()
+    {
+        Time.timeScale = UniversalVariable.GetTime();
+        SettingsPanel.SetActive(false);
+        PausePanel.SetActive(false);
+        PhysicsPanel.SetActive(false);
+        GamePanel.SetActive(true);
     }
 
     public void ChangeFullscreenState(bool check)

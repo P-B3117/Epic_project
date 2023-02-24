@@ -15,9 +15,9 @@ public class BasicPhysicObject : MonoBehaviour
     [Header("Fondamental variables")]
     [SerializeField]
     bool isStatic = false;
-    
 
-    
+
+
 
 
     [Header("Property of the material of the object")]
@@ -32,7 +32,7 @@ public class BasicPhysicObject : MonoBehaviour
 
     Vector3 resultingForce;
     float torque;
-    
+
 
     Vector3 velocity;
     float angularVelocity;
@@ -41,30 +41,20 @@ public class BasicPhysicObject : MonoBehaviour
     MeshColliderScript collider;
 
 
-	public void Start()
-	{
+    public void Start()
+    {
         resultingForce = Vector3.zero;
         torque = 0;
 
         velocity = Vector2.zero;
         angularVelocity = 0;
-	}
+    }
 
 
 
 
-	
-	private void OnDrawGizmos()
-	{
+    
 
-		Gizmos.color = Color.red;
-		Vector3 force = new Vector3(0, 1, 0);
-		Vector3 r = new Vector3(0.2f, -0.5f, 0);
-		float theta = transform.rotation.eulerAngles.z * Mathf.Deg2Rad;
-		Vector3 rotatedForce = new Vector3(force.x * Mathf.Cos(theta) - force.y * Mathf.Sin(theta), force.x * Mathf.Sin(theta) + force.y * Mathf.Cos(theta), 0);
-		Vector3 rotatedR = new Vector3(r.x * Mathf.Cos(theta) - r.y * Mathf.Sin(theta), r.x * Mathf.Sin(theta) + r.y * Mathf.Cos(theta), 0);
-		Gizmos.DrawLine(transform.position + rotatedR, transform.position + rotatedR - rotatedForce);
-	}
 
 	public void UpdateState(float timeStep) 
     {
@@ -129,12 +119,6 @@ public class BasicPhysicObject : MonoBehaviour
         return this.bounciness;
 	}
 
-    public void ChangeForce(Vector3 force, float newAngularVelocity)
-	{
-        resultingForce = force;
-        this.angularVelocity = newAngularVelocity;
-	}
-
     public void SetCollider(MeshColliderScript script) 
     {
         collider = script;
@@ -144,5 +128,10 @@ public class BasicPhysicObject : MonoBehaviour
         return this.angularVelocity;
     }
 
+    public void SetVelocity(Vector3 velocity, float newAngularVelocity)
+    {
+        this.velocity = velocity;
+        this.angularVelocity = newAngularVelocity;
+    }
 
 }
