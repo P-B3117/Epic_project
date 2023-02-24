@@ -21,6 +21,8 @@ public class PhysicsManager : MonoBehaviour
 	[SerializeField]
 	List<GameObject> objects;
 
+	
+
 	List<MeshColliderScript> meshColliders;
 	List<BasicPhysicObject> physicObjects;
 
@@ -46,19 +48,18 @@ public class PhysicsManager : MonoBehaviour
 		
 	}
 
-	//Just a test 
-	//TO REMOVE!!!!!
-	CollisionInfo COLTEST = null;
-	//public void OnDrawGizmos()
-	//{
-	//	Gizmos.color = Color.black;
-	//	if (COLTEST != null)
-	//	{
-	//		Gizmos.DrawLine(Vector3.zero, COLTEST.GetMTV());
-	//		//Gizmos.DrawSphere(COLTEST.GetContactPoint(), 0.05f);
-	//	}
 
-	//}
+	
+	
+	
+	CollisionInfo COLTEST = null;
+	private void OnDrawGizmos()
+	{
+		if (COLTEST != null) 
+		{
+			Gizmos.DrawSphere(COLTEST.GetContactPoint(), 0.2f);
+		}
+	}
 
 	//Update the physics objects on a fixed time rate
 	public void Update()
@@ -82,24 +83,27 @@ public class PhysicsManager : MonoBehaviour
 		{
 			
 			physicObjects[i].UpdateState(stepLength);
-			physicObjects[i].ApplyForceGravity();
-			//physicObjects[i].ApplyForce(new Vector3(0, 1, 0), new Vector3(0.2f, -0.5f, 0));
-
+			//physicObjects[i].ApplyForceGravity();
+			
+			
 			meshColliders[i].UpdateColliderOrientation();
 		}
 
 
-
+		
 		//Test collisions
 		test.SetColor("_Color", Color.green);
 		for (int i = 0; i < objects.Count; i++) 
 		{
+			
 			for (int j = i + 1; j < objects.Count; j++) 
 			{
 				CollisionInfo col = HelperFunctionClass.TestCollisionSeperateAxisTheorem(meshColliders[i].GetWorldSpacePoints(), meshColliders[j].GetWorldSpacePoints());
 		
 				if (col != null)
 				{
+
+					
 					COLTEST = col;
 					float inverseMass = (1.0f / (meshColliders[i].GetMass() + meshColliders[j].GetMass()));
 
@@ -157,6 +161,27 @@ public class PhysicsManager : MonoBehaviour
 			}
 		}
 	}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 	//Change the number of steps per second and update the Step length in consequence
 	public void ChangeNumberOfStepsPerSecond(int newNumberOfStepsPerSecond) 
