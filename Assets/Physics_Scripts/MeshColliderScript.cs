@@ -131,6 +131,16 @@ public class MeshColliderScript : MonoBehaviour
 	{
 		return worldSpaceRotatedPoints;
 	}
+
+	public void Translate(Vector3 vector) 
+	{
+		transform.position += vector;
+		for (int i = 0; i < worldSpaceRotatedPoints.Count; i++)
+		{
+			worldSpaceRotatedPoints[i] += vector;
+		}
+	}
+	
 	public float GetMass() 
 	{
 		return mass;

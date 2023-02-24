@@ -166,44 +166,63 @@ public static class HelperFunctionClass
 		col.SetMTV(findingMinimumTranslationVector.normalized * findingMinimumTranslationVectorLength);
 
 
-		//Do it AFTER the displacement!!!!!;
+		
+
+
+
+		
+
+
+		return col;
+
+	}
+
+
+
+	public static CollisionInfo FindCollisionPoint(CollisionInfo col, List<Vector3> polygon1, List<Vector3> polygon2) 
+	{
+		
 		//Find the optimalCollisionPoint!!
+		List<Vector3> p1;
+		List<Vector3> p2;
 		if (col.GetCollisionRef() == 0) { p1 = new List<Vector3>(polygon1); p2 = new List<Vector3>(polygon2); }
 		else { p2 = new List<Vector3>(polygon1); p1 = new List<Vector3>(polygon2); }
 		//P2 is the object that collided with the other one!
-		Vector3 MTVProj = findingMinimumTranslationVector.normalized;
-		
+		Vector3 MTVProj = col.GetMTV().normalized;
+
 		double min = Mathf.Infinity;
 		List<int> indexMin = new List<int>();
-		for (int i = 0; i < p2.Count; i++) 
+		for (int i = 0; i < p2.Count; i++)
 		{
-			p2[i] += col.GetMTV();
-			double d = Vector3.Dot(MTVProj, p2[i]);
-			d = System.Math.Round(d, 3);
 			
-			if (d < min) { min = d;  indexMin = new List<int>(); indexMin.Add(i); }
-			else if (d == min) {  indexMin.Add(i); }
+			double d = Vector3.Dot(MTVProj, p2[i]);
+			d = System.Math.Round(d, 4);
+			
+			if (d < min) { min = d; indexMin = new List<int>(); indexMin.Add(i); }
+			else if (d == min) { indexMin.Add(i); }
 		}
-		
+
 
 		//Point with edge
 		if (indexMin.Count < 2)
 		{
+			
 			col.SetContactPoint(p2[indexMin[0]]);
+			
 		}
 		//Edge with edge
-		else 
+		else
 		{
 			//Get the edge point of the other object
-			double min2 = Mathf.Infinity;
+			double min2 = -Mathf.Infinity;
 			List<int> indexMin2 = new List<int>();
 			for (int i = 0; i < p1.Count; i++)
 			{
-				
+
 				double d2 = Vector3.Dot(MTVProj, p1[i]);
-				d2 = System.Math.Round(d2, 3);
-				
-				if (d2 < min2) { min2 = d2; indexMin2 = new List<int>(); indexMin2.Add(i); }
+				d2 = System.Math.Round(d2, 4);
+
+				if (d2 > min2) { min2 = d2; indexMin2 = new List<int>(); indexMin2.Add(i); }
 				else if (d2 == min2) { indexMin2.Add(i); }
 			}
 
@@ -214,21 +233,21 @@ public static class HelperFunctionClass
 			int[] p1Index = { -1, -1 };
 			int[] p2Index = { -1, -1 };
 
-			for (int i = 0; i < indexMin2.Count; i++) 
+			for (int i = 0; i < indexMin2.Count; i++)
 			{
 				float p = Vector3.Dot(MTVEdgeProj, p1[indexMin2[i]]);
-				if (p < p1extreme[0]) 
+				if (p < p1extreme[0])
 				{
 					p1Index[0] = i;
 					p1extreme[0] = p;
 				}
-				if (p > p1extreme[1]) 
+				if (p > p1extreme[1])
 				{
 					p1Index[1] = i;
 					p1extreme[1] = p;
 				}
-				
-			
+
+
 			}
 
 			for (int i = 0; i < indexMin.Count; i++)
@@ -248,25 +267,20 @@ public static class HelperFunctionClass
 
 			Vector3[] twoPoints = new Vector3[2];
 			int index = 0;
-			if (p2extreme[0] > p1extreme[0] && p2extreme[0] < p1extreme[1]) { twoPoints[index] = p2[indexMin[p2Index[0]]]; index++; Debug.Log(1); }
-			if (p2extreme[1] > p1extreme[0] && p2extreme[1] < p1extreme[1]) { twoPoints[index] = p2[indexMin[p2Index[1]]]; index++; Debug.Log(2); }
+			if (p2extreme[0] > p1extreme[0] && p2extreme[0] < p1extreme[1]) { twoPoints[index] = p2[indexMin[p2Index[0]]]; index++;  }
+			if (p2extreme[1] > p1extreme[0] && p2extreme[1] < p1extreme[1]) { twoPoints[index] = p2[indexMin[p2Index[1]]]; index++;  }
 
-			if (p1extreme[0] > p2extreme[0] && p1extreme[0] < p2extreme[1]) { twoPoints[index] = p1[indexMin2[p1Index[0]]]; index++; Debug.Log(3); }
-			if (p1extreme[1] > p2extreme[0] && p1extreme[1] < p2extreme[1]) { twoPoints[index] = p1[indexMin2[p1Index[1]]]; index++; Debug.Log(4); }
+			if (p1extreme[0] > p2extreme[0] && p1extreme[0] < p2extreme[1]) { twoPoints[index] = p1[indexMin2[p1Index[0]]]; index++;  }
+			if (p1extreme[1] > p2extreme[0] && p1extreme[1] < p2extreme[1]) { twoPoints[index] = p1[indexMin2[p1Index[1]]]; index++;  }
+
 			
-			Debug.Log("Two points1 :" + twoPoints[0]);
-			Debug.Log("Two points2 :" + twoPoints[1]);
 			col.SetContactPoint((twoPoints[0] + twoPoints[1]) / 2);
 
-			Debug.Log("Edge with Edge");
+
+
+
 		}
 
-
-
-		
-
-
 		return col;
-
 	}
 }

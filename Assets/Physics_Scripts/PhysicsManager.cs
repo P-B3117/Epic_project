@@ -57,7 +57,8 @@ public class PhysicsManager : MonoBehaviour
 	{
 		if (COLTEST != null) 
 		{
-			Gizmos.DrawSphere(COLTEST.GetContactPoint(), 0.2f);
+			Gizmos.DrawLine(COLTEST.GetContactPoint(), COLTEST.GetContactPoint() + COLTEST.GetMTV());
+			Gizmos.DrawSphere(COLTEST.GetContactPoint(), 0.1f);
 		}
 	}
 
@@ -83,7 +84,7 @@ public class PhysicsManager : MonoBehaviour
 		{
 			
 			physicObjects[i].UpdateState(stepLength);
-			//physicObjects[i].ApplyForceGravity();
+			physicObjects[i].ApplyForceGravity();
 			
 			
 			meshColliders[i].UpdateColliderOrientation();
@@ -102,16 +103,22 @@ public class PhysicsManager : MonoBehaviour
 		
 				if (col != null)
 				{
-
+					
 					
 					COLTEST = col;
 					float inverseMass = (1.0f / (meshColliders[i].GetMass() + meshColliders[j].GetMass()));
 
 					if (COLTEST.GetCollisionRef() == 0)
 					{
-						objects[j].transform.position += COLTEST.GetMTV() * meshColliders[i].GetMass() * inverseMass;
-						objects[i].transform.position -= COLTEST.GetMTV() * meshColliders[j].GetMass() * inverseMass;
 
+						
+						meshColliders[j].Translate( COLTEST.GetMTV() * meshColliders[i].GetMass() * inverseMass);
+						
+						meshColliders[i].Translate(-COLTEST.GetMTV() * meshColliders[j].GetMass() * inverseMass);
+
+						
+						//Find collisionPoint after displacement
+						col = HelperFunctionClass.FindCollisionPoint(col, meshColliders[i].GetWorldSpacePoints(), meshColliders[j].GetWorldSpacePoints());
 
 						Vector3 normal = col.GetMTV().normalized;
 						Vector3 relativeVelocity = physicObjects[j].getVelocity() - physicObjects[i].getVelocity();
@@ -131,11 +138,13 @@ public class PhysicsManager : MonoBehaviour
 					}
 					else 
 					{
-						objects[j].transform.position -= COLTEST.GetMTV() * meshColliders[i].GetMass() * inverseMass;
-						objects[i].transform.position += COLTEST.GetMTV() * meshColliders[j].GetMass() * inverseMass;
+						meshColliders[j].Translate(-COLTEST.GetMTV() * meshColliders[i].GetMass() * inverseMass);
 
+						meshColliders[i].Translate(COLTEST.GetMTV() * meshColliders[j].GetMass() * inverseMass);
 
-						
+						//Find collisionPoint after displacement
+						col = HelperFunctionClass.FindCollisionPoint(col, meshColliders[i].GetWorldSpacePoints(), meshColliders[j].GetWorldSpacePoints());
+
 
 
 						Vector3 normal = col.GetMTV().normalized;
