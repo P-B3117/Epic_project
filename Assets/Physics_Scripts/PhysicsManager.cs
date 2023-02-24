@@ -51,9 +51,17 @@ public class PhysicsManager : MonoBehaviour
 	Vector3 MTV = Vector3.zero;
 	public void OnDrawGizmos()
 	{
+<<<<<<< Updated upstream
 		Gizmos.color = Color.black;
 		
 		Gizmos.DrawLine(Vector3.zero, MTV);
+=======
+		if (COLTEST != null) 
+		{
+			Gizmos.DrawLine(COLTEST.GetWorldContactPoint(), COLTEST.GetWorldContactPoint() + COLTEST.GetMTV());
+			Gizmos.DrawSphere(COLTEST.GetWorldContactPoint(), 0.1f);
+		}
+>>>>>>> Stashed changes
 	}
 
 	//Update the physics objects on a fixed time rate
@@ -95,7 +103,66 @@ public class PhysicsManager : MonoBehaviour
 				CollisionInfo col = HelperFunctionClass.TestCollisionSeperateAxisTheorem(meshColliders[i].GetWorldSpacePoints(), meshColliders[j].GetWorldSpacePoints());
 				if (col != null)
 				{
+<<<<<<< Updated upstream
 					MTV = col.GetMTV();
+=======
+					
+					
+					COLTEST = col;
+					float inverseMass = (1.0f / (meshColliders[i].GetMass() + meshColliders[j].GetMass()));
+
+					CollisionManager collisionManager= new CollisionManager();
+
+					Vector3 objectVelocity = physicObjects[i].getVelocity();
+					Vector3 otherObjectVelocity = physicObjects[j].getVelocity();
+					Vector3 normal2 = COLTEST.GetMTV();
+					float objectMass = meshColliders[i].GetMass();
+                    float otherObjectMass = meshColliders[j].GetMass();
+					float coefficientOfRestitution = 0; //(physicObjects[i].getBounciness() + physicObjects[j].getBounciness()) / 2f;
+					float objectAngularVelocity = physicObjects[i].getAngularVelocity();
+                    float otherObjectAngularVelocity = physicObjects[j].getAngularVelocity();
+					Vector3 rVectorObject = Vector3.zero;
+					Vector3 rVectorOtherObject = Vector3.zero;
+					float objectInertia = meshColliders[i].getInertia();
+                    float otherObjectInertia = meshColliders[j].getInertia();
+
+					List<object> newVelocities = null;
+
+					if (COLTEST.GetCollisionRef() == 0)
+					{
+						meshColliders[j].Translate( COLTEST.GetMTV() * objectMass * inverseMass);
+						meshColliders[i].Translate(-COLTEST.GetMTV() * otherObjectMass * inverseMass);
+
+                        //Find collisionPoint after displacement
+                        col = HelperFunctionClass.FindCollisionPoint(col, meshColliders[i].GetWorldSpacePoints(), meshColliders[j].GetWorldSpacePoints());
+
+						rVectorObject = col.GetRelativeContactPoint(meshColliders[i].transform.position);
+                        rVectorOtherObject = col.GetRelativeContactPoint(meshColliders[j].transform.position);
+                        newVelocities = collisionManager.CollisionHasHappened(objectVelocity, otherObjectVelocity, normal2, objectMass, otherObjectMass, coefficientOfRestitution, objectAngularVelocity, otherObjectAngularVelocity,
+                            rVectorObject, rVectorOtherObject, objectInertia, otherObjectInertia);
+
+                        physicObjects[j].SetVelocity((Vector3)newVelocities[1], (float)newVelocities[3]);
+						physicObjects[i].SetVelocity((Vector3)newVelocities[0], (float)newVelocities[2]);
+                    }
+					else 
+					{
+						meshColliders[j].Translate(-COLTEST.GetMTV() * objectMass * inverseMass);
+						meshColliders[i].Translate(COLTEST.GetMTV() * otherObjectMass * inverseMass);
+
+                        //Find collisionPoint after displacement
+                        col = HelperFunctionClass.FindCollisionPoint(col, meshColliders[i].GetWorldSpacePoints(), meshColliders[j].GetWorldSpacePoints());
+
+                        rVectorObject = col.GetRelativeContactPoint(meshColliders[i].transform.position);
+                        rVectorOtherObject = col.GetRelativeContactPoint(meshColliders[j].transform.position);
+
+                        newVelocities = collisionManager.CollisionHasHappened(otherObjectVelocity, objectVelocity, normal2, otherObjectMass, objectMass, coefficientOfRestitution, otherObjectAngularVelocity, objectAngularVelocity,
+							rVectorOtherObject, rVectorObject, otherObjectInertia, objectInertia);
+
+                        physicObjects[j].SetVelocity((Vector3)newVelocities[0], (float)newVelocities[2]);
+                        physicObjects[i].SetVelocity((Vector3)newVelocities[1], (float)newVelocities[3]);
+                    }
+
+>>>>>>> Stashed changes
 					test.SetColor("_Color", Color.red);
                     // modifier ici pour le coefficient de restitution @antony
                     BasicPhysicObject obj1 = physicObjects[i];
@@ -114,6 +181,12 @@ public class PhysicsManager : MonoBehaviour
 		}
 	}
 
+<<<<<<< Updated upstream
+=======
+
+
+
+>>>>>>> Stashed changes
 	//Change the number of steps per second and update the Step length in consequence
 	public void ChangeNumberOfStepsPerSecond(int newNumberOfStepsPerSecond) 
 	{

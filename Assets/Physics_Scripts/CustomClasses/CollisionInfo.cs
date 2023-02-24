@@ -37,10 +37,25 @@ public class CollisionInfo
         vertexMTV = contactP;
     }
 
-    public Vector3 GetContactPoint() 
+    public Vector3 GetWorldContactPoint() 
     {
         return contactPoint;
     }
+<<<<<<< Updated upstream
+=======
+
+    public Vector3 GetRelativeContactPoint(Vector3 centerOfMassSpacePoint)
+    {
+        Vector3 relativeContactPoint = contactPoint - centerOfMassSpacePoint;
+        return relativeContactPoint;
+        
+    }
+
+    public void SetContactPoint(Vector3 CP) 
+    {
+        contactPoint = CP;
+    }
+>>>>>>> Stashed changes
 
     public int GetCollisionRef() 
     {
@@ -53,6 +68,9 @@ public class CollisionInfo
         collisionRef = colRef;
     }
 
-   
 
+    public bool isCBetweenAB(Vector3 A, Vector3 B, Vector3 C)
+    {
+        return Vector3.Dot((B - A).normalized, (C - B).normalized) < 0f && Vector3.Dot((A - B).normalized, (C - A).normalized) < 0f;
+    }
 }
