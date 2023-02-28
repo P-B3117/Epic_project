@@ -64,7 +64,7 @@ public class BasicPhysicObject : MonoBehaviour
 
         Vector3 acceleration = resultingForce / collider.GetMass();
         
-        float angularAcceleration = torque / collider.getInertia();
+        float angularAcceleration = torque / collider.GetInertia();
         
         
 
@@ -127,6 +127,7 @@ public class BasicPhysicObject : MonoBehaviour
     {
         return this.angularVelocity;
     }
+
 
     public void SetVelocity(Vector3 velocity, float newAngularVelocity)
     {

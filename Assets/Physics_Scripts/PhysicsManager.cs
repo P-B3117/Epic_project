@@ -49,16 +49,28 @@ public class PhysicsManager : MonoBehaviour
 	}
 
 
-	
-	
-	
+
+
+	///A enlever juste pour DEBUG!!!
+	Vector3 Normal;
+	Vector3 perpAP1;
 	CollisionInfo COLTEST = null;
 	private void OnDrawGizmos()
 	{
 		if (COLTEST != null) 
 		{
-			Gizmos.DrawLine(COLTEST.GetContactPoint(), COLTEST.GetContactPoint() + COLTEST.GetMTV());
-			Gizmos.DrawSphere(COLTEST.GetContactPoint(), 0.1f);
+			//Gizmos.color = Color.white;
+			//Gizmos.DrawLine(COLTEST.GetContactPoint(), COLTEST.GetContactPoint() + COLTEST.GetMTV());
+			//Gizmos.DrawSphere(COLTEST.GetContactPoint(), 0.1f);
+
+			//Gizmos.color = Color.green;
+			//Gizmos.DrawLine(COLTEST.GetContactPoint(), COLTEST.GetContactPoint() + Normal);
+			
+			//Gizmos.color = Color.blue;
+			//Gizmos.DrawLine(COLTEST.GetContactPoint(), COLTEST.GetContactPoint() + perpAP1);
+
+			//Gizmos.color = Color.magenta;
+			//Gizmos.DrawLine(COLTEST.GetContactPoint(), COLTEST.GetContactPoint() + new Vector3(-perpAP1.y, perpAP1.x));
 		}
 	}
 
@@ -121,19 +133,47 @@ public class PhysicsManager : MonoBehaviour
 						col = HelperFunctionClass.FindCollisionPoint(col, meshColliders[i].GetWorldSpacePoints(), meshColliders[j].GetWorldSpacePoints());
 
 						Vector3 normal = col.GetMTV().normalized;
-						Vector3 relativeVelocity = physicObjects[j].getVelocity() - physicObjects[i].getVelocity();
+
+
+						
+						Vector3 rBP = meshColliders[i].transform.position - col.GetContactPoint();
+						Vector3 rAP = meshColliders[j].transform.position - col.GetContactPoint();
+						perpAP1 = rAP;
+						
+						Vector3 perpBP = new Vector3(-rBP.y, rBP.x, 0);
+						Vector3 perpAP = new Vector3(-rAP.y, rAP.x, 0);
+
+
+						Vector3 vAP = physicObjects[j].getVelocity() - physicObjects[j].getAngularVelocity() * perpAP;
+						Vector3 vBP = physicObjects[i].getVelocity() + physicObjects[i].getAngularVelocity() * perpBP;
+						Vector3 relativeVelocity = vAP-vBP;
 						float speedAlongNormal = Vector3.Dot(relativeVelocity, normal);
-						
-						if (speedAlongNormal > 0) { continue; }
-						float restitutionCollisionCoefficient = 1.0f;
+
+						float momentOfInertia1ImpulseInhibitor = Mathf.Pow(Vector3.Dot(perpAP, normal), 2) / (meshColliders[j].GetInertia());
+						float momentOfInertia2ImpulseInhibitor = Mathf.Pow(Vector3.Dot(perpBP, normal), 2) / (meshColliders[i].GetInertia());
+						float massImpulseInhibitor = (1.0f / meshColliders[j].GetMass() + 1.0f / meshColliders[i].GetMass());
+
+
+						if (speedAlongNormal > 0) {  continue;  }
+						float restitutionCollisionCoefficient = 0.0f;
 						float j2 = -(1 + restitutionCollisionCoefficient) * speedAlongNormal;
-						Vector3 impulse = j2 * normal;
-						impulse /= (1.0f / meshColliders[j].GetMass() + 1.0f / meshColliders[i].GetMass());
+						j2 /= (momentOfInertia1ImpulseInhibitor + momentOfInertia2ImpulseInhibitor + massImpulseInhibitor);
+
+
+						Vector3 translationImpulse = j2 * normal;
 						
-						Vector3 newVelocity = physicObjects[j].getVelocity() + (1.0f / meshColliders[j].GetMass()) * impulse;
-						Vector3 otherNewVelocity = physicObjects[i].getVelocity() - (1.0f / meshColliders[i].GetMass()) * impulse;
-						physicObjects[j].SetVelocity(newVelocity, 0f);
-						physicObjects[i].SetVelocity(otherNewVelocity, 0f);
+						
+						Vector3 newVelocity = physicObjects[j].getVelocity() + (1.0f / meshColliders[j].GetMass()) * translationImpulse;
+						Vector3 otherNewVelocity = physicObjects[i].getVelocity() - (1.0f / meshColliders[i].GetMass()) * translationImpulse;
+
+						Normal = normal * j2;
+						
+						float newAngularVelocity = physicObjects[j].getAngularVelocity() - (Vector3.Dot(perpAP, normal * j2) / meshColliders[j].GetInertia());
+						float otherNewAngularVelocity = physicObjects[i].getAngularVelocity() + (Vector3.Dot(perpBP, normal * j2) / meshColliders[i].GetInertia());
+
+						physicObjects[j].SetVelocity(newVelocity, newAngularVelocity);
+						physicObjects[i].SetVelocity(otherNewVelocity, otherNewAngularVelocity);
+						
 
 					}
 					else 
@@ -161,10 +201,10 @@ public class PhysicsManager : MonoBehaviour
 						physicObjects[i].SetVelocity(newVelocity, 0f);
 						physicObjects[j].SetVelocity(otherNewVelocity, 0f);
 
-						
+						Debug.Log("NOO");
 					}
 
-					test.SetColor("_Color", Color.red);
+					//test.SetColor("_Color", Color.red);
 					
 				}
 			}

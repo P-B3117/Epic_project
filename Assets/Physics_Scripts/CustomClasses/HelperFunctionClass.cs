@@ -189,7 +189,7 @@ public static class HelperFunctionClass
 		else { p2 = new List<Vector3>(polygon1); p1 = new List<Vector3>(polygon2); }
 		//P2 is the object that collided with the other one!
 		Vector3 MTVProj = col.GetMTV().normalized;
-
+		
 		double min = Mathf.Infinity;
 		List<int> indexMin = new List<int>();
 		for (int i = 0; i < p2.Count; i++)
@@ -201,13 +201,14 @@ public static class HelperFunctionClass
 			if (d < min) { min = d; indexMin = new List<int>(); indexMin.Add(i); }
 			else if (d == min) { indexMin.Add(i); }
 		}
-
+		
 
 		//Point with edge
 		if (indexMin.Count < 2)
 		{
 			
 			col.SetContactPoint(p2[indexMin[0]]);
+			
 			
 		}
 		//Edge with edge
@@ -264,7 +265,8 @@ public static class HelperFunctionClass
 					p2extreme[1] = p;
 				}
 			}
-
+			//Debug.Log("P1 extreme : " + p1extreme[0] + " --- " + p1extreme[1]);
+			//Debug.Log("P2 extreme : " + p2extreme[0] + " --- " + p2extreme[1]);
 			Vector3[] twoPoints = new Vector3[2];
 			int index = 0;
 			if (p2extreme[0] > p1extreme[0] && p2extreme[0] < p1extreme[1]) { twoPoints[index] = p2[indexMin[p2Index[0]]]; index++;  }
@@ -273,7 +275,7 @@ public static class HelperFunctionClass
 			if (p1extreme[0] > p2extreme[0] && p1extreme[0] < p2extreme[1]) { twoPoints[index] = p1[indexMin2[p1Index[0]]]; index++;  }
 			if (p1extreme[1] > p2extreme[0] && p1extreme[1] < p2extreme[1]) { twoPoints[index] = p1[indexMin2[p1Index[1]]]; index++;  }
 
-			
+			//Debug.Log((twoPoints[0] + " --- " + twoPoints[1]));
 			col.SetContactPoint((twoPoints[0] + twoPoints[1]) / 2);
 
 
