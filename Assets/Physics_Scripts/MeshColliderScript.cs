@@ -4,7 +4,7 @@ using UnityEngine;
 
 public class MeshColliderScript : MonoBehaviour
 {
-
+	
 	[SerializeField]
 	float mass = 5.0f;
 	float area;
@@ -17,92 +17,18 @@ public class MeshColliderScript : MonoBehaviour
 	[SerializeField]
 	Material material;
 
+	[Header("ONLY IF CIRCLE")]
+	[SerializeField]
+	bool isCircle = false;
+	[SerializeField]
+	float rayonOfCircle = 1.0f;
+
+
+
 	
-  
-
-
-    // Start is called before the first frame update
-    void Start()
+	void Start()
     {
-        if (modelPoints.Count < 3)
-            return;
-
-
-
-		//Calculate the center of mass of a given polygon
-		//Code adapted from the source document of Paul Bourke 1988
-		//http://paulbourke.net/geometry/polygonmesh/
-		area = 0;
-		for (int i = 0; i < modelPoints.Count; i++) 
-		{
-			int j = (i + 1) % modelPoints.Count;
-			area += (modelPoints[i].x * modelPoints[j].y) - (modelPoints[j].x * modelPoints[i].y);
-		}
-		area /= 2;
-
-
-		Vector3 centerOfMass = Vector3.zero;
-		for (int i = 0; i < modelPoints.Count; i++) 
-		{
-			int j = (i + 1) % modelPoints.Count;
-			centerOfMass.x += (modelPoints[i].x + modelPoints[j].x) * ((modelPoints[i].x * modelPoints[j].y) - (modelPoints[j].x * modelPoints[i].y));
-			centerOfMass.y += (modelPoints[i].y + modelPoints[j].y) * ((modelPoints[i].x * modelPoints[j].y) - (modelPoints[j].x * modelPoints[i].y));
-		}
-		centerOfMass /= 6 * area;
-
-		//Offset the position of the points to match the center of mass
-		for (int i = 0; i < modelPoints.Count; i++) 
-		{
-			modelPoints[i] -= centerOfMass;
-		}
-		transform.position += centerOfMass;
-
-
-
-
-		//Calculate the moment of inertia of the given polygon
-		float density = mass / -area;
-		inertia = 0;
-		for (int i = 0; i < modelPoints.Count; i++) 
-		{
-			int j = (i + 1) % modelPoints.Count;
-			float massTriangle = 0.5f * density * Vector3.Cross(modelPoints[i], modelPoints[j]).magnitude;
-			
-			float inertiaTriangle = massTriangle * (modelPoints[i].sqrMagnitude + modelPoints[j].sqrMagnitude + Vector3.Dot(modelPoints[i], modelPoints[j])) / 6;
-			inertia += inertiaTriangle;
-
-		}
-		
-
-
-		//Create the mesh based on the vertices inputed
-		if (GetComponent<MeshFilter>() == null)
-		{
-			gameObject.AddComponent<MeshFilter>();
-		}
-		if (GetComponent<MeshRenderer>() == null)
-		{
-			gameObject.AddComponent<MeshRenderer>();
-		}
-		List<Vector3> vertices = new List<Vector3>(modelPoints);
-		vertices.Insert(0, Vector3.zero);
-
-		Mesh mesh = new Mesh();
-		GetComponent<MeshFilter>().mesh = mesh;
-		GetComponent<MeshRenderer>().material = material;
-		mesh.vertices = vertices.ToArray();
-		int[] newTriangles = new int[(modelPoints.Count) * 3];
-		for (int i = 0; i < modelPoints.Count; i++)
-		{
-			newTriangles[i * 3] = 0;
-			newTriangles[i * 3 + 1] = i + 1;
-			newTriangles[(i * 3 + 2)] = (i + 2) % modelPoints.Count;
-
-			if (newTriangles[(i * 3 + 2)] == 0) { newTriangles[(i * 3 + 2)] = modelPoints.Count; }
-
-		}
-
-		mesh.triangles = newTriangles;
+		SetUpMesh();
 
 	}
 
@@ -150,7 +76,127 @@ public class MeshColliderScript : MonoBehaviour
 		return inertia;
 	}
 
+	public bool IsCircle() 
+	{
+		return isCircle;
+	}
+	public float RayonOfCircle() 
+	{
+		return rayonOfCircle;
+	}
 
+	private void SetUpMesh() 
+	{
+		if (isCircle)
+		{
+			//Calculate Area
+			area = Mathf.PI * rayonOfCircle * rayonOfCircle;
+
+			//Calculate Inertia
+			inertia = 0.5f * mass * rayonOfCircle * rayonOfCircle;
+
+
+			if (GetComponent<MeshFilter>() == null)
+			{
+				gameObject.AddComponent<MeshFilter>();
+			}
+			if (GetComponent<MeshRenderer>() == null)
+			{
+				gameObject.AddComponent<MeshRenderer>();
+			}
+
+			GameObject cylinder = GameObject.CreatePrimitive(PrimitiveType.Cylinder);
+			GetComponent<MeshFilter>().mesh = cylinder.GetComponent<MeshFilter>().mesh;
+			GetComponent<MeshRenderer>().material = material;
+			transform.Rotate(Vector3.right * 90);
+			transform.localScale = new Vector3(rayonOfCircle * 2, 1.0f, rayonOfCircle * 2);
+			Destroy(cylinder);
+
+		}
+		else if (modelPoints.Count < 3)
+		{
+			return;
+		}
+		else 
+		{
+			//Calculate the center of mass of a given polygon
+			//Code adapted from the source document of Paul Bourke 1988
+			//http://paulbourke.net/geometry/polygonmesh/
+			area = 0;
+			for (int i = 0; i < modelPoints.Count; i++)
+			{
+				int j = (i + 1) % modelPoints.Count;
+				area += (modelPoints[i].x * modelPoints[j].y) - (modelPoints[j].x * modelPoints[i].y);
+			}
+			area /= 2;
+
+
+			Vector3 centerOfMass = Vector3.zero;
+			for (int i = 0; i < modelPoints.Count; i++)
+			{
+				int j = (i + 1) % modelPoints.Count;
+				centerOfMass.x += (modelPoints[i].x + modelPoints[j].x) * ((modelPoints[i].x * modelPoints[j].y) - (modelPoints[j].x * modelPoints[i].y));
+				centerOfMass.y += (modelPoints[i].y + modelPoints[j].y) * ((modelPoints[i].x * modelPoints[j].y) - (modelPoints[j].x * modelPoints[i].y));
+			}
+			centerOfMass /= 6 * area;
+
+			//Offset the position of the points to match the center of mass
+			for (int i = 0; i < modelPoints.Count; i++)
+			{
+				modelPoints[i] -= centerOfMass;
+			}
+			transform.position += centerOfMass;
+
+
+
+
+			//Calculate the moment of inertia of the given polygon
+			float density = mass / -area;
+			inertia = 0;
+			for (int i = 0; i < modelPoints.Count; i++)
+			{
+				int j = (i + 1) % modelPoints.Count;
+				float massTriangle = 0.5f * density * Vector3.Cross(modelPoints[i], modelPoints[j]).magnitude;
+
+				float inertiaTriangle = massTriangle * (modelPoints[i].sqrMagnitude + modelPoints[j].sqrMagnitude + Vector3.Dot(modelPoints[i], modelPoints[j])) / 6;
+				inertia += inertiaTriangle;
+
+			}
+
+
+
+			//Create the mesh based on the vertices inputed
+			if (GetComponent<MeshFilter>() == null)
+			{
+				gameObject.AddComponent<MeshFilter>();
+			}
+			if (GetComponent<MeshRenderer>() == null)
+			{
+				gameObject.AddComponent<MeshRenderer>();
+			}
+			List<Vector3> vertices = new List<Vector3>(modelPoints);
+			vertices.Insert(0, Vector3.zero);
+
+			Mesh mesh = new Mesh();
+			GetComponent<MeshFilter>().mesh = mesh;
+			GetComponent<MeshRenderer>().material = material;
+			mesh.vertices = vertices.ToArray();
+			int[] newTriangles = new int[(modelPoints.Count) * 3];
+			for (int i = 0; i < modelPoints.Count; i++)
+			{
+				newTriangles[i * 3] = 0;
+				newTriangles[i * 3 + 1] = i + 1;
+				newTriangles[(i * 3 + 2)] = (i + 2) % modelPoints.Count;
+
+				if (newTriangles[(i * 3 + 2)] == 0) { newTriangles[(i * 3 + 2)] = modelPoints.Count; }
+
+			}
+
+			mesh.triangles = newTriangles;
+		}
+
+		
+	}
 
 
 

@@ -13,7 +13,7 @@ using UnityEngine;
 public class PhysicsManager : MonoBehaviour
 {
 	//Change the variable numberOfStepsPerSecond to change the timerate calculations
-	private int numberOfStepsPerSecond = 50;
+	private int numberOfStepsPerSecond = 500;
 	private float stepLength;
 	private float numberOfUpdateCounter = 0;
 
@@ -57,20 +57,24 @@ public class PhysicsManager : MonoBehaviour
 	CollisionInfo COLTEST = null;
 	private void OnDrawGizmos()
 	{
-		if (COLTEST != null) 
+
+		if (COLTEST != null)
 		{
-			//Gizmos.color = Color.white;
-			//Gizmos.DrawLine(COLTEST.GetContactPoint(), COLTEST.GetContactPoint() + COLTEST.GetMTV());
-			//Gizmos.DrawSphere(COLTEST.GetContactPoint(), 0.1f);
+			//if (COLTEST.GetContactPoint() != Vector3.zero)
+			//{
+			//	Gizmos.color = Color.white;
+			//	Gizmos.DrawLine(COLTEST.GetContactPoint(), COLTEST.GetContactPoint() + COLTEST.GetMTV());
+			//	Gizmos.DrawSphere(COLTEST.GetContactPoint(), 0.5f);
 
-			//Gizmos.color = Color.green;
-			//Gizmos.DrawLine(COLTEST.GetContactPoint(), COLTEST.GetContactPoint() + Normal);
-			
-			//Gizmos.color = Color.blue;
-			//Gizmos.DrawLine(COLTEST.GetContactPoint(), COLTEST.GetContactPoint() + perpAP1);
+			//	Gizmos.color = Color.green;
+			//	Gizmos.DrawLine(COLTEST.GetContactPoint(), COLTEST.GetContactPoint() + Normal);
 
-			//Gizmos.color = Color.magenta;
-			//Gizmos.DrawLine(COLTEST.GetContactPoint(), COLTEST.GetContactPoint() + new Vector3(-perpAP1.y, perpAP1.x));
+			//	Gizmos.color = Color.blue;
+			//	Gizmos.DrawLine(COLTEST.GetContactPoint(), COLTEST.GetContactPoint() + perpAP1);
+
+			//	Gizmos.color = Color.magenta;
+			//	Gizmos.DrawLine(COLTEST.GetContactPoint(), COLTEST.GetContactPoint() + new Vector3(-perpAP1.y, perpAP1.x));
+			//}
 		}
 	}
 
@@ -111,7 +115,18 @@ public class PhysicsManager : MonoBehaviour
 			
 			for (int j = i + 1; j < objects.Count; j++) 
 			{
-				CollisionInfo col = HelperFunctionClass.TestCollisionSeperateAxisTheorem(meshColliders[i].GetWorldSpacePoints(), meshColliders[j].GetWorldSpacePoints());
+				CollisionInfo col;
+				if (meshColliders[i].IsCircle() && meshColliders[j].IsCircle())
+				{
+					col = HelperFunctionClass.TestCollisionTwoCircles(meshColliders[i].transform.position, meshColliders[i].RayonOfCircle(), meshColliders[j].transform.position, meshColliders[j].RayonOfCircle());
+				}
+				else if (meshColliders[i].IsCircle()) { col = null; }
+				else if (meshColliders[j].IsCircle()) { col = null; }
+				else
+				{
+					 col = HelperFunctionClass.TestCollisionSeperateAxisTheorem(meshColliders[i].GetWorldSpacePoints(), meshColliders[j].GetWorldSpacePoints());
+				}
+				
 		
 				if (col != null)
 				{
@@ -120,33 +135,35 @@ public class PhysicsManager : MonoBehaviour
 					COLTEST = col;
 					float inverseMass = (1.0f / (meshColliders[i].GetMass() + meshColliders[j].GetMass()));
 
-					if (COLTEST.GetCollisionRef() == 0)
-					{
+					//Normale pointe vers j
+					if (COLTEST.GetCollisionRef() == 1) { COLTEST.SetMTV(COLTEST.GetMTV() * -1); }
+					
 
-						
-						meshColliders[j].Translate( COLTEST.GetMTV() * meshColliders[i].GetMass() * inverseMass);
-						
+
+						meshColliders[j].Translate(COLTEST.GetMTV() * meshColliders[i].GetMass() * inverseMass);
 						meshColliders[i].Translate(-COLTEST.GetMTV() * meshColliders[j].GetMass() * inverseMass);
 
-						
+
 						//Find collisionPoint after displacement
 						col = HelperFunctionClass.FindCollisionPoint(col, meshColliders[i].GetWorldSpacePoints(), meshColliders[j].GetWorldSpacePoints());
+						if (col == null) { continue; }
+
+
 
 						Vector3 normal = col.GetMTV().normalized;
 
-
-						
+						//Les RBP et RAP sont dans le mauvais sens mais en inversant les + et les - des operations, ca fonctionne quand meme!
 						Vector3 rBP = meshColliders[i].transform.position - col.GetContactPoint();
 						Vector3 rAP = meshColliders[j].transform.position - col.GetContactPoint();
 						perpAP1 = rAP;
-						
+
 						Vector3 perpBP = new Vector3(-rBP.y, rBP.x, 0);
 						Vector3 perpAP = new Vector3(-rAP.y, rAP.x, 0);
 
 
 						Vector3 vAP = physicObjects[j].getVelocity() - physicObjects[j].getAngularVelocity() * perpAP;
-						Vector3 vBP = physicObjects[i].getVelocity() + physicObjects[i].getAngularVelocity() * perpBP;
-						Vector3 relativeVelocity = vAP-vBP;
+						Vector3 vBP = physicObjects[i].getVelocity() - physicObjects[i].getAngularVelocity() * perpBP;
+						Vector3 relativeVelocity = vAP - vBP;
 						float speedAlongNormal = Vector3.Dot(relativeVelocity, normal);
 
 						float momentOfInertia1ImpulseInhibitor = Mathf.Pow(Vector3.Dot(perpAP, normal), 2) / (meshColliders[j].GetInertia());
@@ -154,57 +171,27 @@ public class PhysicsManager : MonoBehaviour
 						float massImpulseInhibitor = (1.0f / meshColliders[j].GetMass() + 1.0f / meshColliders[i].GetMass());
 
 
-						if (speedAlongNormal > 0) {  continue;  }
-						float restitutionCollisionCoefficient = 0.0f;
+						if (speedAlongNormal > 0) { continue; }
+						float restitutionCollisionCoefficient = 0.8f;
 						float j2 = -(1 + restitutionCollisionCoefficient) * speedAlongNormal;
 						j2 /= (momentOfInertia1ImpulseInhibitor + momentOfInertia2ImpulseInhibitor + massImpulseInhibitor);
 
 
 						Vector3 translationImpulse = j2 * normal;
-						
-						
+
+
 						Vector3 newVelocity = physicObjects[j].getVelocity() + (1.0f / meshColliders[j].GetMass()) * translationImpulse;
 						Vector3 otherNewVelocity = physicObjects[i].getVelocity() - (1.0f / meshColliders[i].GetMass()) * translationImpulse;
 
 						Normal = normal * j2;
-						
-						float newAngularVelocity = physicObjects[j].getAngularVelocity() - (Vector3.Dot(perpAP, normal * j2) / meshColliders[j].GetInertia());
+
+						float newAngularVelocity = physicObjects[j].getAngularVelocity() + (Vector3.Dot(perpAP, normal * -j2) / meshColliders[j].GetInertia());
 						float otherNewAngularVelocity = physicObjects[i].getAngularVelocity() + (Vector3.Dot(perpBP, normal * j2) / meshColliders[i].GetInertia());
 
 						physicObjects[j].SetVelocity(newVelocity, newAngularVelocity);
 						physicObjects[i].SetVelocity(otherNewVelocity, otherNewAngularVelocity);
-						
-
-					}
-					else 
-					{
-						meshColliders[j].Translate(-COLTEST.GetMTV() * meshColliders[i].GetMass() * inverseMass);
-
-						meshColliders[i].Translate(COLTEST.GetMTV() * meshColliders[j].GetMass() * inverseMass);
-
-						//Find collisionPoint after displacement
-						col = HelperFunctionClass.FindCollisionPoint(col, meshColliders[i].GetWorldSpacePoints(), meshColliders[j].GetWorldSpacePoints());
 
 
-
-						Vector3 normal = col.GetMTV().normalized;
-						Vector3 relativeVelocity = physicObjects[i].getVelocity() - physicObjects[j].getVelocity();
-						float speedAlongNormal = Vector3.Dot(relativeVelocity, normal);
-						
-						if (speedAlongNormal > 0) { continue; }
-						float restitutionCollisionCoefficient =1.0f ;
-						float j2 = -(1 + restitutionCollisionCoefficient) * speedAlongNormal;
-						Vector3 impulse = j2 * normal;
-						impulse /= (1.0f / meshColliders[j].GetMass() + 1.0f / meshColliders[i].GetMass());
-						Vector3 newVelocity = physicObjects[i].getVelocity() + (1.0f / meshColliders[i].GetMass()) * impulse;
-						Vector3 otherNewVelocity = physicObjects[j].getVelocity() - (1.0f / meshColliders[j].GetMass()) * impulse;
-						physicObjects[i].SetVelocity(newVelocity, 0f);
-						physicObjects[j].SetVelocity(otherNewVelocity, 0f);
-
-						Debug.Log("NOO");
-					}
-
-					//test.SetColor("_Color", Color.red);
 					
 				}
 			}

@@ -58,7 +58,20 @@ public static class HelperFunctionClass
 
 
 
+	public static CollisionInfo TestCollisionTwoCircles(Vector3 c1, float s1, Vector3 c2, float s2) 
+	{
+		CollisionInfo col = new CollisionInfo();
 
+		Vector3 diff = c2 - c1;
+		if (diff.magnitude > s1 + s2) { return null; }
+		else 
+		{
+			col.SetCollisionRef(0);
+			col.SetMTV(Vector3.zero);
+			
+			return col;
+		}
+	}
 
 
 	//Collision testing using the seperate axis theorem
@@ -185,8 +198,9 @@ public static class HelperFunctionClass
 		//Find the optimalCollisionPoint!!
 		List<Vector3> p1;
 		List<Vector3> p2;
-		if (col.GetCollisionRef() == 0) { p1 = new List<Vector3>(polygon1); p2 = new List<Vector3>(polygon2); }
-		else { p2 = new List<Vector3>(polygon1); p1 = new List<Vector3>(polygon2); }
+					p1 = new List<Vector3>(polygon1); p2 = new List<Vector3>(polygon2); 
+		
+		
 		//P2 is the object that collided with the other one!
 		Vector3 MTVProj = col.GetMTV().normalized;
 		
@@ -196,7 +210,7 @@ public static class HelperFunctionClass
 		{
 			
 			double d = Vector3.Dot(MTVProj, p2[i]);
-			d = System.Math.Round(d, 4);
+			d = System.Math.Round(d, 3);
 			
 			if (d < min) { min = d; indexMin = new List<int>(); indexMin.Add(i); }
 			else if (d == min) { indexMin.Add(i); }
@@ -221,7 +235,7 @@ public static class HelperFunctionClass
 			{
 
 				double d2 = Vector3.Dot(MTVProj, p1[i]);
-				d2 = System.Math.Round(d2, 4);
+				d2 = System.Math.Round(d2, 3);
 
 				if (d2 > min2) { min2 = d2; indexMin2 = new List<int>(); indexMin2.Add(i); }
 				else if (d2 == min2) { indexMin2.Add(i); }
@@ -282,7 +296,7 @@ public static class HelperFunctionClass
 
 
 		}
-
+		if (col.GetContactPoint() == Vector3.zero) { return null; }
 		return col;
 	}
 }
