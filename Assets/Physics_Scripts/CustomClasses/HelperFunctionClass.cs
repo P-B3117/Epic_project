@@ -66,8 +66,15 @@ public static class HelperFunctionClass
 		if (diff.magnitude > s1 + s2) { return null; }
 		else 
 		{
+			Vector3 axisProj = diff.normalized;
+
+			Vector3 min1 = c1 + axisProj * s1;
+			Vector3 min2 = c2 - axisProj * s2;
+			float length = Vector3.Dot(min2, axisProj) - Vector3.Dot(min1, axisProj);
+
+
 			col.SetCollisionRef(0);
-			col.SetMTV(Vector3.zero);
+			col.SetMTV(-axisProj * length);
 			
 			return col;
 		}
@@ -298,5 +305,16 @@ public static class HelperFunctionClass
 		}
 		if (col.GetContactPoint() == Vector3.zero) { return null; }
 		return col;
+	}
+
+
+	public static CollisionInfo FindCollisionPointTwoCircles(CollisionInfo col, Vector3 c1, float s1, Vector3 c2, float s2) 
+	{
+		Vector3 diff = c2 - c1;
+		Vector3 p = diff.normalized * s1;
+		col.SetContactPoint(c1 + p);
+		return col;
+		
+	
 	}
 }
