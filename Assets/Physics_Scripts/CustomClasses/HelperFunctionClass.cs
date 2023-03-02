@@ -81,6 +81,145 @@ public static class HelperFunctionClass
 	}
 
 
+	//Collision testing between circles and polygons 
+	//Code adapted from Jeffrey Thompson's blog
+	//URL : https://www.jeffreythompson.org/collision-detection/poly-circle.php
+	public static CollisionInfo TestCollisionPolygonCircle(List<Vector3> p1, Vector3 polygonCenter,  Vector3 circlePosition, float circleRayonSize) 
+	{
+		CollisionInfo col = null;
+
+		for (int a = 0; a < p1.Count; a++)
+		{
+			int b = (a + 1) % p1.Count;
+			int c = (a - 1 + p1.Count) % p1.Count;
+			col  = lineCircle(col , polygonCenter,  p1[a], p1[c], p1[b], circlePosition, circleRayonSize);
+			
+			
+		}
+
+		bool centerInside = polygonPoint(p1, circlePosition);
+		//if (centerInside) return col;
+		return col;
+
+
+
+	}
+	private  static bool polygonPoint(List<Vector3> p1, Vector3 circlePosition) 
+	{
+		bool collision = false;
+
+		for (int a = 0; a < p1.Count; a++) 
+		{
+			int b = (a + 1) % p1.Count;
+			Vector3 vc = p1[a];
+			Vector3 vn = p1[b];
+
+			if (((vc.y > circlePosition.y && vn.y < circlePosition.y) || (vc.y < circlePosition.y && vn.y > circlePosition.y)) &&
+			(circlePosition.x < (vn.x - vc.x) * (circlePosition.y - vc.y) / (vn.y - vc.y) + vc.x))
+			{
+				collision = !collision;
+			}
+		}
+
+		return collision;
+	}
+	private static CollisionInfo lineCircle(CollisionInfo col, Vector3 polygonCenter, Vector3 p1, Vector3 p0,Vector3 p2, Vector3 circlePosition, float circleRayonSize) 
+	{
+		col = (pointCircle(col, polygonCenter, p1, p0, p2, circlePosition, circleRayonSize));
+		
+
+		float lineLength = (p1 - p2).magnitude;
+		float dot = (((circlePosition.x - p1.x) * (p2.x - p1.x)) + ((circlePosition.y - p1.y) * (p2.y - p1.y))) / Mathf.Pow(lineLength, 2);
+
+		float closestX = p1.x + (dot * (p2.x - p1.x));
+		float closestY = p1.y + (dot * (p2.y - p1.y));
+
+		if (!linePoint(p1, p2, new Vector3(closestX, closestY, 0))) { return col; }
+		
+
+		float distanceToPoint = (new Vector3(closestX, closestY, 0) - circlePosition).magnitude;
+
+		if (distanceToPoint < circleRayonSize) 
+		{
+
+			
+			
+			
+			Vector3 line = (p2 - p1).normalized;
+			Vector3 MTVDIR = new Vector3(-line.y, line.x);
+			Vector3 extremePoint = circlePosition - MTVDIR * circleRayonSize;
+			float projection1 = Vector3.Dot(MTVDIR, extremePoint);
+			float projection2 = Vector3.Dot(MTVDIR, new Vector3(closestX, closestY, 0));
+			float MTVLENGTH = projection2 - projection1;
+
+			if (col == null)
+			{
+				col = new CollisionInfo();
+				col.SetMTV(MTVDIR * MTVLENGTH);
+			}
+			else if (MTVLENGTH < col.GetMTV().magnitude) { col.SetMTV(MTVDIR * MTVLENGTH); }
+			return col; 
+		
+		}
+		else { return col; }
+	}
+	private static CollisionInfo pointCircle(CollisionInfo col, Vector3 polygonCenter, Vector3 a, Vector3 c, Vector3 b, Vector3 circlePosition, float circleRayonSize) 
+	{
+		float distance = (circlePosition - a).magnitude;
+		if (distance < circleRayonSize) 
+		{
+			Vector3 MTVDIR = (circlePosition - a).normalized;
+			Vector3 reference = (circlePosition - polygonCenter).normalized;
+			if (Vector3.Dot(MTVDIR, reference) < 0) { MTVDIR *= -1; }
+
+			Vector3 line1 = (a- c).normalized;
+			float angle1 = Mathf.Acos(Vector3.Dot(MTVDIR, line1));
+			if (angle1 > Mathf.PI/2) { return col; }
+
+			Vector3 line2 = (a - b).normalized;
+			float angle2 = Mathf.Acos(Vector3.Dot(MTVDIR, line2));
+			if (angle2 > Mathf.PI / 2) { return col; }
+
+			Vector3 extremePoint = circlePosition - MTVDIR * circleRayonSize;
+			float projection1 = Vector3.Dot(MTVDIR, extremePoint);
+			float projection2 = Vector3.Dot(MTVDIR, a);
+			float MTVLENGTH = projection2 - projection1;
+
+			if (col == null)
+			{
+				col = new CollisionInfo();
+				col.SetMTV(MTVDIR * MTVLENGTH);
+			}
+			else if (MTVLENGTH < col.GetMTV().magnitude) { col.SetMTV(MTVDIR * MTVLENGTH); }
+
+			
+			return col; 
+		}
+		else { return col; }
+	}
+
+
+	private static bool linePoint(Vector3 p1, Vector3 p2, Vector3 Point) 
+	{
+		float d1 = (Point - p1).magnitude;
+		float d2 = (Point - p2).magnitude;
+		float lineLength = (p1 - p2).magnitude;
+
+		float buffer = 0.1f;
+
+		if (d1 + d2 >= lineLength - buffer && d1 + d2 <= lineLength + buffer)
+		{
+			return true;
+		}
+		else 
+		{
+			return false;
+		}
+	}
+
+
+	
+
 	//Collision testing using the seperate axis theorem
 	//Code adapted from the C++ video : Convex Polygon Collisions #1
 	//From the Youtube Channel : javidx9
@@ -120,8 +259,7 @@ public static class HelperFunctionClass
 
 
 				//Projection of the other shape
-				int minIndex = -1;
-				int maxIndex = -1;
+				
 				float min_2 = Mathf.Infinity; float max_2 = -Mathf.Infinity;
 				for (int i = 0; i < p2.Count; i++)
 				{
@@ -129,13 +267,13 @@ public static class HelperFunctionClass
 					if (q < min_2)
 					{
 						min_2 = q;
-						minIndex = i;
+						
 					}
 
 					if (q > max_2)
 					{
 						max_2 = Mathf.Max(max_2, q);
-						maxIndex = i;
+						
 					}
 
 				}
@@ -159,9 +297,7 @@ public static class HelperFunctionClass
 					{
 						overlap += maxs;
 						axisProj *= -1;
-						int temp = minIndex;
-						minIndex = maxIndex;
-						maxIndex = temp;
+						
 					}
 				}
 				if (overlap < findingMinimumTranslationVectorLength)
@@ -198,7 +334,7 @@ public static class HelperFunctionClass
 	}
 
 
-
+	//Find collisionPoint between 2 polygons
 	public static CollisionInfo FindCollisionPoint(CollisionInfo col, List<Vector3> polygon1, List<Vector3> polygon2) 
 	{
 		
@@ -308,6 +444,7 @@ public static class HelperFunctionClass
 	}
 
 
+	//Find the collision point between two circles
 	public static CollisionInfo FindCollisionPointTwoCircles(CollisionInfo col, Vector3 c1, float s1, Vector3 c2, float s2) 
 	{
 		Vector3 diff = c2 - c1;
@@ -317,4 +454,18 @@ public static class HelperFunctionClass
 		
 	
 	}
+
+	public static CollisionInfo FindCollisionPointPolygonCircle(CollisionInfo col, Vector3 c1, float s1)
+	{
+		
+		col.SetContactPoint(c1 - col.GetMTV().normalized * s1);
+		return col;
+
+
+	}
+
+
+
+
+
 }
