@@ -56,32 +56,32 @@ public class PhysicsManager : MonoBehaviour
 	Vector3 perpAP1;
 	CollisionInfo COLTEST = null;
 	Vector3 circlePos;
-	private void OnDrawGizmos()
-	{
+	//private void OnDrawGizmos()
+	//{
 
-		if (COLTEST != null)
-		{
-			if (COLTEST.GetContactPoint() != Vector3.zero)
-			{
-				Gizmos.color = Color.white;
-				Gizmos.DrawLine(COLTEST.GetContactPoint(), COLTEST.GetContactPoint() + COLTEST.GetMTV());
-				Gizmos.DrawSphere(COLTEST.GetContactPoint(), 0.5f);
+	//	if (COLTEST != null)
+	//	{
+	//		if (COLTEST.GetContactPoint() != Vector3.zero)
+	//		{
+	//			Gizmos.color = Color.white;
+	//			Gizmos.DrawLine(COLTEST.GetContactPoint(), COLTEST.GetContactPoint() + COLTEST.GetMTV());
+	//			Gizmos.DrawSphere(COLTEST.GetContactPoint(), 0.5f);
 
-				Gizmos.color = Color.green;
-				Gizmos.DrawLine(COLTEST.GetContactPoint(), COLTEST.GetContactPoint() + Normal);
+	//			Gizmos.color = Color.green;
+	//			Gizmos.DrawLine(COLTEST.GetContactPoint(), COLTEST.GetContactPoint() + Normal);
 
-				Gizmos.color = Color.blue;
-				Gizmos.DrawLine(COLTEST.GetContactPoint(), COLTEST.GetContactPoint() + perpAP1);
+	//			Gizmos.color = Color.blue;
+	//			Gizmos.DrawLine(COLTEST.GetContactPoint(), COLTEST.GetContactPoint() + perpAP1);
 
-				Gizmos.color = Color.magenta;
-				Gizmos.DrawLine(COLTEST.GetContactPoint(), COLTEST.GetContactPoint() + new Vector3(-perpAP1.y, perpAP1.x));
-			}
+	//			Gizmos.color = Color.magenta;
+	//			Gizmos.DrawLine(COLTEST.GetContactPoint(), COLTEST.GetContactPoint() + new Vector3(-perpAP1.y, perpAP1.x));
+	//		}
 
-			Gizmos.color = Color.black;
+	//		Gizmos.color = Color.black;
 			
-			Gizmos.DrawLine(circlePos - COLTEST.GetMTV().normalized , circlePos - COLTEST.GetMTV().normalized + COLTEST.GetMTV());
-		}
-	}
+	//		Gizmos.DrawLine(circlePos - COLTEST.GetMTV().normalized , circlePos - COLTEST.GetMTV().normalized + COLTEST.GetMTV());
+	//	}
+	//}
 
 	//Update the physics objects on a fixed time rate
 	public void Update()
@@ -105,7 +105,7 @@ public class PhysicsManager : MonoBehaviour
 		{
 			
 			physicObjects[i].UpdateState(stepLength);
-			//physicObjects[i].ApplyForceGravity();
+			physicObjects[i].ApplyForceGravity();
 			
 			
 			meshColliders[i].UpdateColliderOrientation();
