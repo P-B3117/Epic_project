@@ -2,6 +2,11 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
+//fix les math
+//get relative location of joint 
+//take mass, inertia 
+
+
 public class Joints : MonoBehaviour
 {
     
@@ -17,6 +22,7 @@ public class Joints : MonoBehaviour
     public float dampingRatio;
     [SerializeField]
     public float jointMass;
+
 
     public Transform bodyA;
     public Transform bodyB;
@@ -34,14 +40,22 @@ public class Joints : MonoBehaviour
     private float bias;
     private float impulseSum;
 
+    private BasicPhysicObject bpA;
+    private BasicPhysicObject bpB;
+    private MeshColliderScript mcA;
+    private MeshColliderScript mcB;
 
     public void Start()
     {
        bodyA = bo1.transform;
        bodyB = bo2.transform;
-        
-        
-      
+
+        bpA = bo1.GetComponent<BasicPhysicObject>();
+        bpB = bo2.GetComponent<BasicPhysicObject>();
+
+        mcA = bo1.GetComponent<MeshColliderScript>();
+        mcB = bo2.GetComponent<MeshColliderScript>();
+
        anchorA = bodyA.position;
        anchorB = bodyB.position;
           
@@ -84,13 +98,13 @@ public class Joints : MonoBehaviour
         float crossA = Vector3.Cross(ra, d).z;
         float crossB = Vector3.Cross(rb, d).z;
 
-        float invMassA = 1 / bo1.GetComponent<BasicPhysicObject>().getCollider().GetMass();
-        float invMassB = 1 / bo2.GetComponent<BasicPhysicObject>().getCollider().GetMass();
+        float invMassA = 1.0f / mcA.GetMass();
+        float invMassB = 1.0f / mcB.GetMass();
 
         float invMassSum = invMassA + invMassB;
 
-        float invInertiaA = 1 / bo1.GetComponent<BasicPhysicObject>().getCollider().GetInertia();
-        float invInertiaB = 1 / bo2.GetComponent<BasicPhysicObject>().getCollider().GetInertia();
+        float invInertiaA = 1 /mcA.GetInertia();
+        float invInertiaB = 1 /mcB.GetInertia();
 
         float invInertiaSum = invInertiaA + invInertiaB;
 
@@ -105,12 +119,12 @@ public class Joints : MonoBehaviour
 
         bias *= beta / timeStep;
 
-        Vector3 v1 = bo1.GetComponent<BasicPhysicObject>().getVelocity();
-        Vector3 v2 = bo2.GetComponent<BasicPhysicObject>().getVelocity();
+        Vector3 v1 = bpA.getVelocity();
+        Vector3 v2 = bpB.getVelocity();
 
-        float w1 = bo1.GetComponent<BasicPhysicObject>().getAngularVelocity();
-        float w2 = bo2.GetComponent<BasicPhysicObject>().getAngularVelocity();
-
+        float w1 = bpA.getAngularVelocity();
+        float w2 = bpB.getAngularVelocity();
+        //fix this 
         Vector3 cross1 = Vector3.Cross(new Vector3(0, 0, w1), d);
         Vector3 cross2 = Vector3.Cross(new Vector3(0, 0, w2), d);
         float jv = Vector3.Dot(v2 + (Vector3)cross2 - v1 - (Vector3)cross1, d);
@@ -125,8 +139,8 @@ public class Joints : MonoBehaviour
 
      
         impulseSum += lambda;
-        bo1.GetComponent<BasicPhysicObject>().SetVelocity(v1, w1);
-        bo2.GetComponent<BasicPhysicObject>().SetVelocity(v2, w2);
+        bpA.SetVelocity(v1, w1);
+        bpB.SetVelocity(v2, w2);
     }
     private void ComputeBetaAndGamma(float timeStep)
     {
