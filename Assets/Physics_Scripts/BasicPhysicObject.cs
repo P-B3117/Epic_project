@@ -113,7 +113,10 @@ public class BasicPhysicObject : MonoBehaviour
 	{
         return this.bounciness;
 	}
-
+    public MeshColliderScript getCollider()
+    {
+        return this.collider;
+    }
     public void SetCollider(MeshColliderScript script) 
     {
         collider = script;
