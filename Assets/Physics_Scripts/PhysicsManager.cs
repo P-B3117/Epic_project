@@ -13,7 +13,7 @@ using UnityEngine;
 public class PhysicsManager : MonoBehaviour
 {
 	//Change the variable numberOfStepsPerSecond to change the timerate calculations
-	private int numberOfStepsPerSecond = 500;
+	private int numberOfStepsPerSecond = 100;
 	private float stepLength;
 	private float numberOfUpdateCounter = 0;
 
