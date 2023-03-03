@@ -691,7 +691,6 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 91497488}
   m_CullTransparentMesh: 1
-
 --- !u!1 &95464506
 GameObject:
   m_ObjectHideFlags: 0
@@ -700,42 +699,22 @@ GameObject:
   m_PrefabAsset: {fileID: 0}
   serializedVersion: 6
   m_Component:
-
-  - component: {fileID: 94977950}
-  - component: {fileID: 94977951}
-  m_Layer: 0
-  m_Name: 'joint '
-
   - component: {fileID: 95464507}
   - component: {fileID: 95464509}
   - component: {fileID: 95464508}
   m_Layer: 0
   m_Name: TestCircle (4)
-
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
   m_IsActive: 1
-
 --- !u!4 &95464507
 Transform:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-
-  m_GameObject: {fileID: 94977949}
-  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0, y: 0, z: 0}
-  m_LocalScale: {x: 1, y: 1, z: 1}
-  m_ConstrainProportionsScale: 0
-  m_Children: []
-  m_Father: {fileID: 1327950891}
-  m_RootOrder: 7
-  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!114 &94977951
-
   m_GameObject: {fileID: 95464506}
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
   m_LocalPosition: {x: 4, y: 1.96, z: 0}
@@ -746,20 +725,11 @@ Transform:
   m_RootOrder: 2
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!114 &95464508
-
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-
-  m_GameObject: {fileID: 94977949}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 638294e48894bcb4fb30d922f737fd1f, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-
   m_GameObject: {fileID: 95464506}
   m_Enabled: 1
   m_EditorHideFlags: 0
@@ -3569,9 +3539,6 @@ MonoBehaviour:
   - {fileID: 1264463731}
   - {fileID: 870433433}
   - {fileID: 143113847}
-
-  test: {fileID: 2100000, guid: f8ea0197e3e47dd4aac55742c67427e4, type: 2}
-
   - {fileID: 1521401824}
   - {fileID: 1392906024}
   - {fileID: 840437794}
@@ -3726,7 +3693,6 @@ MonoBehaviour:
   dynamicFriction: 0.5
   staticFriction: 0.5
   bounciness: 0.5
-
 --- !u!1001 &735998957
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -6678,9 +6644,7 @@ Transform:
   - {fileID: 258064363}
   - {fileID: 1139683694}
   - {fileID: 504784697}
-
   - {fileID: 1281875556}
-
   m_Father: {fileID: 2000940688}
   m_RootOrder: 2
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
