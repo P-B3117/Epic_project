@@ -93,12 +93,11 @@ public class MeshColliderScript : MonoBehaviour
 				gameObject.AddComponent<MeshRenderer>();
 			}
 
-			GameObject cylinder = GameObject.CreatePrimitive(PrimitiveType.Cylinder);
-			GetComponent<MeshFilter>().mesh = cylinder.GetComponent<MeshFilter>().mesh;
+			GameObject sphere = GameObject.CreatePrimitive(PrimitiveType.Sphere);
+			GetComponent<MeshFilter>().mesh = sphere.GetComponent<MeshFilter>().mesh;
 			GetComponent<MeshRenderer>().material = material;
-			transform.Rotate(Vector3.right * 90);
-			transform.localScale = new Vector3(rayonOfCircle * 2, 1.0f, rayonOfCircle * 2);
-			Destroy(cylinder);
+			transform.localScale = new Vector3(rayonOfCircle * 2, rayonOfCircle * 2, rayonOfCircle * 2);
+			Destroy(sphere);
 
 		}
 		else if (modelPoints.Count < 3)

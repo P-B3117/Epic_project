@@ -20,12 +20,13 @@ public class PhysicsManager : MonoBehaviour
 	//List of all physics objects
 	[SerializeField]
 	List<GameObject> objects;
+	[SerializeField]
+	List<GameObject> joints;
 
-	
 
 	List<MeshColliderScript> meshColliders;
 	List<BasicPhysicObject> physicObjects;
-
+	List<Joints> physicsJoints;
 
 
 	public void Start()
@@ -33,7 +34,7 @@ public class PhysicsManager : MonoBehaviour
 
 		meshColliders = new List<MeshColliderScript>();
 		physicObjects = new List<BasicPhysicObject>();
-
+		physicsJoints = new List<Joints>();
 		for (int i = 0; i < objects.Count; i++) 
 		{
 			meshColliders.Add(objects[i].GetComponent<MeshColliderScript>());
@@ -41,7 +42,11 @@ public class PhysicsManager : MonoBehaviour
 
 			physicObjects[i].SetCollider(meshColliders[i]);
 		}
+		for (int i = 0; i < joints.Count; i++)
+		{
+			physicsJoints.Add(joints[i].GetComponent<Joints>());
 
+		}
 		ChangeNumberOfStepsPerSecond(numberOfStepsPerSecond);
 		numberOfUpdateCounter = 0;
 
@@ -58,6 +63,10 @@ public class PhysicsManager : MonoBehaviour
 		{
 			
 			PhysicCalculations();
+			if (joints.Count > 0)
+			{
+				JointPhysicCalculations();
+			}
 			numberOfUpdateCounter--;
 		}
 
@@ -74,8 +83,8 @@ public class PhysicsManager : MonoBehaviour
 			meshColliders[i].UpdateColliderOrientation();
 			physicObjects[i].ApplyForceGravity();
 			
-			
-			
+
+
 		}
 
 
@@ -360,7 +369,13 @@ public class PhysicsManager : MonoBehaviour
 			}
 		}
 	}
-
+	private void JointPhysicCalculations()
+	{
+		for (int i = 0; i < joints.Count; i++)
+		{
+			physicsJoints[i].UpdateJointState(stepLength);
+		}
+	}
 
 
 
