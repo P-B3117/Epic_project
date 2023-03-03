@@ -13,6 +13,20 @@ using UnityEngine;
 public static class HelperFunctionClass
 {
 
+	//COLLISION0
+	//AABB Collisions (rectangle vs rectangle)
+	public static bool AABBCollision(MeshColliderScript m1, MeshColliderScript m2) 
+	{
+		Rect r1 = m1.GetBoundariesAABB();
+		Rect r2 = m2.GetBoundariesAABB();
+
+		
+		if (r1.x + r1.width < r2.x || r2.x + r2.width < r1.x || r1.y + r1.height < r2.y || r2.y + r2.height < r1.y) { return false; }
+
+		return true;
+	}
+
+
 	//COLLISION1
 	//Collision testing using the seperate axis theorem
 	//Code adapted from the C++ video : Convex Polygon Collisions #1
@@ -209,9 +223,41 @@ public static class HelperFunctionClass
 			
 			
 		}
+		//Check if circle is inside a polygon
+		//if (col == null)
+		//{
+		//	bool centerInside = polygonPoint(p1, circlePosition);
+		//	if (centerInside)
+		//	{
 
-		//bool centerInside = polygonPoint(p1, circlePosition);
-		//if (centerInside) return col;
+		//		col = new CollisionInfo();
+		//		Vector3 smallestMTV = Vector3.zero;
+		//		float length = Mathf.Infinity;
+
+		//		for (int a = 0; a < p1.Count; a++)
+		//		{
+		//			int b = (a + 1) % p1.Count;
+
+		//			Vector3 reference = (p1[b] - p1[a]).normalized;
+		//			Vector3 circlePositionReference = circlePosition - p1[a];
+		//			float referenceLength = Vector3.Dot(circlePositionReference, reference);
+
+		//			Vector3 point = reference * referenceLength + p1[a];
+		//			Vector3 mtv = circlePosition - point;
+		//			if (mtv.magnitude < length)
+		//			{
+		//				length = mtv.magnitude;
+		//				smallestMTV = mtv.normalized * (length + circleRayonSize);
+		//			}
+
+
+		//		}
+
+		//		col.SetMTV(-smallestMTV);
+		//	}
+		//}
+
+
 		return col;
 
 
@@ -219,24 +265,22 @@ public static class HelperFunctionClass
 	}
 	//SubFunction used in the Circle vs Polygon algorithm
 	//Detect if the circle is inside the polygon
-	private  static bool polygonPoint(List<Vector3> p1, Vector3 circlePosition) 
+	private static bool polygonPoint(List<Vector3> p1, Vector3 circlePosition)
 	{
-		bool collision = false;
-
-		for (int a = 0; a < p1.Count; a++) 
+		int count = 0;
+		for (int i = 0; i < p1.Count; i++) 
 		{
-			int b = (a + 1) % p1.Count;
-			Vector3 vc = p1[a];
-			Vector3 vn = p1[b];
-
-			if (((vc.y > circlePosition.y && vn.y < circlePosition.y) || (vc.y < circlePosition.y && vn.y > circlePosition.y)) &&
-			(circlePosition.x < (vn.x - vc.x) * (circlePosition.y - vc.y) / (vn.y - vc.y) + vc.x))
+			Vector3 m1 = p1[i];
+			Vector3 m2 = p1[(i + 1) % p1.Count];
+			if (m1.y == m2.y || circlePosition.y < Mathf.Min(m1.y, m2.y) || circlePosition.y > Mathf.Max(m1.y, m2.y)) 
 			{
-				collision = !collision;
+				continue;
 			}
+			float x_intercept = (circlePosition.y - m1.y) * (m2.x - m1.x) / (m2.y - m1.y) + m1.x;
+			if (x_intercept > circlePosition.x) { count++; }
 		}
 
-		return collision;
+		return count % 2 == 1;
 	}
 	//SubFunction used in the Circle vs Polygon algorithm
 	//Detect if there is a collision between the circle and a line of the polygon

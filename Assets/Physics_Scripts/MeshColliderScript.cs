@@ -20,6 +20,7 @@ public class MeshColliderScript : MonoBehaviour
 	[SerializeField]
     List<Vector3> modelPoints;
 	List<Vector3> worldSpaceRotatedPoints;
+	List<Vector3> localSpaceRotatedPoints;
 
 	[SerializeField]
 	Material material;
@@ -30,9 +31,9 @@ public class MeshColliderScript : MonoBehaviour
 	[SerializeField]
 	float rayonOfCircle = 1.0f;
 
+	private Rect boundariesAABB;
 
 
-	
 	void Start()
     {
 		SetUpMesh();
@@ -44,17 +45,22 @@ public class MeshColliderScript : MonoBehaviour
 	//NECESSARY FOR THE COLLISION DETECTION TO FUNCTION
 	public void UpdateColliderOrientation() 
 	{
+
+		//Update the mesh's points rotation
 		float rotation = transform.eulerAngles.z * Mathf.Deg2Rad;
 
 		worldSpaceRotatedPoints = new List<Vector3>(modelPoints);
+		localSpaceRotatedPoints = new List<Vector3>(modelPoints);
 		for (int i = 0; i < worldSpaceRotatedPoints.Count; i++) 
 		{
-			Vector3 r = worldSpaceRotatedPoints[i];
-			worldSpaceRotatedPoints[i] = new Vector3(r.x * Mathf.Cos(rotation) - r.y * Mathf.Sin(rotation), r.x * Mathf.Sin(rotation) + r.y * Mathf.Cos(rotation));
-			worldSpaceRotatedPoints[i] += transform.position;
+			Vector3 r = localSpaceRotatedPoints[i];
+			localSpaceRotatedPoints[i] = new Vector3(r.x * Mathf.Cos(rotation) - r.y * Mathf.Sin(rotation), r.x * Mathf.Sin(rotation) + r.y * Mathf.Cos(rotation));
+
+			worldSpaceRotatedPoints[i] = transform.position + localSpaceRotatedPoints[i];
 		}
 
-
+		//Update the AABB boundaries
+		UpdateAABB();
 	}
 
 
@@ -70,7 +76,38 @@ public class MeshColliderScript : MonoBehaviour
 			worldSpaceRotatedPoints[i] += vector;
 		}
 	}
-	
+
+	private void UpdateAABB() 
+	{
+
+		if (isCircle) 
+		{
+			boundariesAABB = new Rect(new Vector2(-rayonOfCircle + transform.position.x,-rayonOfCircle + transform.position.y), new Vector2(rayonOfCircle*2, rayonOfCircle*2));
+		}
+		else { 
+			float min1 = Mathf.Infinity;
+			float max1 = -Mathf.Infinity;
+			for (int i = 0; i < localSpaceRotatedPoints.Count; i++) 
+			{
+				float temp = Vector3.Dot(Vector3.right, localSpaceRotatedPoints[i]);
+				min1 = Mathf.Min(temp, min1);
+				max1 = Mathf.Max(temp, max1);
+			}
+
+
+			float min2 = Mathf.Infinity;
+			float max2 = -Mathf.Infinity;
+			for (int i = 0; i < localSpaceRotatedPoints.Count; i++)
+			{
+				float temp = Vector3.Dot(Vector3.up, localSpaceRotatedPoints[i]);
+				min2 = Mathf.Min(temp, min2);
+				max2 = Mathf.Max(temp, max2);
+			}
+
+			boundariesAABB = new Rect(new Vector2(min1 + transform.position.x, min2+ transform.position.y), new Vector2(max1 - min1, max2 - min2));
+		
+		}
+	}
 	
 	//Setup the mesh and it's properties
 	private void SetUpMesh() 
@@ -210,5 +247,8 @@ public class MeshColliderScript : MonoBehaviour
 		return rayonOfCircle;
 	}
 
-
+	public Rect GetBoundariesAABB() 
+	{
+		return boundariesAABB;
+	}
 }

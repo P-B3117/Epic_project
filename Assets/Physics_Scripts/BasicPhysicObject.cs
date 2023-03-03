@@ -130,4 +130,9 @@ public class BasicPhysicObject : MonoBehaviour
         this.angularVelocity = newAngularVelocity;
     }
 
+    public bool IsStatic() 
+    {
+        return isStatic;
+    }
+
 }

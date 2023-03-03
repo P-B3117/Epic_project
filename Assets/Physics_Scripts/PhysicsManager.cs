@@ -53,7 +53,9 @@ public class PhysicsManager : MonoBehaviour
 		
 	}
 
+	
 
+	
 	//Update the physics objects on a fixed time rate
 	public void Update()
 	{
@@ -96,276 +98,359 @@ public class PhysicsManager : MonoBehaviour
 			
 			for (int j = i + 1; j < objects.Count; j++) 
 			{
-				CollisionInfo col;
 
-				//Circle vs Circle
-				if (meshColliders[i].IsCircle() && meshColliders[j].IsCircle())
+				//Test AABB
+				if (HelperFunctionClass.AABBCollision(meshColliders[i], meshColliders[j]))
 				{
-					col = HelperFunctionClass.TestCollisionTwoCircles(meshColliders[i].transform.position, meshColliders[i].RayonOfCircle(), meshColliders[j].transform.position, meshColliders[j].RayonOfCircle());
-					if (col != null && col.GetMTV() != Vector3.zero)
+
+					CollisionInfo col;
+
+					//Circle vs Circle
+					if (meshColliders[i].IsCircle() && meshColliders[j].IsCircle())
 					{
+						col = HelperFunctionClass.TestCollisionTwoCircles(meshColliders[i].transform.position, meshColliders[i].RayonOfCircle(), meshColliders[j].transform.position, meshColliders[j].RayonOfCircle());
+						if (col != null && col.GetMTV() != Vector3.zero)
+						{
 
 
-						//Displacement based on their respective mass
-						float inverseMass = (1.0f / (meshColliders[i].GetMass() + meshColliders[j].GetMass()));
-						//Oriente la normale en fonction du polygone de reference
-						if (col.GetCollisionRef() == 1) { col.SetMTV(col.GetMTV() * -1); }
-						meshColliders[j].Translate(col.GetMTV() * meshColliders[i].GetMass() * inverseMass);
-						meshColliders[i].Translate(-col.GetMTV() * meshColliders[j].GetMass() * inverseMass);
+							//Displacement based on their respective mass
+							float inverseMass = (1.0f / (meshColliders[i].GetMass() + meshColliders[j].GetMass()));
+							//Oriente la normale en fonction du polygone de reference
+							if (col.GetCollisionRef() == 1) { col.SetMTV(col.GetMTV() * -1); }
+							
+							if (physicObjects[i].IsStatic() && physicObjects[j].IsStatic())
+							{
+								meshColliders[j].Translate(col.GetMTV() / 2);
+								meshColliders[i].Translate(-col.GetMTV() / 2);
+							}
+							else if (physicObjects[i].IsStatic())
+							{
+								meshColliders[j].Translate(col.GetMTV());
+
+							}
+							else if (physicObjects[j].IsStatic())
+							{
+								meshColliders[i].Translate(-col.GetMTV());
+
+							}
+							else 
+							{
+								meshColliders[j].Translate(col.GetMTV() / 2);
+								meshColliders[i].Translate(-col.GetMTV() / 2);
+							}
 
 
+							//Find the collision point
+							col = HelperFunctionClass.FindCollisionPointTwoCircles(col, meshColliders[i].transform.position, meshColliders[i].RayonOfCircle(), meshColliders[j].transform.position, meshColliders[j].RayonOfCircle());
+							if (col == null) { continue; }
 
-						//Find the collision point
-						col = HelperFunctionClass.FindCollisionPointTwoCircles(col, meshColliders[i].transform.position, meshColliders[i].RayonOfCircle(), meshColliders[j].transform.position, meshColliders[j].RayonOfCircle());
-						if (col == null) { continue; }
 
+							//Solve the collision using impulse physic
+							Vector3 normal = col.GetMTV().normalized;
 
-						//Solve the collision using impulse physic
-						Vector3 normal = col.GetMTV().normalized;
-
-						//Les RBP et RAP sont dans le mauvais sens mais en inversant les + et les - des operations, ca fonctionne quand meme!
-						Vector3 rBP = meshColliders[i].transform.position - col.GetContactPoint();
-						Vector3 rAP = meshColliders[j].transform.position - col.GetContactPoint();
+							//Les RBP et RAP sont dans le mauvais sens mais en inversant les + et les - des operations, ca fonctionne quand meme!
+							Vector3 rBP = meshColliders[i].transform.position - col.GetContactPoint();
+							Vector3 rAP = meshColliders[j].transform.position - col.GetContactPoint();
 						
 
-						Vector3 perpBP = new Vector3(-rBP.y, rBP.x, 0);
-						Vector3 perpAP = new Vector3(-rAP.y, rAP.x, 0);
+							Vector3 perpBP = new Vector3(-rBP.y, rBP.x, 0);
+							Vector3 perpAP = new Vector3(-rAP.y, rAP.x, 0);
 
 
-						Vector3 vAP = physicObjects[j].getVelocity() - physicObjects[j].getAngularVelocity() * perpAP;
-						Vector3 vBP = physicObjects[i].getVelocity() - physicObjects[i].getAngularVelocity() * perpBP;
-						Vector3 relativeVelocity = vAP - vBP;
-						float speedAlongNormal = Vector3.Dot(relativeVelocity, normal);
+							Vector3 vAP = physicObjects[j].getVelocity() - physicObjects[j].getAngularVelocity() * perpAP;
+							Vector3 vBP = physicObjects[i].getVelocity() - physicObjects[i].getAngularVelocity() * perpBP;
+							Vector3 relativeVelocity = vAP - vBP;
+							float speedAlongNormal = Vector3.Dot(relativeVelocity, normal);
 
-						float momentOfInertia1ImpulseInhibitor = Mathf.Pow(Vector3.Dot(perpAP, normal), 2) / (meshColliders[j].GetInertia());
-						float momentOfInertia2ImpulseInhibitor = Mathf.Pow(Vector3.Dot(perpBP, normal), 2) / (meshColliders[i].GetInertia());
-						float massImpulseInhibitor = (1.0f / meshColliders[j].GetMass() + 1.0f / meshColliders[i].GetMass());
-
-
-						if (speedAlongNormal > 0) { continue; }
-						float restitutionCollisionCoefficient = 0.5f;
-						float j2 = -(1 + restitutionCollisionCoefficient) * speedAlongNormal;
-						j2 /= (momentOfInertia1ImpulseInhibitor + momentOfInertia2ImpulseInhibitor + massImpulseInhibitor);
+							float momentOfInertia1ImpulseInhibitor = Mathf.Pow(Vector3.Dot(perpAP, normal), 2) / (meshColliders[j].GetInertia());
+							float momentOfInertia2ImpulseInhibitor = Mathf.Pow(Vector3.Dot(perpBP, normal), 2) / (meshColliders[i].GetInertia());
+							float massImpulseInhibitor = (1.0f / meshColliders[j].GetMass() + 1.0f / meshColliders[i].GetMass());
 
 
-						Vector3 translationImpulse = j2 * normal;
+							if (speedAlongNormal > 0) { continue; }
+							float restitutionCollisionCoefficient = 0.5f;
+							float j2 = -(1 + restitutionCollisionCoefficient) * speedAlongNormal;
+							j2 /= (momentOfInertia1ImpulseInhibitor + momentOfInertia2ImpulseInhibitor + massImpulseInhibitor);
 
 
-						Vector3 newVelocity = physicObjects[j].getVelocity() + (1.0f / meshColliders[j].GetMass()) * translationImpulse;
-						Vector3 otherNewVelocity = physicObjects[i].getVelocity() - (1.0f / meshColliders[i].GetMass()) * translationImpulse;
+							Vector3 translationImpulse = j2 * normal;
+
+
+							Vector3 newVelocity = physicObjects[j].getVelocity() + (1.0f / meshColliders[j].GetMass()) * translationImpulse;
+							Vector3 otherNewVelocity = physicObjects[i].getVelocity() - (1.0f / meshColliders[i].GetMass()) * translationImpulse;
 
 						
 
-						float newAngularVelocity = physicObjects[j].getAngularVelocity() + (Vector3.Dot(perpAP, normal * -j2) / meshColliders[j].GetInertia());
-						float otherNewAngularVelocity = physicObjects[i].getAngularVelocity() + (Vector3.Dot(perpBP, normal * j2) / meshColliders[i].GetInertia());
+							float newAngularVelocity = physicObjects[j].getAngularVelocity() + (Vector3.Dot(perpAP, normal * -j2) / meshColliders[j].GetInertia());
+							float otherNewAngularVelocity = physicObjects[i].getAngularVelocity() + (Vector3.Dot(perpBP, normal * j2) / meshColliders[i].GetInertia());
 
-						physicObjects[j].SetVelocity(newVelocity, newAngularVelocity);
-						physicObjects[i].SetVelocity(otherNewVelocity, otherNewAngularVelocity);
+							physicObjects[j].SetVelocity(newVelocity, newAngularVelocity);
+							physicObjects[i].SetVelocity(otherNewVelocity, otherNewAngularVelocity);
 
 
+						}
 					}
-				}
-				//Circle vs Polygon
-				else if (meshColliders[i].IsCircle()) 
-				{
-					col = HelperFunctionClass.TestCollisionPolygonCircle(meshColliders[j].GetWorldSpacePoints(), meshColliders[j].transform.position, meshColliders[i].transform.position, meshColliders[i].RayonOfCircle());
+					//Circle vs Polygon
+					else if (meshColliders[i].IsCircle()) 
+					{
 					
-					if (col != null && col.GetMTV() != Vector3.zero) 
-					{
-						
-						
-						//Displacement based on their respective mass
-						float inverseMass = (1.0f / (meshColliders[i].GetMass() + meshColliders[j].GetMass()));
-						meshColliders[i].Translate(col.GetMTV() * meshColliders[j].GetMass() * inverseMass);
-						meshColliders[j].Translate(-col.GetMTV() * meshColliders[i].GetMass() * inverseMass);
-
-
-						//Find the collisionPoint 
-						col = HelperFunctionClass.FindCollisionPointPolygonCircle(col, meshColliders[i].transform.position, meshColliders[i].RayonOfCircle());
-						if (col == null) { continue; }
-
-
-
-						//Solve the collision using impulse physic
-						//IMPORTANT DE INVERSER LA NORMALE!!!!
-						Vector3 normal = -col.GetMTV().normalized;
-						
-
-
-
-						//Les RBP et RAP sont dans le mauvais sens mais en inversant les + et les - des operations, ca fonctionne quand meme!
-						Vector3 rBP = meshColliders[i].transform.position - col.GetContactPoint();
-						Vector3 rAP = meshColliders[j].transform.position - col.GetContactPoint();
-						
-
-						Vector3 perpBP = new Vector3(-rBP.y, rBP.x, 0);
-						Vector3 perpAP = new Vector3(-rAP.y, rAP.x, 0);
-
-
-						Vector3 vAP = physicObjects[j].getVelocity() - physicObjects[j].getAngularVelocity() * perpAP;
-						Vector3 vBP = physicObjects[i].getVelocity() - physicObjects[i].getAngularVelocity() * perpBP;
-						Vector3 relativeVelocity = vAP - vBP;
-						float speedAlongNormal = Vector3.Dot(relativeVelocity, normal);
-
-						float momentOfInertia1ImpulseInhibitor = Mathf.Pow(Vector3.Dot(perpAP, normal), 2) / (meshColliders[j].GetInertia());
-						float momentOfInertia2ImpulseInhibitor = Mathf.Pow(Vector3.Dot(perpBP, normal), 2) / (meshColliders[i].GetInertia());
-						float massImpulseInhibitor = (1.0f / meshColliders[j].GetMass() + 1.0f / meshColliders[i].GetMass());
-
-
-						if (speedAlongNormal > 0) { continue; }
-						float restitutionCollisionCoefficient = 0.5f;
-						float j2 = -(1 + restitutionCollisionCoefficient) * speedAlongNormal;
-						j2 /= (momentOfInertia1ImpulseInhibitor + momentOfInertia2ImpulseInhibitor + massImpulseInhibitor);
-
-
-						Vector3 translationImpulse = j2 * normal;
-
-
-						Vector3 newVelocity = physicObjects[j].getVelocity() + (1.0f / meshColliders[j].GetMass()) * translationImpulse;
-						Vector3 otherNewVelocity = physicObjects[i].getVelocity() - (1.0f / meshColliders[i].GetMass()) * translationImpulse;
-
-						
-
-						float newAngularVelocity = physicObjects[j].getAngularVelocity() + (Vector3.Dot(perpAP, normal * -j2) / meshColliders[j].GetInertia());
-						float otherNewAngularVelocity = physicObjects[i].getAngularVelocity() + (Vector3.Dot(perpBP, normal * j2) / meshColliders[i].GetInertia());
-
-						physicObjects[j].SetVelocity(newVelocity, newAngularVelocity);
-						physicObjects[i].SetVelocity(otherNewVelocity, otherNewAngularVelocity);
-					}
-				}
-				//Polygon vs Circle
-				else if (meshColliders[j].IsCircle() ) 
-				{
-					col = HelperFunctionClass.TestCollisionPolygonCircle(meshColliders[i].GetWorldSpacePoints(), meshColliders[i].transform.position, meshColliders[j].transform.position, meshColliders[j].RayonOfCircle());
+						col = HelperFunctionClass.TestCollisionPolygonCircle(meshColliders[j].GetWorldSpacePoints(), meshColliders[j].transform.position, meshColliders[i].transform.position, meshColliders[i].RayonOfCircle());
 					
-					if (col != null && col.GetMTV() != Vector3.zero)
-					{
-						//Displacement based on their respective mass
-						float inverseMass = (1.0f / (meshColliders[i].GetMass() + meshColliders[j].GetMass()));
-						meshColliders[j].Translate(col.GetMTV() * meshColliders[i].GetMass() * inverseMass);
-						meshColliders[i].Translate(-col.GetMTV() * meshColliders[j].GetMass() * inverseMass);
-
-						//Find the collisionPoint 
-						col = HelperFunctionClass.FindCollisionPointPolygonCircle(col, meshColliders[j].transform.position, meshColliders[j].RayonOfCircle());
-						if (col == null) { continue; }
+						if (col != null && col.GetMTV() != Vector3.zero) 
+						{
 
 
-
-						//Solve the collision using impulse physic
-						Vector3 normal = col.GetMTV().normalized;
-						
+							//Displacement based on their respective mass
+							float inverseMass = (1.0f / (meshColliders[i].GetMass() + meshColliders[j].GetMass()));
 
 
-						//Les RBP et RAP sont dans le mauvais sens mais en inversant les + et les - des operations, ca fonctionne quand meme!
-						Vector3 rBP = meshColliders[i].transform.position - col.GetContactPoint();
-						Vector3 rAP = meshColliders[j].transform.position - col.GetContactPoint();
-						
+							if (physicObjects[i].IsStatic() && physicObjects[j].IsStatic())
+							{
+								meshColliders[j].Translate(-col.GetMTV() / 2);
+								meshColliders[i].Translate(col.GetMTV() / 2);
+							}
+							else if (physicObjects[i].IsStatic())
+							{
+								meshColliders[j].Translate(-col.GetMTV());
 
-						Vector3 perpBP = new Vector3(-rBP.y, rBP.x, 0);
-						Vector3 perpAP = new Vector3(-rAP.y, rAP.x, 0);
+							}
+							else if (physicObjects[j].IsStatic())
+							{
+								meshColliders[i].Translate(col.GetMTV());
 
+							}
+							else 
+							{
+								meshColliders[j].Translate(-col.GetMTV() / 2);
+								meshColliders[i].Translate(col.GetMTV() / 2);
+							}
 
-						Vector3 vAP = physicObjects[j].getVelocity() - physicObjects[j].getAngularVelocity() * perpAP;
-						Vector3 vBP = physicObjects[i].getVelocity() - physicObjects[i].getAngularVelocity() * perpBP;
-						Vector3 relativeVelocity = vAP - vBP;
-						float speedAlongNormal = Vector3.Dot(relativeVelocity, normal);
-
-						float momentOfInertia1ImpulseInhibitor = Mathf.Pow(Vector3.Dot(perpAP, normal), 2) / (meshColliders[j].GetInertia());
-						float momentOfInertia2ImpulseInhibitor = Mathf.Pow(Vector3.Dot(perpBP, normal), 2) / (meshColliders[i].GetInertia());
-						float massImpulseInhibitor = (1.0f / meshColliders[j].GetMass() + 1.0f / meshColliders[i].GetMass());
-
-
-						if (speedAlongNormal > 0) { continue; }
-						float restitutionCollisionCoefficient = 0.5f;
-						float j2 = -(1 + restitutionCollisionCoefficient) * speedAlongNormal;
-						j2 /= (momentOfInertia1ImpulseInhibitor + momentOfInertia2ImpulseInhibitor + massImpulseInhibitor);
-
-
-						Vector3 translationImpulse = j2 * normal;
+							//Find the collisionPoint 
+							col = HelperFunctionClass.FindCollisionPointPolygonCircle(col, meshColliders[i].transform.position, meshColliders[i].RayonOfCircle());
+							if (col == null) { continue; }
 
 
-						Vector3 newVelocity = physicObjects[j].getVelocity() + (1.0f / meshColliders[j].GetMass()) * translationImpulse;
-						Vector3 otherNewVelocity = physicObjects[i].getVelocity() - (1.0f / meshColliders[i].GetMass()) * translationImpulse;
 
-						
+							//Solve the collision using impulse physic
+							//IMPORTANT DE INVERSER LA NORMALE!!!!
+							Vector3 normal = -col.GetMTV().normalized;
 
-						float newAngularVelocity = physicObjects[j].getAngularVelocity() + (Vector3.Dot(perpAP, normal * -j2) / meshColliders[j].GetInertia());
-						float otherNewAngularVelocity = physicObjects[i].getAngularVelocity() + (Vector3.Dot(perpBP, normal * j2) / meshColliders[i].GetInertia());
 
-						physicObjects[j].SetVelocity(newVelocity, newAngularVelocity);
-						physicObjects[i].SetVelocity(otherNewVelocity, otherNewAngularVelocity);
+
+
+							//Les RBP et RAP sont dans le mauvais sens mais en inversant les + et les - des operations, ca fonctionne quand meme!
+							Vector3 rBP = meshColliders[i].transform.position - col.GetContactPoint();
+							Vector3 rAP = meshColliders[j].transform.position - col.GetContactPoint();
+
+
+							Vector3 perpBP = new Vector3(-rBP.y, rBP.x, 0);
+							Vector3 perpAP = new Vector3(-rAP.y, rAP.x, 0);
+
+
+							Vector3 vAP = physicObjects[j].getVelocity() - physicObjects[j].getAngularVelocity() * perpAP;
+							Vector3 vBP = physicObjects[i].getVelocity() - physicObjects[i].getAngularVelocity() * perpBP;
+							Vector3 relativeVelocity = vAP - vBP;
+							float speedAlongNormal = Vector3.Dot(relativeVelocity, normal);
+
+							float momentOfInertia1ImpulseInhibitor = Mathf.Pow(Vector3.Dot(perpAP, normal), 2) / (meshColliders[j].GetInertia());
+							float momentOfInertia2ImpulseInhibitor = Mathf.Pow(Vector3.Dot(perpBP, normal), 2) / (meshColliders[i].GetInertia());
+							float massImpulseInhibitor = (1.0f / meshColliders[j].GetMass() + 1.0f / meshColliders[i].GetMass());
+
+
+							if (speedAlongNormal > 0) { continue; }
+							float restitutionCollisionCoefficient = 0.5f;
+							float j2 = -(1 + restitutionCollisionCoefficient) * speedAlongNormal;
+							j2 /= (momentOfInertia1ImpulseInhibitor + momentOfInertia2ImpulseInhibitor + massImpulseInhibitor);
+
+
+							Vector3 translationImpulse = j2 * normal;
+
+
+							Vector3 newVelocity = physicObjects[j].getVelocity() + (1.0f / meshColliders[j].GetMass()) * translationImpulse;
+							Vector3 otherNewVelocity = physicObjects[i].getVelocity() - (1.0f / meshColliders[i].GetMass()) * translationImpulse;
+
+
+
+							float newAngularVelocity = physicObjects[j].getAngularVelocity() + (Vector3.Dot(perpAP, normal * -j2) / meshColliders[j].GetInertia());
+							float otherNewAngularVelocity = physicObjects[i].getAngularVelocity() + (Vector3.Dot(perpBP, normal * j2) / meshColliders[i].GetInertia());
+
+							physicObjects[j].SetVelocity(newVelocity, newAngularVelocity);
+							physicObjects[i].SetVelocity(otherNewVelocity, otherNewAngularVelocity);
+						}
 					}
-				}
-				//Polygon vs Polygon
-				else
-				{
-					col = HelperFunctionClass.TestCollisionSeperateAxisTheorem(meshColliders[i].GetWorldSpacePoints(), meshColliders[j].GetWorldSpacePoints());
-					if (col != null && col.GetMTV() != Vector3.zero)
+					//Polygon vs Circle
+					else if (meshColliders[j].IsCircle() ) 
 					{
-						//Displacement based on their respective mass
-						float inverseMass = (1.0f / (meshColliders[i].GetMass() + meshColliders[j].GetMass()));
-						//Oriente la normale en fonction du polygone de reference
-						if (col.GetCollisionRef() == 1) { col.SetMTV(col.GetMTV() * -1); }
-						meshColliders[j].Translate(col.GetMTV() * meshColliders[i].GetMass() * inverseMass);
-						meshColliders[i].Translate(-col.GetMTV() * meshColliders[j].GetMass() * inverseMass);
+					
+						col = HelperFunctionClass.TestCollisionPolygonCircle(meshColliders[i].GetWorldSpacePoints(), meshColliders[i].transform.position, meshColliders[j].transform.position, meshColliders[j].RayonOfCircle());
+					
+						if (col != null && col.GetMTV() != Vector3.zero)
+						{
+							//Displacement based on their respective mass
+							float inverseMass = (1.0f / (meshColliders[i].GetMass() + meshColliders[j].GetMass()));
+
+							if (physicObjects[i].IsStatic() && physicObjects[j].IsStatic())
+							{
+								meshColliders[j].Translate(col.GetMTV() / 2);
+								meshColliders[i].Translate(-col.GetMTV() / 2);
+							}
+							else if (physicObjects[i].IsStatic())
+							{
+								meshColliders[j].Translate(col.GetMTV());
+
+							}
+							else if (physicObjects[j].IsStatic())
+							{
+								meshColliders[i].Translate(-col.GetMTV());
+
+							}
+							else 
+							{
+								meshColliders[j].Translate(col.GetMTV() / 2);
+								meshColliders[i].Translate(-col.GetMTV() / 2);
+							}
+
+							//Find the collisionPoint 
+							col = HelperFunctionClass.FindCollisionPointPolygonCircle(col, meshColliders[j].transform.position, meshColliders[j].RayonOfCircle());
+							if (col == null) { continue; }
 
 
 
-						//Find collisionPoint after displacement
-						col = HelperFunctionClass.FindCollisionPoint(col, meshColliders[i].GetWorldSpacePoints(), meshColliders[j].GetWorldSpacePoints());
-						if (col == null) { continue; }
-
-
-
-						//Solve the collision using impulse physic
-						Vector3 normal = col.GetMTV().normalized;
-
-						//Les RBP et RAP sont dans le mauvais sens mais en inversant les + et les - des operations, ca fonctionne quand meme!
-						Vector3 rBP = meshColliders[i].transform.position - col.GetContactPoint();
-						Vector3 rAP = meshColliders[j].transform.position - col.GetContactPoint();
+							//Solve the collision using impulse physic
+							Vector3 normal = col.GetMTV().normalized;
 						
 
-						Vector3 perpBP = new Vector3(-rBP.y, rBP.x, 0);
-						Vector3 perpAP = new Vector3(-rAP.y, rAP.x, 0);
+
+							//Les RBP et RAP sont dans le mauvais sens mais en inversant les + et les - des operations, ca fonctionne quand meme!
+							Vector3 rBP = meshColliders[i].transform.position - col.GetContactPoint();
+							Vector3 rAP = meshColliders[j].transform.position - col.GetContactPoint();
+						
+
+							Vector3 perpBP = new Vector3(-rBP.y, rBP.x, 0);
+							Vector3 perpAP = new Vector3(-rAP.y, rAP.x, 0);
 
 
-						Vector3 vAP = physicObjects[j].getVelocity() - physicObjects[j].getAngularVelocity() * perpAP;
-						Vector3 vBP = physicObjects[i].getVelocity() - physicObjects[i].getAngularVelocity() * perpBP;
-						Vector3 relativeVelocity = vAP - vBP;
-						float speedAlongNormal = Vector3.Dot(relativeVelocity, normal);
+							Vector3 vAP = physicObjects[j].getVelocity() - physicObjects[j].getAngularVelocity() * perpAP;
+							Vector3 vBP = physicObjects[i].getVelocity() - physicObjects[i].getAngularVelocity() * perpBP;
+							Vector3 relativeVelocity = vAP - vBP;
+							float speedAlongNormal = Vector3.Dot(relativeVelocity, normal);
 
-						float momentOfInertia1ImpulseInhibitor = Mathf.Pow(Vector3.Dot(perpAP, normal), 2) / (meshColliders[j].GetInertia());
-						float momentOfInertia2ImpulseInhibitor = Mathf.Pow(Vector3.Dot(perpBP, normal), 2) / (meshColliders[i].GetInertia());
-						float massImpulseInhibitor = (1.0f / meshColliders[j].GetMass() + 1.0f / meshColliders[i].GetMass());
-
-
-						if (speedAlongNormal > 0) { continue; }
-						float restitutionCollisionCoefficient = 0.5f;
-						float j2 = -(1 + restitutionCollisionCoefficient) * speedAlongNormal;
-						j2 /= (momentOfInertia1ImpulseInhibitor + momentOfInertia2ImpulseInhibitor + massImpulseInhibitor);
+							float momentOfInertia1ImpulseInhibitor = Mathf.Pow(Vector3.Dot(perpAP, normal), 2) / (meshColliders[j].GetInertia());
+							float momentOfInertia2ImpulseInhibitor = Mathf.Pow(Vector3.Dot(perpBP, normal), 2) / (meshColliders[i].GetInertia());
+							float massImpulseInhibitor = (1.0f / meshColliders[j].GetMass() + 1.0f / meshColliders[i].GetMass());
 
 
-						Vector3 translationImpulse = j2 * normal;
+							if (speedAlongNormal > 0) { continue; }
+							float restitutionCollisionCoefficient = 0.5f;
+							float j2 = -(1 + restitutionCollisionCoefficient) * speedAlongNormal;
+							j2 /= (momentOfInertia1ImpulseInhibitor + momentOfInertia2ImpulseInhibitor + massImpulseInhibitor);
 
 
-						Vector3 newVelocity = physicObjects[j].getVelocity() + (1.0f / meshColliders[j].GetMass()) * translationImpulse;
-						Vector3 otherNewVelocity = physicObjects[i].getVelocity() - (1.0f / meshColliders[i].GetMass()) * translationImpulse;
+							Vector3 translationImpulse = j2 * normal;
+
+
+							Vector3 newVelocity = physicObjects[j].getVelocity() + (1.0f / meshColliders[j].GetMass()) * translationImpulse;
+							Vector3 otherNewVelocity = physicObjects[i].getVelocity() - (1.0f / meshColliders[i].GetMass()) * translationImpulse;
 
 						
 
-						float newAngularVelocity = physicObjects[j].getAngularVelocity() + (Vector3.Dot(perpAP, normal * -j2) / meshColliders[j].GetInertia());
-						float otherNewAngularVelocity = physicObjects[i].getAngularVelocity() + (Vector3.Dot(perpBP, normal * j2) / meshColliders[i].GetInertia());
+							float newAngularVelocity = physicObjects[j].getAngularVelocity() + (Vector3.Dot(perpAP, normal * -j2) / meshColliders[j].GetInertia());
+							float otherNewAngularVelocity = physicObjects[i].getAngularVelocity() + (Vector3.Dot(perpBP, normal * j2) / meshColliders[i].GetInertia());
 
-						physicObjects[j].SetVelocity(newVelocity, newAngularVelocity);
-						physicObjects[i].SetVelocity(otherNewVelocity, otherNewAngularVelocity);
-
-
-
+							physicObjects[j].SetVelocity(newVelocity, newAngularVelocity);
+							physicObjects[i].SetVelocity(otherNewVelocity, otherNewAngularVelocity);
+						}
 					}
+					//Polygon vs Polygon
+					else
+					{
+						col = HelperFunctionClass.TestCollisionSeperateAxisTheorem(meshColliders[i].GetWorldSpacePoints(), meshColliders[j].GetWorldSpacePoints());
+						if (col != null && col.GetMTV() != Vector3.zero)
+						{
+							//Displacement based on their respective mass
+							float inverseMass = (1.0f / (meshColliders[i].GetMass() + meshColliders[j].GetMass()));
+							//Oriente la normale en fonction du polygone de reference
+							if (col.GetCollisionRef() == 1) { col.SetMTV(col.GetMTV() * -1); }
+
+							if (physicObjects[i].IsStatic() && physicObjects[j].IsStatic())
+							{
+								meshColliders[j].Translate(col.GetMTV() / 2);
+								meshColliders[i].Translate(-col.GetMTV() / 2);
+							}
+							else if (physicObjects[i].IsStatic())
+							{
+								meshColliders[j].Translate(col.GetMTV());
+
+							}
+							else if (physicObjects[j].IsStatic())
+							{
+								meshColliders[i].Translate(-col.GetMTV());
+
+							}
+							else 
+							{
+								meshColliders[j].Translate(col.GetMTV() / 2);
+								meshColliders[i].Translate(-col.GetMTV() / 2);
+							}
+
+
+
+
+							//Find collisionPoint after displacement
+							col = HelperFunctionClass.FindCollisionPoint(col, meshColliders[i].GetWorldSpacePoints(), meshColliders[j].GetWorldSpacePoints());
+							if (col == null) { continue; }
+
+
+
+							//Solve the collision using impulse physic
+							Vector3 normal = col.GetMTV().normalized;
+
+							//Les RBP et RAP sont dans le mauvais sens mais en inversant les + et les - des operations, ca fonctionne quand meme!
+							Vector3 rBP = meshColliders[i].transform.position - col.GetContactPoint();
+							Vector3 rAP = meshColliders[j].transform.position - col.GetContactPoint();
+						
+
+							Vector3 perpBP = new Vector3(-rBP.y, rBP.x, 0);
+							Vector3 perpAP = new Vector3(-rAP.y, rAP.x, 0);
+
+
+							Vector3 vAP = physicObjects[j].getVelocity() - physicObjects[j].getAngularVelocity() * perpAP;
+							Vector3 vBP = physicObjects[i].getVelocity() - physicObjects[i].getAngularVelocity() * perpBP;
+							Vector3 relativeVelocity = vAP - vBP;
+							float speedAlongNormal = Vector3.Dot(relativeVelocity, normal);
+
+							float momentOfInertia1ImpulseInhibitor = Mathf.Pow(Vector3.Dot(perpAP, normal), 2) / (meshColliders[j].GetInertia());
+							float momentOfInertia2ImpulseInhibitor = Mathf.Pow(Vector3.Dot(perpBP, normal), 2) / (meshColliders[i].GetInertia());
+							float massImpulseInhibitor = (1.0f / meshColliders[j].GetMass() + 1.0f / meshColliders[i].GetMass());
+
+
+							if (speedAlongNormal > 0) { continue; }
+							float restitutionCollisionCoefficient = 0.5f;
+							float j2 = -(1 + restitutionCollisionCoefficient) * speedAlongNormal;
+							j2 /= (momentOfInertia1ImpulseInhibitor + momentOfInertia2ImpulseInhibitor + massImpulseInhibitor);
+
+
+							Vector3 translationImpulse = j2 * normal;
+
+
+							Vector3 newVelocity = physicObjects[j].getVelocity() + (1.0f / meshColliders[j].GetMass()) * translationImpulse;
+							Vector3 otherNewVelocity = physicObjects[i].getVelocity() - (1.0f / meshColliders[i].GetMass()) * translationImpulse;
+
+						
+
+							float newAngularVelocity = physicObjects[j].getAngularVelocity() + (Vector3.Dot(perpAP, normal * -j2) / meshColliders[j].GetInertia());
+							float otherNewAngularVelocity = physicObjects[i].getAngularVelocity() + (Vector3.Dot(perpBP, normal * j2) / meshColliders[i].GetInertia());
+
+							physicObjects[j].SetVelocity(newVelocity, newAngularVelocity);
+							physicObjects[i].SetVelocity(otherNewVelocity, otherNewAngularVelocity);
+
+
+
+						}
+					}
+
+
 				}
-				
-		
-				
 			}
 		}
 	}
