@@ -13,19 +13,20 @@ using UnityEngine;
 public class PhysicsManager : MonoBehaviour
 {
 	//Change the variable numberOfStepsPerSecond to change the timerate calculations
-	private int numberOfStepsPerSecond = 500;
+	private int numberOfStepsPerSecond = 50;
 	private float stepLength;
 	private float numberOfUpdateCounter = 0;
 
 	//List of all physics objects
 	[SerializeField]
 	List<GameObject> objects;
-
+	[SerializeField]
+	List<GameObject> joints;
 	
 
 	List<MeshColliderScript> meshColliders;
 	List<BasicPhysicObject> physicObjects;
-
+	List<Joints> physicsJoints;
 	public Material test;
 
 	public void Start()
@@ -33,15 +34,18 @@ public class PhysicsManager : MonoBehaviour
 
 		meshColliders = new List<MeshColliderScript>();
 		physicObjects = new List<BasicPhysicObject>();
-
+		physicsJoints = new List<Joints>();
 		for (int i = 0; i < objects.Count; i++) 
 		{
 			meshColliders.Add(objects[i].GetComponent<MeshColliderScript>());
 			physicObjects.Add(objects[i].GetComponent<BasicPhysicObject>());
-
 			physicObjects[i].SetCollider(meshColliders[i]);
 		}
-
+		for (int i = 0; i < joints.Count; i++)
+		{
+			physicsJoints.Add(joints[i].GetComponent<Joints>());
+			
+		}
 		ChangeNumberOfStepsPerSecond(numberOfStepsPerSecond);
 		numberOfUpdateCounter = 0;
 
@@ -78,11 +82,11 @@ public class PhysicsManager : MonoBehaviour
 	//		}
 
 	//		Gizmos.color = Color.black;
-			
+
 	//		Gizmos.DrawLine(circlePos - COLTEST.GetMTV().normalized , circlePos - COLTEST.GetMTV().normalized + COLTEST.GetMTV());
 	//	}
 	//}
-
+	
 	//Update the physics objects on a fixed time rate
 	public void Update()
 	{
@@ -92,6 +96,10 @@ public class PhysicsManager : MonoBehaviour
 		{
 			
 			PhysicCalculations();
+			if(joints.Count > 0)
+            {
+				JointPhysicCalculations();
+			}
 			numberOfUpdateCounter--;
 		}
 
@@ -394,27 +402,13 @@ public class PhysicsManager : MonoBehaviour
 			}
 		}
 	}
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
+	private void JointPhysicCalculations()
+	{
+		for (int i = 0; i < joints.Count; i++)
+		{
+			physicsJoints[i].UpdateJointState(stepLength);
+		}
+	}
 
 	//Change the number of steps per second and update the Step length in consequence
 	public void ChangeNumberOfStepsPerSecond(int newNumberOfStepsPerSecond) 
