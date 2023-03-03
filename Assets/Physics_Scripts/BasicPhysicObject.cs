@@ -51,6 +51,11 @@ public class BasicPhysicObject : MonoBehaviour
     }
 
 
+
+
+    
+
+
 	public void UpdateState(float timeStep) 
     {
         if (isStatic) { return; }

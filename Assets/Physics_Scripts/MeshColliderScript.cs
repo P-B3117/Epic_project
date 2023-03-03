@@ -2,13 +2,6 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-/*
-* Filename : MeshColliderScript
- * 
- * Goal : Encapsulate the properties of the mesh of the RigidBodies (mass, inertia, shape)
- * 
- * Requirements : Attach this script to physical objects of the Scene with a BasicPhysicObjects script (necessery to have both in order for the good functionning of the code)
- */
 public class MeshColliderScript : MonoBehaviour
 {
 	
@@ -60,8 +53,11 @@ public class MeshColliderScript : MonoBehaviour
 
 
 
-	//Move the object and move the collider at the same time 
-	//(Without using this function, the collider would be out of place when doing the collision's response)
+	public List<Vector3> GetWorldSpacePoints()
+	{
+		return worldSpaceRotatedPoints;
+	}
+
 	public void Translate(Vector3 vector) 
 	{
 		transform.position += vector;
@@ -71,8 +67,24 @@ public class MeshColliderScript : MonoBehaviour
 		}
 	}
 	
-	
-	//Setup the mesh and it's properties
+	public float GetMass() 
+	{
+		return mass;
+	}
+	public float GetInertia() 
+	{
+		return inertia;
+	}
+
+	public bool IsCircle() 
+	{
+		return isCircle;
+	}
+	public float RayonOfCircle() 
+	{
+		return rayonOfCircle;
+	}
+
 	private void SetUpMesh() 
 	{
 		if (isCircle)
@@ -187,29 +199,6 @@ public class MeshColliderScript : MonoBehaviour
 	}
 
 
-
-
-	public List<Vector3> GetWorldSpacePoints()
-	{
-		return worldSpaceRotatedPoints;
-	}
-	public float GetMass()
-	{
-		return mass;
-	}
-	public float GetInertia()
-	{
-		return inertia;
-	}
-
-	public bool IsCircle()
-	{
-		return isCircle;
-	}
-	public float RayonOfCircle()
-	{
-		return rayonOfCircle;
-	}
 
 
 }

@@ -1,22 +1,12 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
-/*
-* Filename : CollisionInfo
- * 
- * Goal : Datatype that encapsulate all the informations about collisions
- * 
- * Requirements : Common return type used during collision detection and collision response (Do not use outside of these purposes)
- */
+
 public class CollisionInfo
 {
-    //Optimal vector resolving the collision
     private Vector3 minimumTranslationVector;
     
-    //Position of the contact of the collision
     private Vector3 contactPoint;
-
-    //Reference of where the MTV is pointing (towards which object)
     private int collisionRef;
     
     public CollisionInfo() 
@@ -28,9 +18,6 @@ public class CollisionInfo
     }
 
 
-
-
-
     public Vector3 GetMTV() 
     {
         return minimumTranslationVector;
@@ -40,6 +27,9 @@ public class CollisionInfo
     {
         minimumTranslationVector = MTV;
     }
+
+    
+
     public Vector3 GetContactPoint() 
     {
         return contactPoint;
