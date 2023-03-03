@@ -2,12 +2,125 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
+
+/*
+ * Filename : HelperFunctionClass
+ * 
+ * Goal : Static class that encapsulate all of the CollisionResponse algorithm's
+ * 
+ * Requirements : NaN (The class is static and all of it's functions aswell) 
+ */
 public static class HelperFunctionClass
 {
 
+	//COLLISION1
+	//Collision testing using the seperate axis theorem
+	//Code adapted from the C++ video : Convex Polygon Collisions #1
+	//From the Youtube Channel : javidx9
+	//URL : https://www.youtube.com/watch?v=7Ik2vowGcU0&ab_channel=javidx9
+	public static CollisionInfo TestCollisionSeperateAxisTheorem(List<Vector3> polygon1, List<Vector3> polygon2)
+	{
+
+		Vector3 findingMinimumTranslationVector = Vector3.zero;
+		float findingMinimumTranslationVectorLength = Mathf.Infinity;
 
 
-	//Collision testing using the diagonals theorem
+		CollisionInfo col = new CollisionInfo();
+
+		List<Vector3> p1;
+		List<Vector3> p2;
+		for (int shape = 0; shape < 2; shape++)
+		{
+			//Test shape 1 then 2
+
+			if (shape == 0) { p1 = new List<Vector3>(polygon1); p2 = new List<Vector3>(polygon2); }
+			else { p2 = new List<Vector3>(polygon1); p1 = new List<Vector3>(polygon2); }
+			for (int a = 0; a < p1.Count; a++)
+			{
+				int b = (a + 1) % p1.Count;
+
+				Vector3 axisProj = new Vector3(-(p1[b].y - p1[a].y), (p1[b].x - p1[a].x), 0).normalized;
+
+
+
+				//Projection of this specific shape
+				float min_1 = Mathf.Infinity; float max_1 = -Mathf.Infinity;
+				for (int i = 0; i < p1.Count; i++)
+				{
+					float q = p1[i].x * axisProj.x + p1[i].y * axisProj.y;
+					min_1 = Mathf.Min(min_1, q);
+					max_1 = Mathf.Max(max_1, q);
+				}
+
+
+				//Projection of the other shape
+
+				float min_2 = Mathf.Infinity; float max_2 = -Mathf.Infinity;
+				for (int i = 0; i < p2.Count; i++)
+				{
+					float q = p2[i].x * axisProj.x + p2[i].y * axisProj.y;
+					if (q < min_2)
+					{
+						min_2 = q;
+
+					}
+
+					if (q > max_2)
+					{
+						max_2 = Mathf.Max(max_2, q);
+
+					}
+
+				}
+
+				if (!(max_2 >= min_1 && max_1 >= min_2))
+					return null;
+
+
+				//Find the shortest translation vector
+				float overlap = Mathf.Min(max_1, max_2) - Mathf.Max(min_1, min_2);
+				if ((max_1 > max_2 && min_1 < min_2) ||
+					(max_1 < max_2 && min_1 > min_2))
+				{
+					float mins = Mathf.Abs(min_1 - min_2);
+					float maxs = Mathf.Abs(max_1 - max_2);
+					if (mins < maxs)
+					{
+						overlap += mins;
+					}
+					else
+					{
+						overlap += maxs;
+						axisProj *= -1;
+
+					}
+				}
+				if (overlap < findingMinimumTranslationVectorLength)
+				{
+					findingMinimumTranslationVectorLength = overlap;
+					findingMinimumTranslationVector = axisProj;
+
+					col.SetCollisionRef(shape);
+					if (max_1 > max_2)
+					{
+						findingMinimumTranslationVector *= -1;
+
+					}
+
+				}
+
+			}
+
+		}
+		//Get the necessary MTV
+		col.SetMTV(findingMinimumTranslationVector.normalized * findingMinimumTranslationVectorLength);
+		return col;
+
+	}
+
+
+	//COLLISION2
+	//Collision testing using the diagonals theorem (Polygon vs Polygon) (CANNOT FIND THE MTV, the algorithm's is NOT used)
 	//Code adapted from the C++ video : Convex Polygon Collisions #1
 	//From the Youtube Channel : javidx9
 	//URL : https://www.youtube.com/watch?v=7Ik2vowGcU0&ab_channel=javidx9
@@ -56,8 +169,8 @@ public static class HelperFunctionClass
 	}
 
 
-
-
+	//COLLISION3
+	//Collision testing (Circle vs Circle)
 	public static CollisionInfo TestCollisionTwoCircles(Vector3 c1, float s1, Vector3 c2, float s2) 
 	{
 		CollisionInfo col = new CollisionInfo();
@@ -80,8 +193,8 @@ public static class HelperFunctionClass
 		}
 	}
 
-
-	//Collision testing between circles and polygons 
+	//COLLISION4
+	//Collision testing (Circle vs Polygon)
 	//Code adapted from Jeffrey Thompson's blog
 	//URL : https://www.jeffreythompson.org/collision-detection/poly-circle.php
 	public static CollisionInfo TestCollisionPolygonCircle(List<Vector3> p1, Vector3 polygonCenter,  Vector3 circlePosition, float circleRayonSize) 
@@ -97,13 +210,15 @@ public static class HelperFunctionClass
 			
 		}
 
-		bool centerInside = polygonPoint(p1, circlePosition);
+		//bool centerInside = polygonPoint(p1, circlePosition);
 		//if (centerInside) return col;
 		return col;
 
 
 
 	}
+	//SubFunction used in the Circle vs Polygon algorithm
+	//Detect if the circle is inside the polygon
 	private  static bool polygonPoint(List<Vector3> p1, Vector3 circlePosition) 
 	{
 		bool collision = false;
@@ -123,6 +238,8 @@ public static class HelperFunctionClass
 
 		return collision;
 	}
+	//SubFunction used in the Circle vs Polygon algorithm
+	//Detect if there is a collision between the circle and a line of the polygon
 	private static CollisionInfo lineCircle(CollisionInfo col, Vector3 polygonCenter, Vector3 p1, Vector3 p0,Vector3 p2, Vector3 circlePosition, float circleRayonSize) 
 	{
 		col = (pointCircle(col, polygonCenter, p1, p0, p2, circlePosition, circleRayonSize));
@@ -163,6 +280,8 @@ public static class HelperFunctionClass
 		}
 		else { return col; }
 	}
+	//SubFunction used in the Circle vs Polygon algorithm
+	//Detect if there is a collision between a point of the polygon and the circle
 	private static CollisionInfo pointCircle(CollisionInfo col, Vector3 polygonCenter, Vector3 a, Vector3 c, Vector3 b, Vector3 circlePosition, float circleRayonSize) 
 	{
 		float distance = (circlePosition - a).magnitude;
@@ -198,7 +317,8 @@ public static class HelperFunctionClass
 		else { return col; }
 	}
 
-
+	//SubFunction used in the Circle vs Polygon algorithm
+	//Detect if there is a collision between a point and a line
 	private static bool linePoint(Vector3 p1, Vector3 p2, Vector3 Point) 
 	{
 		float d1 = (Point - p1).magnitude;
@@ -220,128 +340,17 @@ public static class HelperFunctionClass
 
 	
 
-	//Collision testing using the seperate axis theorem
-	//Code adapted from the C++ video : Convex Polygon Collisions #1
-	//From the Youtube Channel : javidx9
-	//URL : https://www.youtube.com/watch?v=7Ik2vowGcU0&ab_channel=javidx9
-	public static CollisionInfo TestCollisionSeperateAxisTheorem(List<Vector3> polygon1 , List<Vector3> polygon2)
-	{
+	
 
-		Vector3 findingMinimumTranslationVector = Vector3.zero;
-		float findingMinimumTranslationVectorLength = Mathf.Infinity;
-
-
-		CollisionInfo col = new CollisionInfo();
-
-		List<Vector3> p1;
-		List<Vector3> p2;
-		for (int shape = 0; shape < 2; shape++) {
-			//Test shape 1 then 2
-
-			if (shape == 0) { p1 = new List<Vector3>(polygon1); p2 = new List<Vector3>(polygon2); }
-			else { p2 = new List<Vector3>(polygon1); p1 = new List<Vector3>(polygon2); }
-			for (int a = 0; a < p1.Count; a++)
-			{
-				int b = (a + 1) % p1.Count;
-
-				Vector3 axisProj = new Vector3(-(p1[b].y - p1[a].y), (p1[b].x - p1[a].x), 0).normalized;
-
-
-
-				//Projection of this specific shape
-				float min_1 = Mathf.Infinity; float max_1 = -Mathf.Infinity;
-				for (int i = 0; i < p1.Count; i++)
-				{
-					float q = p1[i].x * axisProj.x + p1[i].y * axisProj.y;
-					min_1 = Mathf.Min(min_1, q);
-					max_1 = Mathf.Max(max_1, q);
-				}
-
-
-				//Projection of the other shape
-				
-				float min_2 = Mathf.Infinity; float max_2 = -Mathf.Infinity;
-				for (int i = 0; i < p2.Count; i++)
-				{
-					float q = p2[i].x * axisProj.x + p2[i].y * axisProj.y;
-					if (q < min_2)
-					{
-						min_2 = q;
-						
-					}
-
-					if (q > max_2)
-					{
-						max_2 = Mathf.Max(max_2, q);
-						
-					}
-
-				}
-
-				if (!(max_2 >= min_1 && max_1 >= min_2))
-					return null;
-
-
-				//Find the shortest translation vector
-				float overlap = Mathf.Min(max_1, max_2) - Mathf.Max(min_1, min_2);
-				if ((max_1 > max_2 && min_1 < min_2) ||
-					(max_1 < max_2 && min_1 > min_2))
-				{
-					float mins = Mathf.Abs(min_1 - min_2);
-					float maxs = Mathf.Abs(max_1 - max_2);
-					if (mins < maxs)
-					{
-						overlap += mins;
-					}
-					else
-					{
-						overlap += maxs;
-						axisProj *= -1;
-						
-					}
-				}
-				if (overlap < findingMinimumTranslationVectorLength)
-				{
-					findingMinimumTranslationVectorLength = overlap;
-					findingMinimumTranslationVector = axisProj;
-					
-					col.SetCollisionRef(shape);
-					if (max_1 > max_2)
-					{
-						findingMinimumTranslationVector *= -1;
-						
-					}
-
-				}
-
-			}
-
-		}
-
-		//Get the necessary MTV
-		col.SetMTV(findingMinimumTranslationVector.normalized * findingMinimumTranslationVectorLength);
-
-
-		
-
-
-
-		
-
-
-		return col;
-
-	}
-
-
-	//Find collisionPoint between 2 polygons
+	//FINDCOLLISIONPOINT1
+	//Find collisionPoint (Polygon vs Polygon)
 	public static CollisionInfo FindCollisionPoint(CollisionInfo col, List<Vector3> polygon1, List<Vector3> polygon2) 
 	{
 		
 		//Find the optimalCollisionPoint!!
 		List<Vector3> p1;
 		List<Vector3> p2;
-					p1 = new List<Vector3>(polygon1); p2 = new List<Vector3>(polygon2); 
+		p1 = new List<Vector3>(polygon1); p2 = new List<Vector3>(polygon2); 
 		
 		
 		//P2 is the object that collided with the other one!
@@ -422,8 +431,7 @@ public static class HelperFunctionClass
 					p2extreme[1] = p;
 				}
 			}
-			//Debug.Log("P1 extreme : " + p1extreme[0] + " --- " + p1extreme[1]);
-			//Debug.Log("P2 extreme : " + p2extreme[0] + " --- " + p2extreme[1]);
+			
 			Vector3[] twoPoints = new Vector3[2];
 			int index = 0;
 			if (p2extreme[0] > p1extreme[0] && p2extreme[0] < p1extreme[1]) { twoPoints[index] = p2[indexMin[p2Index[0]]]; index++;  }
@@ -432,11 +440,8 @@ public static class HelperFunctionClass
 			if (p1extreme[0] > p2extreme[0] && p1extreme[0] < p2extreme[1]) { twoPoints[index] = p1[indexMin2[p1Index[0]]]; index++;  }
 			if (p1extreme[1] > p2extreme[0] && p1extreme[1] < p2extreme[1]) { twoPoints[index] = p1[indexMin2[p1Index[1]]]; index++;  }
 
-			//Debug.Log((twoPoints[0] + " --- " + twoPoints[1]));
+	
 			col.SetContactPoint((twoPoints[0] + twoPoints[1]) / 2);
-
-
-
 
 		}
 		if (col.GetContactPoint() == Vector3.zero) { return null; }
@@ -444,7 +449,8 @@ public static class HelperFunctionClass
 	}
 
 
-	//Find the collision point between two circles
+	//FINDCOLLISIONPOINT2
+	//Find collisionPoint (Circle vs Circle)
 	public static CollisionInfo FindCollisionPointTwoCircles(CollisionInfo col, Vector3 c1, float s1, Vector3 c2, float s2) 
 	{
 		Vector3 diff = c2 - c1;
@@ -454,7 +460,8 @@ public static class HelperFunctionClass
 		
 	
 	}
-
+	//FINDCOLLISIONPOINT3
+	//Find collisionPoint (Polygon vs Circle)
 	public static CollisionInfo FindCollisionPointPolygonCircle(CollisionInfo col, Vector3 c1, float s1)
 	{
 		
