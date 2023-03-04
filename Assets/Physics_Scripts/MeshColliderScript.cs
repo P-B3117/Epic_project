@@ -70,11 +70,18 @@ public class MeshColliderScript : MonoBehaviour
 	//(Without using this function, the collider would be out of place when doing the collision's response)
 	public void Translate(Vector3 vector) 
 	{
+		//Update position
 		transform.position += vector;
+
+		//Update collider
 		for (int i = 0; i < worldSpaceRotatedPoints.Count; i++)
 		{
 			worldSpaceRotatedPoints[i] += vector;
 		}
+
+		//Update AABB collider
+		boundariesAABB.x += vector.x;
+		boundariesAABB.y += vector.y;
 	}
 
 	private void UpdateAABB() 
