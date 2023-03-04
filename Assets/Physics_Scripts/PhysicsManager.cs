@@ -13,10 +13,10 @@ using UnityEngine;
 public class PhysicsManager : MonoBehaviour
 {
 	//Change the variable numberOfStepsPerSecond to change the timerate calculations
-	private int numberOfStepsPerSecond = 100;
+	private int numberOfStepsPerSecond = 50;
 	private float stepLength;
 	private float numberOfUpdateCounter = 0;
-
+	float framesToDelay = 50;
 	//List of all physics objects
 	[SerializeField]
 	List<GameObject> objects;
@@ -27,8 +27,9 @@ public class PhysicsManager : MonoBehaviour
 	List<MeshColliderScript> meshColliders;
 	List<BasicPhysicObject> physicObjects;
 	List<Joints> physicsJoints;
-
-
+	
+	private int jointStartDelay = 50; // number of physics updates to wait before starting joint calculations
+	private int currentUpdateCount = 0;
 	public void Start()
 	{
 
@@ -42,6 +43,7 @@ public class PhysicsManager : MonoBehaviour
 
 			physicObjects[i].SetCollider(meshColliders[i]);
 		}
+		
 		for (int i = 0; i < joints.Count; i++)
 		{
 			physicsJoints.Add(joints[i].GetComponent<Joints>());
@@ -58,15 +60,24 @@ public class PhysicsManager : MonoBehaviour
 	public void Update()
 	{
 		numberOfUpdateCounter += Time.deltaTime / stepLength;
-		
+		currentUpdateCount++;
 		while (numberOfUpdateCounter > 1) 
 		{
 			
 			PhysicCalculations();
-			if (joints.Count > 0)
+			if (currentUpdateCount >= jointStartDelay)
 			{
-				JointPhysicCalculations();
+				foreach (Joints joint in physicsJoints)
+				{
+					joint.DelayedStart();
+
+					if (joints.Count > 0)
+					{
+						JointPhysicCalculations();
+					}
+				}
 			}
+
 			numberOfUpdateCounter--;
 		}
 
