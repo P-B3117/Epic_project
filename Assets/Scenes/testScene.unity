@@ -3561,7 +3561,8 @@ MonoBehaviour:
   - {fileID: 1727590612}
   - {fileID: 160754735}
   - {fileID: 1982877710}
-  joints: []
+  joints:
+  - {fileID: 2072934361}
 --- !u!1 &701941022
 GameObject:
   m_ObjectHideFlags: 0
@@ -11396,16 +11397,17 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 638294e48894bcb4fb30d922f737fd1f, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  bo1: {fileID: 889888431}
-  bo2: {fileID: 504784696}
-  length: 5
-  frequency: 0.0001
-  dampingRatio: 0.999999
+  bo1: {fileID: 1433895548}
+  bo2: {fileID: 258064362}
+  frequency: 1
+  jointMass: 10000
+  dampingRatio: 0.6
+  length: 20
+  localAnchorA: {x: 0, y: 0, z: 0}
   bodyA: {fileID: 0}
   bodyB: {fileID: 0}
   anchorA: {x: 0, y: 0, z: 0}
   anchorB: {x: 0, y: 0, z: 0}
-  jointMass: 0
 --- !u!1 &2110262478
 GameObject:
   m_ObjectHideFlags: 0
