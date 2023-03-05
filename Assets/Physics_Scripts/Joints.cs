@@ -14,40 +14,32 @@ public class Joints : MonoBehaviour
     GameObject bo1;
     [SerializeField]
     GameObject bo2;
-
-
     [SerializeField]
     public float frequency;
-    public float jointMass;
     public float dampingRatio;
     public float length;
-    [SerializeField]
+    public bool onlyPull;
     //private Vector3 localAnchorA;
     //private Vector3 localAnchorB;
-
-
-
-
     private Transform bodyA;
     private Transform bodyB;
     private Vector3 anchorA;
     private Vector3 anchorB;
-    private Vector3 ra;
-    private Vector3 rb;
+
     private Vector3 d;
-  
+   
     private float m;
     private float beta;
     private float gamma;
     private float bias;
     private float impulseSum;
-    
 
+    private Vector3 initialAxis;
     private BasicPhysicObject bpA;
     private BasicPhysicObject bpB;
     private MeshColliderScript mcA;
     private MeshColliderScript mcB;
-    
+    private float jointMass;
     public void Start()
     {
         impulseSum = 0;
@@ -59,35 +51,25 @@ public class Joints : MonoBehaviour
          bpB = bo2.GetComponent<BasicPhysicObject>();
          mcA = bo1.GetComponent<MeshColliderScript>();
          mcB = bo2.GetComponent<MeshColliderScript>();
-        Vector3 jointPosition = (anchorA + anchorB) / 2.0f;
-
-        transform.position = jointPosition;
+        //just keeping track of the joint position
+        transform.position = (anchorA + anchorB) / 2.0f;
     }
     public void UpdateJointState(float timeStep)
     {
-        // Compute beta and gamma values
-        ComputeBetaAndGamma(timeStep);
-
         // Get references to the transform and anchor positions for both bodies
         Transform bodyA = bo1.transform;
         Transform bodyB = bo2.transform;
         anchorA = bodyA.position;
         anchorB = bodyB.position;
 
-        // Compute the world space coordinates of the anchor points
-        // Vector3 ra = bodyA.rotation * anchorA;
-        // Vector3 rb = bodyB.rotation * anchorB;
-        // Vector3 pa = anchorA + ra;
-        // Vector3 pb = anchorB + rb;
-
         // Compute the vector between the two anchor points
         Vector3 d = anchorB - anchorA;
-
 
         // Compute the current length of the constraint
         float currentLength = d.magnitude;
 
-        // Compute the effective mass of the constraint
+        // Compute the effective mass of the constraint 
+        // M = (J · M^-1 · J^t)^-1
         Vector3 ra = anchorA - bodyA.position;
         Vector3 rb = anchorB - bodyB.position;
         float crossA = Vector3.Cross(ra, Vector3.forward).z;
@@ -100,11 +82,15 @@ public class Joints : MonoBehaviour
         float invInertiaSum = invInertiaA + invInertiaB;
         float invEffectiveMass = invMassSum + crossA * crossA * invInertiaA / d.sqrMagnitude + crossB * crossB * invInertiaB / d.sqrMagnitude;
         float m = invEffectiveMass != 0 ? 1 / invEffectiveMass : 0;
-       
+        jointMass = m;
+
+        // Compute beta and gamma values
+        ComputeBetaAndGamma(timeStep);
         // Compute the bias term for the constraint
         float bias = (currentLength - length) * beta / timeStep;
 
         // Compute the relative velocities and Jacobian for the constraint
+        // J = [-t^t, -(ra + d)×t, t^t, rb×t]
         Vector3 v1 = bpA.getVelocity();
         Vector3 v2 = bpB.getVelocity();
         float w1 = bpA.getAngularVelocity();
@@ -116,31 +102,39 @@ public class Joints : MonoBehaviour
         Vector3 dv = v2 + rbCross - v1 - raCross;
         Vector3 J = new Vector3(-d.x, -d.y, -crossA) / d.sqrMagnitude;
         float jv = Vector3.Dot(dv, J);
-        
+
         // Compute the impulse magnitude for the constraint
         float impulseMag = m * -(jv + bias + gamma);
-       
+
         // Compute the corrective impulse and apply it to the bodies
         float impulseA = impulseMag * invMassA;
         float impulseB = impulseMag * invMassB;
         Vector3 impulseDir = d.normalized;
-
-        impulseDir += bias * gamma * impulseDir; // Adjust the impulse direction based on the error and gamma value
+        if (onlyPull)
+        {
+            if (currentLength <= length)
+            {
+                impulseDir = Vector3.zero;
+            }
+        }
+      
         Vector3 impulse = impulseMag * impulseDir;
-
-        v1 -= impulseA * invMassA * impulseDir;
-        w1 -= Vector3.Dot(ra, impulse) * invInertiaA;
-        v2 += impulseB * invMassB * impulseDir;
-        w2 += Vector3.Dot(rb, impulse) * invInertiaB;
-
-        bpA.SetVelocity(v1, w1);
-        bpB.SetVelocity(v2, w2);
+        //prevent any impulse added if static... 
+        if (bpA.getIsStatic() == false)
+        {
+            v1 -= impulseA * invMassA * impulseDir;
+            w1 -= Vector3.Dot(ra, impulse) * invInertiaA;
+            bpA.SetVelocity(v1, w1);
+        }
+        if (bpB.getIsStatic() == false)
+        {
+            v2 += impulseB * invMassB * impulseDir;
+            w2 += Vector3.Dot(rb, impulse) * invInertiaB;
+            bpB.SetVelocity(v2, w2);
+        }
 
         //just for keeping track of the position 
-        Vector3 jointPosition = (anchorB + anchorA) / 2.0f;
-
-        transform.position = jointPosition;
-        
+        transform.position = (anchorB + anchorA) / 2.0f;
     }
     private void ComputeBetaAndGamma(float timeStep)
     {
@@ -158,12 +152,9 @@ public class Joints : MonoBehaviour
             //https://box2d.org/files/ErinCatto_SoftConstraints_GDC2011.pdf 
 
             float omega = 2.0f * Mathf.PI * frequency;
-            float d = 2.0f * jointMass * dampingRatio * omega; // Damping coefficient
-
-
-
             float k = jointMass * omega * omega;               // Spring
             float h = timeStep;
+            float d = 2.0f * jointMass * dampingRatio * omega; // Damping coefficient
 
             beta = h * k / (d + h * k);
             gamma = 1.0f / ((d + h * k) * h);

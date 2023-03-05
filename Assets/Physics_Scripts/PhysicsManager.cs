@@ -13,10 +13,10 @@ using UnityEngine;
 public class PhysicsManager : MonoBehaviour
 {
 	//Change the variable numberOfStepsPerSecond to change the timerate calculations
-	private int numberOfStepsPerSecond = 50;
+	private int numberOfStepsPerSecond = 200;
 	private float stepLength;
 	private float numberOfUpdateCounter = 0;
-	float framesToDelay = 50;
+	
 	//List of all physics objects
 	[SerializeField]
 	List<GameObject> objects;
@@ -28,7 +28,7 @@ public class PhysicsManager : MonoBehaviour
 	List<BasicPhysicObject> physicObjects;
 	List<Joints> physicsJoints;
 	
-	private int jointStartDelay = 50; // number of physics updates to wait before starting joint calculations
+	private int jointStartDelay = 200; // number of physics updates to wait before starting joint calculations
 	private int currentUpdateCount = 0;
 	public void Start()
 	{

@@ -122,7 +122,10 @@ public class BasicPhysicObject : MonoBehaviour
     {
         return this.angularVelocity;
     }
-
+    public bool getIsStatic()
+    {
+        return this.isStatic;
+    }
 
     public void SetVelocity(Vector3 velocity, float newAngularVelocity)
     {
