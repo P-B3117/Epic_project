@@ -36,7 +36,7 @@ public class PhysicsManager : MonoBehaviour
 		meshColliders = new List<MeshColliderScript>();
 		physicObjects = new List<BasicPhysicObject>();
 		physicsJoints = new List<Joints>();
-		currentUpdateCount++;
+		
 		for (int i = 0; i < objects.Count; i++) 
 		{
 			meshColliders.Add(objects[i].GetComponent<MeshColliderScript>());
@@ -44,13 +44,11 @@ public class PhysicsManager : MonoBehaviour
 
 			physicObjects[i].SetCollider(meshColliders[i]);
 		}
-		if (currentUpdateCount >= jointStartDelay)
+		for (int i = 0; i < joints.Count; i++)
 		{
-			for (int i = 0; i < joints.Count; i++)
-			{
 				physicsJoints.Add(joints[i].GetComponent<Joints>());
-			}
 		}
+		
 		ChangeNumberOfStepsPerSecond(numberOfStepsPerSecond);
 		numberOfUpdateCounter = 0;
 	}
@@ -65,8 +63,12 @@ public class PhysicsManager : MonoBehaviour
 		{
 			
 			PhysicCalculations();
-			if (joints.Count > 0)
+			if (currentUpdateCount >= jointStartDelay)
 			{
+				foreach (Joints joints in physicsJoints)
+				{
+					joints.DelayedStart();
+				}
 				JointPhysicCalculations();
 			}
 			numberOfUpdateCounter--;
