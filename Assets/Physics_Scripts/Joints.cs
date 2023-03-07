@@ -2,14 +2,11 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-//fix les math
 //get relative location of joint 
-//get meshs collider dans le start 
-//no warm 
-
+//get the position offset as serial and then clamp the values to the range of the object in question 
+//clamp values in general so that it can't break 
 public class Joints : MonoBehaviour
 {
-
     [SerializeField]
     GameObject bo1;
     [SerializeField]
@@ -19,6 +16,7 @@ public class Joints : MonoBehaviour
     public float dampingRatio;
     public float length;
     public bool onlyPull;
+
     //private Vector3 localAnchorA;
     //private Vector3 localAnchorB;
     private Transform bodyA;
@@ -32,7 +30,7 @@ public class Joints : MonoBehaviour
     private float beta;
     private float gamma;
     private float bias;
-    private float impulseSum;
+    
 
     private Vector3 initialAxis;
     private BasicPhysicObject bpA;
@@ -42,26 +40,20 @@ public class Joints : MonoBehaviour
     private float jointMass;
     public void Start()
     {
-        impulseSum = 0;
-    }
-    public void DelayedStart()
-    {
         // Get references to the BasicPhysicObject and MeshColliderScript components for both bodies
-         bpA = bo1.GetComponent<BasicPhysicObject>();
-         bpB = bo2.GetComponent<BasicPhysicObject>();
-         mcA = bo1.GetComponent<MeshColliderScript>();
-         mcB = bo2.GetComponent<MeshColliderScript>();
-        //just keeping track of the joint position
-        transform.position = (anchorA + anchorB) / 2.0f;
+        bpA = bo1.GetComponent<BasicPhysicObject>();
+        bpB = bo2.GetComponent<BasicPhysicObject>();
+        mcA = bo1.GetComponent<MeshColliderScript>();
+        mcB = bo2.GetComponent<MeshColliderScript>();
+       
     }
     public void UpdateJointState(float timeStep)
     {
-        // Get references to the transform and anchor positions for both bodies
+        //get positions 
         Transform bodyA = bo1.transform;
         Transform bodyB = bo2.transform;
         anchorA = bodyA.position;
         anchorB = bodyB.position;
-
         // Compute the vector between the two anchor points
         Vector3 d = anchorB - anchorA;
 
@@ -72,6 +64,7 @@ public class Joints : MonoBehaviour
         // M = (J · M^-1 · J^t)^-1
         Vector3 ra = anchorA - bodyA.position;
         Vector3 rb = anchorB - bodyB.position;
+
         float crossA = Vector3.Cross(ra, Vector3.forward).z;
         float crossB = Vector3.Cross(rb, Vector3.forward).z;
         float invMassA = 1.0f / mcA.GetMass();
