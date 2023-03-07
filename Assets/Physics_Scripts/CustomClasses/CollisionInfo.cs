@@ -1,12 +1,22 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
-
+/*
+* Filename : CollisionInfo
+ * 
+ * Goal : Datatype that encapsulate all the informations about collisions
+ * 
+ * Requirements : Common return type used during collision detection and collision response (Do not use outside of these purposes)
+ */
 public class CollisionInfo
 {
+    //Optimal vector resolving the collision
     private Vector3 minimumTranslationVector;
     
+    //Position of the contact of the collision
     private Vector3 contactPoint;
+
+    //Reference of where the MTV is pointing (towards which object)
     private int collisionRef;
     
     public CollisionInfo() 
@@ -18,6 +28,9 @@ public class CollisionInfo
     }
 
 
+
+
+
     public Vector3 GetMTV() 
     {
         return minimumTranslationVector;
@@ -27,23 +40,10 @@ public class CollisionInfo
     {
         minimumTranslationVector = MTV;
     }
-
-    
-
-    public Vector3 GetWorldContactPoint() 
+    public Vector3 GetContactPoint() 
     {
         return contactPoint;
     }
-
-
-    public Vector3 GetRelativeContactPoint(Vector3 centerOfMassSpacePoint)
-    {
-        Vector3 relativeContactPoint = contactPoint - centerOfMassSpacePoint;
-        return relativeContactPoint;
-        
-    }
-
-
     public void SetContactPoint(Vector3 CP) 
     {
         contactPoint = CP;
@@ -60,9 +60,6 @@ public class CollisionInfo
         collisionRef = colRef;
     }
 
+   
 
-    public bool isCBetweenAB(Vector3 A, Vector3 B, Vector3 C)
-    {
-        return Vector3.Dot((B - A).normalized, (C - B).normalized) < 0f && Vector3.Dot((A - B).normalized, (C - A).normalized) < 0f;
-    }
 }
