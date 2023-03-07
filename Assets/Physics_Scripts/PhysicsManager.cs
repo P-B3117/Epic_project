@@ -111,12 +111,14 @@ public class PhysicsManager : MonoBehaviour
 					if (iCircle && jCircle)
 					{
 						col = HelperFunctionClass.TestCollisionTwoCircles(meshColliders[i].transform.position, meshColliders[i].RayonOfCircle(), meshColliders[j].transform.position, meshColliders[j].RayonOfCircle());
-						if (col != null && col.GetMTV() != Vector3.zero && col.GetCollisionRef() == 1) { col.SetMTV(col.GetMTV() * -1); }
-						changeUp = -1;
+						if (col != null && col.GetMTV() != Vector3.zero && col.GetCollisionRef() == 1) { col.SetMTV(col.GetMTV() * -1); } 
 					}
+						
+					
 					else if (iCircle)
 					{
                         col = HelperFunctionClass.TestCollisionPolygonCircle(meshColliders[j].GetWorldSpacePoints(), meshColliders[j].transform.position, meshColliders[i].transform.position, meshColliders[i].RayonOfCircle());
+                        changeUp = -1;
                     }
 					else if (jCircle)
 					{
@@ -201,41 +203,14 @@ public class PhysicsManager : MonoBehaviour
 					}
                     if (col == null) { continue; }
                     CollisionManager collisionManager = new CollisionManager();
-                    //Les RBP et RAP sont dans le mauvais sens mais en inversant les + et les - des operations, ca fonctionne quand meme!
+                    
+					//Les RBP et RAP sont dans le mauvais sens mais en inversant les + et les - des operations, ca fonctionne quand meme!
                     Vector3 rBP = meshColliders[i].transform.position - col.GetContactPoint();
                     Vector3 rAP = meshColliders[j].transform.position - col.GetContactPoint();
                     float restitutionCollisionCoefficient = (physicObjects[j].getBounciness() + physicObjects[i].getBounciness()) / 2f;
 					List<object> newVelocities = collisionManager.CollisionHasHappened(physicObjects[j].getVelocity(), physicObjects[i].getVelocity(), normal, meshColliders[j].GetMass(), 
 						meshColliders[i].GetMass(), restitutionCollisionCoefficient, physicObjects[j].getAngularVelocity(), physicObjects[i].getAngularVelocity(), rAP, rBP, 
 						meshColliders[j].GetInertia(), meshColliders[i].GetInertia());
-
-					//Vector3 perpBP = new Vector3(-rBP.y, rBP.x, 0);
-					//Vector3 perpAP = new Vector3(-rAP.y, rAP.x, 0);
-
-
-					//Vector3 vAP = physicObjects[j].getVelocity() - physicObjects[j].getAngularVelocity() * perpAP;
-					//Vector3 vBP = physicObjects[i].getVelocity() - physicObjects[i].getAngularVelocity() * perpBP;
-					//Vector3 relativeVelocity = vAP - vBP;
-					// float speedAlongNormal = Vector3.Dot(relativeVelocity, normal);
-
-					//float momentOfInertia1ImpulseInhibitor = Mathf.Pow(Vector3.Dot(perpAP, normal), 2) / (meshColliders[j].GetInertia());
-					//float momentOfInertia2ImpulseInhibitor = Mathf.Pow(Vector3.Dot(perpBP, normal), 2) / (meshColliders[i].GetInertia());
-					//float massImpulseInhibitor = (1.0f / meshColliders[j].GetMass() + 1.0f / meshColliders[i].GetMass());
-
-
-					// if (speedAlongNormal > 0) { continue; }
-
-					//float j2 = -(1 + restitutionCollisionCoefficient) * speedAlongNormal;
-					//j2 /= (momentOfInertia1ImpulseInhibitor + momentOfInertia2ImpulseInhibitor + massImpulseInhibitor);
-
-
-					//Vector3 translationImpulse = j2 * normal;
-
-					//Vector3 newVelocity = physicObjects[j].getVelocity() + (1.0f / meshColliders[j].GetMass()) * translationImpulse;
-					//Vector3 otherNewVelocity = physicObjects[i].getVelocity() - (1.0f / meshColliders[i].GetMass()) * translationImpulse;
-
-					//float newAngularVelocity = physicObjects[j].getAngularVelocity() + (Vector3.Dot(perpAP, normal * -j2) / meshColliders[j].GetInertia());
-					//float otherNewAngularVelocity = physicObjects[i].getAngularVelocity() + (Vector3.Dot(perpBP, normal * j2) / meshColliders[i].GetInertia());
 
 					physicObjects[j].SetVelocity((Vector3) newVelocities[0], (float) newVelocities[2]);
 					physicObjects[i].SetVelocity((Vector3) newVelocities[1], (float) newVelocities[3]);
