@@ -5,7 +5,7 @@ using UnityEngine;
 //get relative location of joint 
 //get the position offset as serial and then clamp the values to the range of the object in question 
 //clamp values in general so that it can't break 
-public class Joints : MonoBehaviour
+public class DistanceJoint : MonoBehaviour
 {
     [SerializeField]
     GameObject bo1;
@@ -16,7 +16,9 @@ public class Joints : MonoBehaviour
     public float dampingRatio;
     public float length;
     public bool onlyPull;
-
+    public bool isSolid;
+    public float offsetA;
+    public float offsetB;
     //private Vector3 localAnchorA;
     //private Vector3 localAnchorB;
     private Transform bodyA;
@@ -45,7 +47,7 @@ public class Joints : MonoBehaviour
         bpB = bo2.GetComponent<BasicPhysicObject>();
         mcA = bo1.GetComponent<MeshColliderScript>();
         mcB = bo2.GetComponent<MeshColliderScript>();
-       
+
     }
     public void UpdateJointState(float timeStep)
     {
@@ -133,10 +135,11 @@ public class Joints : MonoBehaviour
     {
 
         // If the frequency is less than or equal to zero, make this joint solid
-        if (frequency < 0.0f)
+        if (isSolid)
         {
-            beta = 1.0f;
+            beta = 0.0f;
             gamma = 0.0f;
+            jointMass = float.PositiveInfinity;
         }
         else
         {
@@ -147,7 +150,7 @@ public class Joints : MonoBehaviour
             float omega = 2.0f * Mathf.PI * frequency;
             float k = jointMass * omega * omega;               // Spring
             float h = timeStep;
-            float d = 2.0f * jointMass * dampingRatio * omega; // Damping coefficient
+            float d = 4.0f * jointMass * dampingRatio * omega; // Damping coefficient
 
             beta = h * k / (d + h * k);
             gamma = 1.0f / ((d + h * k) * h);

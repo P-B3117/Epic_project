@@ -13,7 +13,7 @@ using UnityEngine;
 public class PhysicsManager : MonoBehaviour
 {
 	//Change the variable numberOfStepsPerSecond to change the timerate calculations
-	private int numberOfStepsPerSecond = 200;
+	private int numberOfStepsPerSecond = 600;
 	private float stepLength;
 	private float numberOfUpdateCounter = 0;
 	
@@ -26,7 +26,7 @@ public class PhysicsManager : MonoBehaviour
 
 	List<MeshColliderScript> meshColliders;
 	List<BasicPhysicObject> physicObjects;
-	List<Joints> physicsJoints;
+	List<DistanceJoint> physicsDistanceJoint;
 	
 	private int jointStartDelay = 200; // number of physics updates to wait before starting joint calculations
 	private int currentUpdateCount = 0;
@@ -44,10 +44,10 @@ public class PhysicsManager : MonoBehaviour
 
 			physicObjects[i].SetCollider(meshColliders[i]);
 		}
-		physicsJoints = new List<Joints>();
+		physicsDistanceJoint = new List<DistanceJoint>();
 		for (int i = 0; i < joints.Count; i++)
 		{
-				physicsJoints.Add(joints[i].GetComponent<Joints>());
+			physicsDistanceJoint.Add(joints[i].GetComponent<DistanceJoint>());
 		}
 
 		ChangeNumberOfStepsPerSecond(numberOfStepsPerSecond);
@@ -374,7 +374,7 @@ public class PhysicsManager : MonoBehaviour
 	{
 		for (int i = 0; i < joints.Count; i++)
 		{
-			physicsJoints[i].UpdateJointState(stepLength);
+			physicsDistanceJoint[i].UpdateJointState(stepLength);
 		}
 	}
 
