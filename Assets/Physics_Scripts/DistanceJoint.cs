@@ -66,9 +66,10 @@ public class DistanceJoint : MonoBehaviour
 
         // Compute the effective mass of the constraint 
         // M = (J · M^-1 · J^t)^-1
+        //need to be zero for now
         Vector3 ra = anchorA - bodyA.position;
         Vector3 rb = anchorB - bodyB.position;
-
+        //also .z cuz 0 for now 
         float crossA = Vector3.Cross(ra, Vector3.forward).z;
         float crossB = Vector3.Cross(rb, Vector3.forward).z;
         float invMassA = 1.0f / mcA.GetMass();
@@ -131,6 +132,7 @@ public class DistanceJoint : MonoBehaviour
         {
             v2 += impulseB * invMassB * impulseDir;
             w2 += Vector3.Dot(rb, impulse) * invInertiaB;
+
             bpB.SetVelocity(v2, w2);
         }
 
