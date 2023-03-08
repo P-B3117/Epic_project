@@ -16,7 +16,6 @@ public class DistanceJoint : MonoBehaviour
     public float dampingRatio;
     public float length;
     public bool onlyPull;
-    public bool isSolid;
     public float offsetA;
     public float offsetB;
     //private Vector3 localAnchorA;
@@ -47,10 +46,13 @@ public class DistanceJoint : MonoBehaviour
         bpB = bo2.GetComponent<BasicPhysicObject>();
         mcA = bo1.GetComponent<MeshColliderScript>();
         mcB = bo2.GetComponent<MeshColliderScript>();
+        dampingRatio = Mathf.Clamp(dampingRatio, 0.0f, 1.0f);
+        
 
     }
     public void UpdateJointState(float timeStep)
     {
+        dampingRatio = Mathf.Clamp(dampingRatio, 0.0f, 1.0f);
         //get positions 
         Transform bodyA = bo1.transform;
         Transform bodyB = bo2.transform;
@@ -75,7 +77,11 @@ public class DistanceJoint : MonoBehaviour
         float invInertiaB = 1.0f / mcB.GetInertia();
         float invMassSum = invMassA + invMassB;
         float invInertiaSum = invInertiaA + invInertiaB;
-        float invEffectiveMass = invMassSum + crossA * crossA * invInertiaA / d.sqrMagnitude + crossB * crossB * invInertiaB / d.sqrMagnitude;
+        float invEffectiveMass;
+        if (bpA.getIsStatic()) {invEffectiveMass = invMassB+ crossB * crossB * invInertiaB / d.sqrMagnitude;} 
+        else if (bpB.getIsStatic()) {invEffectiveMass = invMassA + crossA * crossA * invInertiaA / d.sqrMagnitude;}
+        else{invEffectiveMass = invMassSum + crossA * crossA * invInertiaA / d.sqrMagnitude + crossB * crossB * invInertiaB / d.sqrMagnitude;}
+     
         float m = invEffectiveMass != 0 ? 1 / invEffectiveMass : 0;
         jointMass = m;
 
@@ -115,13 +121,13 @@ public class DistanceJoint : MonoBehaviour
       
         Vector3 impulse = impulseMag * impulseDir;
         //prevent any impulse added if static... 
-        if (bpA.getIsStatic() == false)
+        if (!bpA.getIsStatic())
         {
             v1 -= impulseA * invMassA * impulseDir;
             w1 -= Vector3.Dot(ra, impulse) * invInertiaA;
             bpA.SetVelocity(v1, w1);
         }
-        if (bpB.getIsStatic() == false)
+        if (!bpB.getIsStatic())
         {
             v2 += impulseB * invMassB * impulseDir;
             w2 += Vector3.Dot(rb, impulse) * invInertiaB;
@@ -135,9 +141,9 @@ public class DistanceJoint : MonoBehaviour
     {
 
         // If the frequency is less than or equal to zero, make this joint solid
-        if (isSolid)
+        if (frequency <= 0.0f)
         {
-            beta = 0.0f;
+            beta = 1.0f;
             gamma = 0.0f;
             jointMass = float.PositiveInfinity;
         }

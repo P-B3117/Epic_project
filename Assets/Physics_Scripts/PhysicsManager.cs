@@ -26,7 +26,7 @@ public class PhysicsManager : MonoBehaviour
 
 	List<MeshColliderScript> meshColliders;
 	List<BasicPhysicObject> physicObjects;
-	List<DistanceJoint> physicsDistanceJoint;
+	List<SpringJoint> physicsDistanceJoint;
 	
 	private int jointStartDelay = 200; // number of physics updates to wait before starting joint calculations
 	private int currentUpdateCount = 0;
@@ -44,10 +44,10 @@ public class PhysicsManager : MonoBehaviour
 
 			physicObjects[i].SetCollider(meshColliders[i]);
 		}
-		physicsDistanceJoint = new List<DistanceJoint>();
+		physicsDistanceJoint = new List<SpringJoint>();
 		for (int i = 0; i < joints.Count; i++)
 		{
-			physicsDistanceJoint.Add(joints[i].GetComponent<DistanceJoint>());
+			physicsDistanceJoint.Add(joints[i].GetComponent<SpringJoint>());
 		}
 
 		ChangeNumberOfStepsPerSecond(numberOfStepsPerSecond);
