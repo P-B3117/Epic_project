@@ -85,26 +85,62 @@ public class SpringJoint : MonoBehaviour
         {
             perp = Vector2.Perpendicular(direction.normalized);
         }
-
+       
         Vector3 t = bodyA.rotation * perp;
-        //0 for now no offset 
+        // Define the matrix k
+        float[][] k = new float[2][];
+        for (int i = 0; i < 2; i++)
+        {
+            k[i] = new float[2];
+        }
 
-        float crossA = 0;
-        float crossB = 0;
+        float invMassA = bodyA.invMass;
+        float invMassB = bodyB.invMass;
+        float invInertiaA = bodyA.invInertia;
+        float invInertiaB = bodyB.invInertia;
+        float sa = Mathf.Sin(angle);
+        float sb = Mathf.Sin(angle + Mathf.PI);
+        float ca = Mathf.Cos(angle);
+        float cb = Mathf.Cos(angle + Mathf.PI);
 
-        // Compute the effective mass matrix
-        float invMassA = 1.0f / mcA.GetMass();
-        float invMassB = 1.0f / mcB.GetMass();
-        float invInertiaA = 1.0f / mcA.GetInertia();
-        float invInertiaB = 1.0f / mcB.GetInertia();
-        float invMassSum = invMassA + invMassB;
-        float invInertiaSum = invInertiaA + invInertiaB;
-         float invEffectiveMass;
-        if (bpA.getIsStatic()) {invEffectiveMass = invMassB+ crossB * crossB * invInertiaB / d.sqrMagnitude;} 
-        else if (bpB.getIsStatic()) {invEffectiveMass = invMassA + crossA * crossA * invInertiaA / d.sqrMagnitude;}
-        else{invEffectiveMass = invMassSum + crossA * crossA * invInertiaA / d.sqrMagnitude + crossB * crossB * invInertiaB / d.sqrMagnitude;}
-        float m = invEffectiveMass != 0 ? 1 / invEffectiveMass : 0;
-        jointMass = m;
+        k[0][0] = invMassA + invMassB + sa * sa * invInertiaA + sb * sb * invInertiaB;
+        k[1][0] = sa * invInertiaA + sb * invInertiaB;
+        k[0][1] = k[1][0];
+        k[1][1] = invInertiaA + invInertiaB;
+
+        float gamma = 0.0f; // set the value of gamma
+        k[0][0] += gamma;
+        k[1][1] += gamma;
+
+        // Calculate the inverse of k
+        float det = k[0][0] * k[1][1] - k[0][1] * k[1][0];
+        float invDet = 1.0f / det;
+        float[][] kInv = new float[2][];
+        for (int i = 0; i < 2; i++)
+        {
+            kInv[i] = new float[2];
+        }
+
+        kInv[0][0] = k[1][1] * invDet;
+        kInv[1][1] = k[0][0] * invDet;
+        kInv[0][1] = -k[0][1] * invDet;
+        kInv[1][0] = -k[1][0] * invDet;
+
+        // Calculate the bias
+        Vector2 d = pointB - pointA;
+        Vector2 t = new Vector2(d.y, -d.x);
+        t.Normalize();
+        Vector2 bias = new Vector2(
+            Vector2.Dot(d, t),
+            bodyB.angle - bodyA.angle - angleOffset
+        );
+        bias *= beta * invDt;
+
+        // Calculate the impulse
+        Vector2 impulse = new Vector2(
+            -kInv[0][0] * bias.x - kInv[0][1] * bias.y,
+            -kInv[1][0] * bias.x - kInv[1][1] * bias.y
+        );
 
         ComputeBetaAndGamma(timeStep);
         Vector3 v1 = bpA.getVelocity();
