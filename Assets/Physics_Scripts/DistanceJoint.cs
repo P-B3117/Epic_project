@@ -132,7 +132,6 @@ public class DistanceJoint : MonoBehaviour
         {
             v2 += impulseB * invMassB * impulseDir;
             w2 += Vector3.Dot(rb, impulse) * invInertiaB;
-
             bpB.SetVelocity(v2, w2);
         }
 

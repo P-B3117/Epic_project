@@ -35,7 +35,7 @@ public class SpringJoint : MonoBehaviour
     private MeshColliderScript mcA;
     private MeshColliderScript mcB;
     private float jointMass;
-
+    private float angleOffset;
     public void Start()
     {
         // Get references to the BasicPhysicObject and MeshColliderScript components for both bodies
@@ -43,20 +43,20 @@ public class SpringJoint : MonoBehaviour
         bpB = bo2.GetComponent<BasicPhysicObject>();
         mcA = bo1.GetComponent<MeshColliderScript>();
         mcB = bo2.GetComponent<MeshColliderScript>();
-
+        bodyA = bo1.transform;
+        bodyB = bo2.transform;
         if (direction.magnitude < 0.00001f)
         {
-            Vector2 bodyA = bo1.transform.position;
-            Vector2 bodyB = bo2.transform.position;
+       
             Quaternion rotatA = bo1.transform.rotation;
-            Vector2 dNormalized = Quaternion.Inverse(rotatA) * ((bodyB - bodyA).normalized);
+            Vector2 dNormalized = Quaternion.Inverse(rotatA) * ((bodyB.position - bodyA.position).normalized);
             perp = Vector2.Perpendicular(dNormalized).normalized;
         }
         else
         {
             perp = Vector2.Perpendicular(direction.normalized);
         }
-
+        angleOffset = Mathf.Atan2(bodyB.position.y - bodyA.position.y, bodyB.position.x - bodyA.position.x);
     }
 
 
