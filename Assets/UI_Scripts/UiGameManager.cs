@@ -4,6 +4,8 @@ using UnityEngine;
 using UnityEngine.UI;
 using UnityEngine.Audio;
 using UnityEngine.SceneManagement;
+using TMPro;
+
 
 public class UiGameManager : MonoBehaviour
 {
@@ -14,6 +16,9 @@ public class UiGameManager : MonoBehaviour
     public GameObject FullscreenToggle;
     public GameObject MusicSlider;
     public GameObject SoundEffectSlider;
+    public GameObject GravityInputField;
+    public GameObject AirDragInputField;
+    public GameObject TimeInputField;
     public AudioSource MusicSource;
     public Text MusicVolumeText;
     public Text SoundEffectVolumeText;
@@ -25,6 +30,9 @@ public class UiGameManager : MonoBehaviour
         FullscreenToggle.GetComponent<Toggle>().isOn = GameConstants.Fullscreen;
         MusicSlider.GetComponent<Slider>().value = GameConstants.MusicVolume;
         SoundEffectSlider.GetComponent<Slider>().value = GameConstants.SoundEffectVolume;
+        GravityInputField.GetComponent<TMP_InputField>().text = "9.8";
+        AirDragInputField.GetComponent<TMP_InputField>().text = "1";
+        TimeInputField.GetComponent<TMP_InputField>().text = "1";
     }
 
     void Update()
@@ -48,6 +56,16 @@ public class UiGameManager : MonoBehaviour
     public void ChangeAirDrag(string airDrag)
     {
         UniversalVariable.SetAirDrag(float.Parse(airDrag));
+    }
+
+    public void ChangeToDefault()
+    {
+        GravityInputField.GetComponent<TMP_InputField>().text = "9.8";
+        AirDragInputField.GetComponent<TMP_InputField>().text = "1";
+        TimeInputField.GetComponent<TMP_InputField>().text = "1";
+        UniversalVariable.SetGravity(float.Parse("9,8"));
+        UniversalVariable.SetTime(float.Parse("1"));
+        UniversalVariable.SetAirDrag(float.Parse("1"));
     }
 
     public void LoadMenuScene()
