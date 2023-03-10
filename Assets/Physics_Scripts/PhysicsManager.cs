@@ -49,7 +49,7 @@ public class PhysicsManager : MonoBehaviour
 		}
 		ChangeNumberOfStepsPerSecond(numberOfStepsPerSecond);
 		numberOfUpdateCounter = 0;
-
+		
 
 	}
 
@@ -167,6 +167,9 @@ public class PhysicsManager : MonoBehaviour
 
 						//Solve the collision using impulse physic
 						normal = col.GetMTV().normalized;
+						
+						
+
 
 
 					}
