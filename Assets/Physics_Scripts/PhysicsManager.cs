@@ -188,7 +188,7 @@ public class PhysicsManager : MonoBehaviour
 					{
 						//Find the collisionPoint 
 						col = HelperFunctionClass.FindCollisionPointPolygonCircle(col, meshColliders[j].transform.position, meshColliders[j].RayonOfCircle());
-
+						if (col == null) { continue; }
 						//Solve the collision using impulse physic
 						normal = col.GetMTV().normalized;
 					}
@@ -197,11 +197,11 @@ public class PhysicsManager : MonoBehaviour
 					{
 						//Find collisionPoint after displacement
 						col = HelperFunctionClass.FindCollisionPoint(col, meshColliders[i].GetWorldSpacePoints(), meshColliders[j].GetWorldSpacePoints());
-
+						if (col == null) { continue; }
 						//Solve the collision using impulse physic
 						normal = col.GetMTV().normalized;
 					}
-					if (col == null) { continue; }
+					
 					CollisionManager collisionManager = new CollisionManager();
 
 					//Les RBP et RAP sont dans le mauvais sens mais en inversant les + et les - des operations, ca fonctionne quand meme!

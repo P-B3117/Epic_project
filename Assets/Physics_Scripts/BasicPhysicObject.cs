@@ -65,7 +65,7 @@ public class BasicPhysicObject : MonoBehaviour
 
         velocity += acceleration * timeStep;
         angularVelocity += angularAcceleration * timeStep;
-
+        if (isStatic) { velocity = Vector3.zero; angularVelocity = 0; }
 
         transform.position += velocity * timeStep;
         transform.Rotate(Vector3.forward * angularVelocity * Mathf.Rad2Deg * timeStep);
@@ -79,12 +79,14 @@ public class BasicPhysicObject : MonoBehaviour
 
     public void ApplyForceAtCenterOfMass(Vector3 force) 
     {
+        
         resultingForce += force;
     }
 
     public void ApplyForceGravity() 
     {
         //F = mg
+       
         resultingForce += Vector3.down * UniversalVariable.GetGravity() * collider.GetMass();
     }
 
