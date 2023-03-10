@@ -53,8 +53,8 @@ public class BasicPhysicObject : MonoBehaviour
 
 	public void UpdateState(float timeStep) 
     {
-        if (isStatic) { return; }
-        
+        if (isStatic) { velocity = Vector3.zero; angularVelocity = 0; return; }
+
 
 
         Vector3 acceleration = resultingForce / collider.GetMass();
@@ -65,7 +65,7 @@ public class BasicPhysicObject : MonoBehaviour
 
         velocity += acceleration * timeStep;
         angularVelocity += angularAcceleration * timeStep;
-        if (isStatic) { velocity = Vector3.zero; angularVelocity = 0; }
+       
 
         transform.position += velocity * timeStep;
         transform.Rotate(Vector3.forward * angularVelocity * Mathf.Rad2Deg * timeStep);
@@ -126,10 +126,12 @@ public class BasicPhysicObject : MonoBehaviour
     }
 
 
-    public void SetVelocity(Vector3 velocity, float newAngularVelocity)
+    public void SetVelocity(Vector3 velocity, float newAngularVelocity, float timeStep)
     {
-        this.velocity = velocity;
-        this.angularVelocity = newAngularVelocity;
+        //this.velocity = velocity;
+        resultingForce += ((velocity - this.velocity) / timeStep) * collider.GetMass();
+        //this.angularVelocity = newAngularVelocity;
+        torque += ((newAngularVelocity - this.angularVelocity) / timeStep * collider.GetInertia());
     }
 
     public bool IsStatic() 

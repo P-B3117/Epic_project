@@ -139,8 +139,8 @@ public class Joints : MonoBehaviour
 
 
         impulseSum += lambda;
-        bpA.SetVelocity(v1, w1);
-        bpB.SetVelocity(v2, w2);
+        bpA.SetVelocity(v1, w1, timeStep);
+        bpB.SetVelocity(v2, w2, timeStep);
     }
     private void ComputeBetaAndGamma(float timeStep)
     {

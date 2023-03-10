@@ -215,8 +215,8 @@ public class PhysicsManager : MonoBehaviour
 						meshColliders[i].GetMass(), restitutionCollisionCoefficient, physicObjects[j].getAngularVelocity(), physicObjects[i].getAngularVelocity(), rAP, rBP,
 						meshColliders[j].GetInertia(), meshColliders[i].GetInertia());
 
-					physicObjects[j].SetVelocity((Vector3)newVelocities[0], (float)newVelocities[2]);
-					physicObjects[i].SetVelocity((Vector3)newVelocities[1], (float)newVelocities[3]);
+					physicObjects[j].SetVelocity((Vector3)newVelocities[0], (float)newVelocities[2], stepLength);
+					physicObjects[i].SetVelocity((Vector3)newVelocities[1], (float)newVelocities[3], stepLength);
 				}
 			}
 		}
