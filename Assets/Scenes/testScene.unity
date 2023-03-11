@@ -1628,11 +1628,11 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 04d0400a5f2940746b61481fc5db2b70, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  mass: 50
+  mass: 2
   modelPoints:
   - {x: 1, y: 1, z: 0}
-  - {x: 1, y: -5, z: 0}
-  - {x: -1, y: -5, z: 0}
+  - {x: 1, y: -10, z: 0}
+  - {x: -1, y: -10, z: 0}
   - {x: -1, y: 1, z: 0}
   material: {fileID: 2100000, guid: f8ea0197e3e47dd4aac55742c67427e4, type: 2}
   isCircle: 0
@@ -1650,9 +1650,9 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   isStatic: 0
-  dynamicFriction: 0.5
-  staticFriction: 0.5
-  bounciness: 0.5
+  dynamicFriction: 1
+  staticFriction: 1
+  bounciness: 0
 --- !u!1 &294635510
 GameObject:
   m_ObjectHideFlags: 0
@@ -4173,9 +4173,9 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   isStatic: 1
-  dynamicFriction: 0.5
-  staticFriction: 0.5
-  bounciness: 0.5
+  dynamicFriction: 1
+  staticFriction: 1
+  bounciness: 0
 --- !u!1 &840437794
 GameObject:
   m_ObjectHideFlags: 0
@@ -7465,7 +7465,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 04d0400a5f2940746b61481fc5db2b70, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  mass: 5
+  mass: 1
   modelPoints:
   - {x: 1, y: 1, z: 0}
   - {x: 0.5, y: -3, z: 0}
@@ -7488,8 +7488,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   isStatic: 0
-  dynamicFriction: 0.5
-  staticFriction: 0.5
+  dynamicFriction: 1
+  staticFriction: 1
   bounciness: 0.5
 --- !u!1 &1436739269
 GameObject:
@@ -7948,7 +7948,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 04d0400a5f2940746b61481fc5db2b70, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  mass: 5
+  mass: 15
   modelPoints:
   - {x: 1, y: 1, z: 0}
   - {x: 1, y: -1, z: 0}
@@ -7969,9 +7969,9 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   isStatic: 0
-  dynamicFriction: 0.5
-  staticFriction: 0.5
-  bounciness: 0.5
+  dynamicFriction: 0.9
+  staticFriction: 0.9
+  bounciness: 0
 --- !u!1 &1533601053
 GameObject:
   m_ObjectHideFlags: 0
@@ -8425,8 +8425,8 @@ MonoBehaviour:
   mass: 35
   modelPoints:
   - {x: 1, y: 1, z: 0}
-  - {x: 1, y: -3, z: 0}
-  - {x: -2, y: -3, z: 0}
+  - {x: 1, y: -7, z: 0}
+  - {x: -2, y: -7, z: 0}
   - {x: -2, y: 1, z: 0}
   material: {fileID: 2100000, guid: f8ea0197e3e47dd4aac55742c67427e4, type: 2}
   isCircle: 0

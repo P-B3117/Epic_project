@@ -99,15 +99,28 @@ public class BasicPhysicObject : MonoBehaviour
     //r is the vector from the center of mass towards the position of where the force is applied
     public void ApplyForce(Vector3 force, Vector3 r) 
     {
-        float theta = transform.rotation.eulerAngles.z * Mathf.Deg2Rad;
-        Vector3 rotatedForce = new Vector3(force.x * Mathf.Cos(theta) - force.y * Mathf.Sin(theta), force.x * Mathf.Sin(theta) + force.y * Mathf.Cos(theta), 0);
-        resultingForce += rotatedForce;
+        resultingForce += force;
 
 
         torque += (r.x * force.y) - (r.y * force.x);
         
 
     }
+    public void ApplyFrictionForce(Vector3 force, Vector3 r)
+    {
+        Vector3 result = resultingForce + force;
+        float test = Vector3.Dot(result, resultingForce);
+        if(test >= 0.0f)
+        {
+            resultingForce += force;
+
+            torque += (r.x * force.y) - (r.y * force.x);
+        }
+       
+
+
+    }
+
     public void ApplyFriction()
     {
 
@@ -144,6 +157,10 @@ public class BasicPhysicObject : MonoBehaviour
             Vector3 inverseNormal = new Vector3(-normal.y, normal.x, 0.0f);
 
             float direction = Vector3.Dot(v, inverseNormal);
+            if(Vector3.Dot(normal,velocity) > 0.0f)
+            {
+                continue;
+            }
             inverseNormal = inverseNormal * direction;
 
             fric = inverseNormal.normalized * -1 * friction;
