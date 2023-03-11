@@ -84,10 +84,10 @@ public class PhysicsManager : MonoBehaviour
 			physicObjects[i].UpdateState(stepLength);
 			meshColliders[i].UpdateColliderOrientation();
 			physicObjects[i].ApplyForceGravity();
+            physicObjects[i].ApplyFriction();
 
 
-
-		}
+        }
 
 
 
@@ -204,8 +204,9 @@ public class PhysicsManager : MonoBehaviour
 						//Solve the collision using impulse physic
 						normal = col.GetMTV().normalized;
 					}
-					
-					CollisionManager collisionManager = new CollisionManager();
+                    physicObjects[i].contact.Add(new FrictionInfo(-normal, physicObjects[j], col.GetContactPoint()));
+                    physicObjects[j].contact.Add(new FrictionInfo(normal, physicObjects[i], col.GetContactPoint()));
+                    CollisionManager collisionManager = new CollisionManager();
 
 					//Les RBP et RAP sont dans le mauvais sens mais en inversant les + et les - des operations, ca fonctionne quand meme!
 					Vector3 rBP = meshColliders[i].transform.position - col.GetContactPoint();
