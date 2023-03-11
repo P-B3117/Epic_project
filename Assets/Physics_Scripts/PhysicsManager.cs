@@ -38,9 +38,9 @@ public class PhysicsManager : MonoBehaviour
 		for (int i = 0; i < objects.Count; i++) 
 		{
 			meshColliders.Add(objects[i].GetComponent<MeshColliderScript>());
-			physicObjects.Add(objects[i].GetComponent<BasicPhysicObject>());
+            physicObjects.Add(objects[i].GetComponent<BasicPhysicObject>());
 
-			physicObjects[i].SetCollider(meshColliders[i]);
+            physicObjects[i].SetCollider(meshColliders[i]);
 		}
 		for (int i = 0; i < joints.Count; i++)
 		{
@@ -78,10 +78,11 @@ public class PhysicsManager : MonoBehaviour
 		//ApplyForces
 		for (int i = 0; i < objects.Count; i++) 
 		{
-			
-			physicObjects[i].UpdateState(stepLength);
+
+            physicObjects[i].UpdateState(stepLength);
 			meshColliders[i].UpdateColliderOrientation();
-			physicObjects[i].ApplyForceGravity();
+            physicObjects[i].ApplyForceGravity();
+			physicObjects[i].ApplyFriction();
 			
 
 
@@ -98,9 +99,12 @@ public class PhysicsManager : MonoBehaviour
 			{
 				CollisionInfo col;
 
+
 				//Circle vs Circle
 				if (meshColliders[i].IsCircle() && meshColliders[j].IsCircle())
 				{
+                 
+					
 					col = HelperFunctionClass.TestCollisionTwoCircles(meshColliders[i].transform.position, meshColliders[i].RayonOfCircle(), meshColliders[j].transform.position, meshColliders[j].RayonOfCircle());
 					if (col != null && col.GetMTV() != Vector3.zero)
 					{
@@ -122,9 +126,11 @@ public class PhysicsManager : MonoBehaviour
 
 						//Solve the collision using impulse physic
 						Vector3 normal = col.GetMTV().normalized;
+						physicObjects[i].contact.Add(new FrictionInfo(-normal, physicObjects[j], col.GetContactPoint()));
+                        physicObjects[j].contact.Add(new FrictionInfo(normal, physicObjects[i], col.GetContactPoint()));
 
-						//Les RBP et RAP sont dans le mauvais sens mais en inversant les + et les - des operations, ca fonctionne quand meme!
-						Vector3 rBP = meshColliders[i].transform.position - col.GetContactPoint();
+                        //Les RBP et RAP sont dans le mauvais sens mais en inversant les + et les - des operations, ca fonctionne quand meme!
+                        Vector3 rBP = meshColliders[i].transform.position - col.GetContactPoint();
 						Vector3 rAP = meshColliders[j].transform.position - col.GetContactPoint();
 						
 
@@ -159,8 +165,8 @@ public class PhysicsManager : MonoBehaviour
 						float newAngularVelocity = physicObjects[j].getAngularVelocity() + (Vector3.Dot(perpAP, normal * -j2) / meshColliders[j].GetInertia());
 						float otherNewAngularVelocity = physicObjects[i].getAngularVelocity() + (Vector3.Dot(perpBP, normal * j2) / meshColliders[i].GetInertia());
 
-						physicObjects[j].SetVelocity(newVelocity, newAngularVelocity);
-						physicObjects[i].SetVelocity(otherNewVelocity, otherNewAngularVelocity);
+                        physicObjects[j].SetVelocity(newVelocity, newAngularVelocity);
+                        physicObjects[i].SetVelocity(otherNewVelocity, otherNewAngularVelocity);
 
 
 					}
@@ -168,7 +174,8 @@ public class PhysicsManager : MonoBehaviour
 				//Circle vs Polygon
 				else if (meshColliders[i].IsCircle()) 
 				{
-					col = HelperFunctionClass.TestCollisionPolygonCircle(meshColliders[j].GetWorldSpacePoints(), meshColliders[j].transform.position, meshColliders[i].transform.position, meshColliders[i].RayonOfCircle());
+                  
+                    col = HelperFunctionClass.TestCollisionPolygonCircle(meshColliders[j].GetWorldSpacePoints(), meshColliders[j].transform.position, meshColliders[i].transform.position, meshColliders[i].RayonOfCircle());
 					
 					if (col != null && col.GetMTV() != Vector3.zero) 
 					{
@@ -189,12 +196,14 @@ public class PhysicsManager : MonoBehaviour
 						//Solve the collision using impulse physic
 						//IMPORTANT DE INVERSER LA NORMALE!!!!
 						Vector3 normal = -col.GetMTV().normalized;
-						
+						physicObjects[i].contact.Add(new FrictionInfo(-normal, physicObjects[j], col.GetContactPoint()));
+                        physicObjects[j].contact.Add(new FrictionInfo(normal, physicObjects[i], col.GetContactPoint()));
 
 
 
-						//Les RBP et RAP sont dans le mauvais sens mais en inversant les + et les - des operations, ca fonctionne quand meme!
-						Vector3 rBP = meshColliders[i].transform.position - col.GetContactPoint();
+
+        //Les RBP et RAP sont dans le mauvais sens mais en inversant les + et les - des operations, ca fonctionne quand meme!
+        Vector3 rBP = meshColliders[i].transform.position - col.GetContactPoint();
 						Vector3 rAP = meshColliders[j].transform.position - col.GetContactPoint();
 						
 
@@ -229,14 +238,15 @@ public class PhysicsManager : MonoBehaviour
 						float newAngularVelocity = physicObjects[j].getAngularVelocity() + (Vector3.Dot(perpAP, normal * -j2) / meshColliders[j].GetInertia());
 						float otherNewAngularVelocity = physicObjects[i].getAngularVelocity() + (Vector3.Dot(perpBP, normal * j2) / meshColliders[i].GetInertia());
 
-						physicObjects[j].SetVelocity(newVelocity, newAngularVelocity);
-						physicObjects[i].SetVelocity(otherNewVelocity, otherNewAngularVelocity);
+                        physicObjects[j].SetVelocity(newVelocity, newAngularVelocity);
+                        physicObjects[i].SetVelocity(otherNewVelocity, otherNewAngularVelocity);
 					}
 				}
 				//Polygon vs Circle
 				else if (meshColliders[j].IsCircle() ) 
 				{
-					col = HelperFunctionClass.TestCollisionPolygonCircle(meshColliders[i].GetWorldSpacePoints(), meshColliders[i].transform.position, meshColliders[j].transform.position, meshColliders[j].RayonOfCircle());
+                    
+                    col = HelperFunctionClass.TestCollisionPolygonCircle(meshColliders[i].GetWorldSpacePoints(), meshColliders[i].transform.position, meshColliders[j].transform.position, meshColliders[j].RayonOfCircle());
 					
 					if (col != null && col.GetMTV() != Vector3.zero)
 					{
@@ -253,11 +263,12 @@ public class PhysicsManager : MonoBehaviour
 
 						//Solve the collision using impulse physic
 						Vector3 normal = col.GetMTV().normalized;
-						
+                        physicObjects[i].contact.Add(new FrictionInfo(-normal, physicObjects[j], col.GetContactPoint()));
+                        physicObjects[j].contact.Add(new FrictionInfo(normal, physicObjects[i], col.GetContactPoint()));
 
 
-						//Les RBP et RAP sont dans le mauvais sens mais en inversant les + et les - des operations, ca fonctionne quand meme!
-						Vector3 rBP = meshColliders[i].transform.position - col.GetContactPoint();
+        //Les RBP et RAP sont dans le mauvais sens mais en inversant les + et les - des operations, ca fonctionne quand meme!
+        Vector3 rBP = meshColliders[i].transform.position - col.GetContactPoint();
 						Vector3 rAP = meshColliders[j].transform.position - col.GetContactPoint();
 						
 
@@ -292,14 +303,15 @@ public class PhysicsManager : MonoBehaviour
 						float newAngularVelocity = physicObjects[j].getAngularVelocity() + (Vector3.Dot(perpAP, normal * -j2) / meshColliders[j].GetInertia());
 						float otherNewAngularVelocity = physicObjects[i].getAngularVelocity() + (Vector3.Dot(perpBP, normal * j2) / meshColliders[i].GetInertia());
 
-						physicObjects[j].SetVelocity(newVelocity, newAngularVelocity);
-						physicObjects[i].SetVelocity(otherNewVelocity, otherNewAngularVelocity);
+                        physicObjects[j].SetVelocity(newVelocity, newAngularVelocity);
+                        physicObjects[i].SetVelocity(otherNewVelocity, otherNewAngularVelocity);
 					}
 				}
 				//Polygon vs Polygon
 				else
 				{
-					col = HelperFunctionClass.TestCollisionSeperateAxisTheorem(meshColliders[i].GetWorldSpacePoints(), meshColliders[j].GetWorldSpacePoints());
+                   
+                    col = HelperFunctionClass.TestCollisionSeperateAxisTheorem(meshColliders[i].GetWorldSpacePoints(), meshColliders[j].GetWorldSpacePoints());
 					if (col != null && col.GetMTV() != Vector3.zero)
 					{
 						//Displacement based on their respective mass
@@ -319,9 +331,11 @@ public class PhysicsManager : MonoBehaviour
 
 						//Solve the collision using impulse physic
 						Vector3 normal = col.GetMTV().normalized;
+						physicObjects[i].contact.Add(new FrictionInfo(-normal, physicObjects[j], col.GetContactPoint()));
+                        physicObjects[j].contact.Add(new FrictionInfo(normal, physicObjects[i], col.GetContactPoint()));
 
-						//Les RBP et RAP sont dans le mauvais sens mais en inversant les + et les - des operations, ca fonctionne quand meme!
-						Vector3 rBP = meshColliders[i].transform.position - col.GetContactPoint();
+        //Les RBP et RAP sont dans le mauvais sens mais en inversant les + et les - des operations, ca fonctionne quand meme!
+        Vector3 rBP = meshColliders[i].transform.position - col.GetContactPoint();
 						Vector3 rAP = meshColliders[j].transform.position - col.GetContactPoint();
 						
 

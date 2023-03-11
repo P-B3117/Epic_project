@@ -28,6 +28,10 @@ public class BasicPhysicObject : MonoBehaviour
     [SerializeField]
     float bounciness = 0.5f;
 
+    [Header("Object making contact with the object")]
+    
+    public List<FrictionInfo> contact;
+
 
 
     Vector3 resultingForce;
@@ -48,6 +52,7 @@ public class BasicPhysicObject : MonoBehaviour
 
         velocity = Vector2.zero;
         angularVelocity = 0;
+        contact = new List<FrictionInfo>();
     }
 
 
@@ -96,12 +101,56 @@ public class BasicPhysicObject : MonoBehaviour
     {
         float theta = transform.rotation.eulerAngles.z * Mathf.Deg2Rad;
         Vector3 rotatedForce = new Vector3(force.x * Mathf.Cos(theta) - force.y * Mathf.Sin(theta), force.x * Mathf.Sin(theta) + force.y * Mathf.Cos(theta), 0);
-        resultingForce += rotatedForce;
+        resultingForce += force;
 
 
         torque += (r.x * force.y) - (r.y * force.x);
         
 
+    }
+    public void ApplyFriction()
+    {
+
+        float force;
+        float friction;
+        float coef;
+
+        Vector3 fric = Vector3.zero;
+        Debug.Log(velocity);
+        //if(velocity.magnitude <= 0.15)
+        //{
+        //    angularVelocity = 0;
+        //}
+        for (int i = 0; i < contact.Count; i++)
+        {
+            Vector3 normal = contact[i].getNormal();
+            force = Vector3.Dot(-normal, resultingForce);
+            BasicPhysicObject autre = contact[i].getBasicPhysicObject();
+
+
+            if (velocity.magnitude < 0.1f)
+            {
+                coef = autre.getStaticFriction();
+                friction = force * coef;
+            }
+            else
+            {
+                coef = autre.getDynamicFriction();
+                friction = force * coef;
+            }
+            Vector3 rbp = transform.position - contact[i].getCollisionPoint();
+            Vector3 rbpPerp = new Vector3(-rbp.y, rbp.x, 0.0f);
+            Vector3 v = velocity - angularVelocity * rbpPerp;
+            Vector3 inverseNormal = new Vector3(-normal.y, normal.x, 0.0f);
+
+            float direction = Vector3.Dot(v, inverseNormal);
+            inverseNormal = inverseNormal * direction;
+
+            fric = inverseNormal.normalized * -1 * friction;
+            Vector3 r = contact[i].getCollisionPoint() - transform.position;
+            ApplyForce(fric, r);
+        }
+        contact.Clear();
     }
 
     public Vector3 getVelocity()
@@ -128,6 +177,15 @@ public class BasicPhysicObject : MonoBehaviour
     {
         this.velocity = velocity;
         this.angularVelocity = newAngularVelocity;
+    }
+
+    public float getStaticFriction()
+    {
+        return this.staticFriction;
+    }
+    public float getDynamicFriction()
+    {
+        return this.dynamicFriction;
     }
 
 }
