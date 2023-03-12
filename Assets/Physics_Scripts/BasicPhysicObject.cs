@@ -106,20 +106,20 @@ public class BasicPhysicObject : MonoBehaviour
         
 
     }
-    public void ApplyFrictionForce(Vector3 force, Vector3 r)
-    {
-        Vector3 result = resultingForce + force;
-        float test = Vector3.Dot(result, resultingForce);
-        if(test >= 0.0f)
-        {
-            resultingForce += force;
+    //public void ApplyFrictionForce(Vector3 force, Vector3 r)
+    //{
+    //    Vector3 result = resultingForce + force;
+    //    float test = Vector3.Dot(result, resultingForce);
+    //    if(test >= 0.0f)
+    //    {
+    //        resultingForce += force;
 
-            torque += (r.x * force.y) - (r.y * force.x);
-        }
+    //        torque += (r.x * force.y) - (r.y * force.x);
+    //    }
        
 
 
-    }
+    //}
 
     public void ApplyFriction()
     {
