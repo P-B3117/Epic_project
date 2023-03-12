@@ -1628,7 +1628,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 04d0400a5f2940746b61481fc5db2b70, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  mass: 2
+  mass: 60
   modelPoints:
   - {x: 1, y: 1, z: 0}
   - {x: 1, y: -10, z: 0}

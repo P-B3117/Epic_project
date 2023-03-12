@@ -129,11 +129,8 @@ public class BasicPhysicObject : MonoBehaviour
         float coef;
 
         Vector3 fric = Vector3.zero;
-        Debug.Log(velocity);
-        //if(velocity.magnitude <= 0.15)
-        //{
-        //    angularVelocity = 0;
-        //}
+        
+       
         for (int i = 0; i < contact.Count; i++)
         {
             Vector3 normal = contact[i].getNormal();

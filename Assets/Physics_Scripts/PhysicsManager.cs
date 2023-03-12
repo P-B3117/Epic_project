@@ -84,7 +84,7 @@ public class PhysicsManager : MonoBehaviour
 			physicObjects[i].UpdateState(stepLength);
 			meshColliders[i].UpdateColliderOrientation();
 			physicObjects[i].ApplyForceGravity();
-            physicObjects[i].ApplyFriction();
+            //physicObjects[i].ApplyFriction();
 
 
         }
