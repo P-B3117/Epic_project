@@ -3523,7 +3523,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 04d0400a5f2940746b61481fc5db2b70, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  mass: 900
+  mass: 90
   modelPoints: []
   material: {fileID: 2100000, guid: f8ea0197e3e47dd4aac55742c67427e4, type: 2}
   isCircle: 1
@@ -6304,7 +6304,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 04d0400a5f2940746b61481fc5db2b70, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  mass: 900
+  mass: 90
   modelPoints: []
   material: {fileID: 2100000, guid: f8ea0197e3e47dd4aac55742c67427e4, type: 2}
   isCircle: 1
@@ -8849,7 +8849,7 @@ MonoBehaviour:
   bo2: {fileID: 840437794}
   frequency: 1
   dampingRatio: 0.1
-  direction: {x: 10, y: 5}
+  direction: {x: 2, y: 5}
 --- !u!54 &1893595306
 Rigidbody:
   m_ObjectHideFlags: 0
