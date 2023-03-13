@@ -46,9 +46,6 @@ public class DistanceJoint : MonoBehaviour
         bpB = bo2.GetComponent<BasicPhysicObject>();
         mcA = bo1.GetComponent<MeshColliderScript>();
         mcB = bo2.GetComponent<MeshColliderScript>();
-        dampingRatio = Mathf.Clamp(dampingRatio, 0.0f, 1.0f);
-        
-
     }
     public void UpdateJointState(float timeStep)
     {
@@ -84,8 +81,10 @@ public class DistanceJoint : MonoBehaviour
         else{invEffectiveMass = invMassSum + crossA * crossA * invInertiaA / d.sqrMagnitude + crossB * crossB * invInertiaB / d.sqrMagnitude;}
      
         float m = invEffectiveMass != 0 ? 1 / invEffectiveMass : 0;
-        jointMass = m;
-
+        if (frequency >= 0.0f)
+        {
+            jointMass = m;
+        }
         // Compute beta and gamma values
         ComputeBetaAndGamma(timeStep);
         // Compute the bias term for the constraint
@@ -158,7 +157,7 @@ public class DistanceJoint : MonoBehaviour
             float omega = 2.0f * Mathf.PI * frequency;
             float k = jointMass * omega * omega;               // Spring
             float h = timeStep;
-            float d = 4.0f * jointMass * dampingRatio * omega; // Damping coefficient
+            float d = 2.0f * jointMass * dampingRatio * omega; // Damping coefficient
 
             beta = h * k / (d + h * k);
             gamma = 1.0f / ((d + h * k) * h);

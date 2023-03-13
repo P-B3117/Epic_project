@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-public class SpringJoint : MonoBehaviour
+public class LineJoint : MonoBehaviour
 {
     [SerializeField]
     GameObject bo1;
@@ -62,7 +62,10 @@ public class SpringJoint : MonoBehaviour
 
     public void UpdateJointState(float timeStep)
     {
-
+        bpA = bo1.GetComponent<BasicPhysicObject>();
+        bpB = bo2.GetComponent<BasicPhysicObject>();
+        mcA = bo1.GetComponent<MeshColliderScript>();
+        mcB = bo2.GetComponent<MeshColliderScript>();
         //get positions 
         Transform bodyA = bo1.transform;
         Transform bodyB = bo2.transform;
