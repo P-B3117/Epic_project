@@ -65,22 +65,26 @@ public class CollisionManager
         Vector3 tangent = relativeVelocity - (Vector3.Dot(relativeVelocity, normal) * normal);
         tangent = tangent.normalized;
 
+
         float momentOfInertiaObjectImpulseInhibitorFRICTION = Mathf.Pow(Vector3.Dot(perpVectorObject, tangent), 2) / objectInertia;
         float momentOfInertiaOtherObjectImpulseInhibitorFRICTION = Mathf.Pow(Vector3.Dot(perpVectorOtherObject, tangent), 2) / otherObjectInertia;
-        float jt = -Vector3.Dot(relativeVelocity, tangent);
+        float speedAlongTangent = Vector3.Dot(relativeVelocity, tangent);
+        float jt = -(0.2f)*Vector3.Dot(relativeVelocity, tangent);
         jt = jt / (massImpulseInhibitor + momentOfInertiaObjectImpulseInhibitorFRICTION +momentOfInertiaOtherObjectImpulseInhibitorFRICTION);
 
         float mu = Mathf.Sqrt(friction1Static* friction1Static + friction2Static* friction2Static);
 
         Vector3 frictionImpulse;
-        if (Mathf.Abs(jt) < j * mu)
+        if (Mathf.Abs(jt) <= j * mu)
         {
-            frictionImpulse = jt * tangent;
+            frictionImpulse = jt * tangent * mu;
+            
         }
         else
         {
             float dynamicFriction = Mathf.Sqrt(friction1Dynamic * friction1Dynamic + friction2Dynamic * friction2Dynamic);
             frictionImpulse = -j * tangent * dynamicFriction;
+            
         }
 
 
