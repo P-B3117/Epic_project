@@ -84,7 +84,7 @@ public class PhysicsManager : MonoBehaviour
 			physicObjects[i].UpdateState(stepLength);
 			meshColliders[i].UpdateColliderOrientation();
 			physicObjects[i].ApplyForceGravity();
-            physicObjects[i].ApplyFriction();
+			
 
 
         }
@@ -119,6 +119,7 @@ public class PhysicsManager : MonoBehaviour
 					{
 						col = HelperFunctionClass.TestCollisionPolygonCircle(meshColliders[j].GetWorldSpacePoints(), meshColliders[j].transform.position, meshColliders[i].transform.position, meshColliders[i].RayonOfCircle());
 						changeUp = -1;
+						
 					}
 					else if (jCircle)
 					{
@@ -167,8 +168,8 @@ public class PhysicsManager : MonoBehaviour
 
 						//Solve the collision using impulse physic
 						normal = col.GetMTV().normalized;
-						
-						
+
+				
 
 
 
@@ -176,14 +177,19 @@ public class PhysicsManager : MonoBehaviour
 					//Circle vs Polygon
 					else if (meshColliders[i].IsCircle())
 					{
+						
+						
 						//Find the collisionPoint 
 						col = HelperFunctionClass.FindCollisionPointPolygonCircle(col, meshColliders[i].transform.position, meshColliders[i].RayonOfCircle());
 						if (col == null) { continue; }
 
 						//Solve the collision using impulse physic
-						//IMPORTANT DE INVERSER LA NORMALE!!!!
-						normal = -col.GetMTV().normalized;
+						normal = col.GetMTV().normalized;
 
+				
+
+						//IMPORTANT DE INVERSER LA NORMALE!!!!
+						normal *= -1;
 
 					}
 					//Polygon vs Circle
@@ -194,6 +200,9 @@ public class PhysicsManager : MonoBehaviour
 						if (col == null) { continue; }
 						//Solve the collision using impulse physic
 						normal = col.GetMTV().normalized;
+
+					
+
 					}
 					//Polygon vs Polygon
 					else
@@ -203,10 +212,14 @@ public class PhysicsManager : MonoBehaviour
 						if (col == null) { continue; }
 						//Solve the collision using impulse physic
 						normal = col.GetMTV().normalized;
+
+						
+
 					}
-                    physicObjects[i].contact.Add(new FrictionInfo(-normal, physicObjects[j], col.GetContactPoint()));
-                    physicObjects[j].contact.Add(new FrictionInfo(normal, physicObjects[i], col.GetContactPoint()));
+                    
                     CollisionManager collisionManager = new CollisionManager();
+					
+
 
 					//Les RBP et RAP sont dans le mauvais sens mais en inversant les + et les - des operations, ca fonctionne quand meme!
 					Vector3 rBP = meshColliders[i].transform.position - col.GetContactPoint();
@@ -214,13 +227,21 @@ public class PhysicsManager : MonoBehaviour
 					float restitutionCollisionCoefficient = (physicObjects[j].getBounciness() + physicObjects[i].getBounciness()) / 2f;
 					List<object> newVelocities = collisionManager.CollisionHasHappened(physicObjects[j].getVelocity(), physicObjects[i].getVelocity(), normal, meshColliders[j].GetMass(),
 						meshColliders[i].GetMass(), restitutionCollisionCoefficient, physicObjects[j].getAngularVelocity(), physicObjects[i].getAngularVelocity(), rAP, rBP,
-						meshColliders[j].GetInertia(), meshColliders[i].GetInertia());
+						meshColliders[j].GetInertia(), meshColliders[i].GetInertia(),
+						physicObjects[i].getStaticFriction(), physicObjects[i].getDynamicFriction(),
+						physicObjects[j].getStaticFriction(), physicObjects[j].getDynamicFriction());
 
 					physicObjects[j].SetVelocity((Vector3)newVelocities[0], (float)newVelocities[2], stepLength);
 					physicObjects[i].SetVelocity((Vector3)newVelocities[1], (float)newVelocities[3], stepLength);
 				}
 			}
 		}
+
+
+		
+
+
+
 	}
 	private void JointPhysicCalculations()
 	{
