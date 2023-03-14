@@ -158,7 +158,7 @@ public class PhysicsManager : MonoBehaviour
 					Vector3 normal;
 
 					//Circle vs Circle
-					if (meshColliders[i].IsCircle() && meshColliders[j].IsCircle())
+					if (iCircle && jCircle)
 					{
 						//Find the collision point
 						col = HelperFunctionClass.FindCollisionPointTwoCircles(col, meshColliders[i].transform.position, meshColliders[i].RayonOfCircle(), meshColliders[j].transform.position, meshColliders[j].RayonOfCircle());
@@ -174,7 +174,7 @@ public class PhysicsManager : MonoBehaviour
 
 					}
 					//Circle vs Polygon
-					else if (meshColliders[i].IsCircle())
+					else if (iCircle)
 					{
 						//Find the collisionPoint 
 						col = HelperFunctionClass.FindCollisionPointPolygonCircle(col, meshColliders[i].transform.position, meshColliders[i].RayonOfCircle());
@@ -187,7 +187,7 @@ public class PhysicsManager : MonoBehaviour
 
 					}
 					//Polygon vs Circle
-					else if (meshColliders[j].IsCircle())
+					else if (jCircle)
 					{
 						//Find the collisionPoint 
 						col = HelperFunctionClass.FindCollisionPointPolygonCircle(col, meshColliders[j].transform.position, meshColliders[j].RayonOfCircle());
