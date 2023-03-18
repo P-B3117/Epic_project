@@ -13,7 +13,7 @@ using UnityEngine;
 public class PhysicsManager : MonoBehaviour
 {
 	//Change the variable numberOfStepsPerSecond to change the timerate calculations
-	private int numberOfStepsPerSecond = 100;
+	private int numberOfStepsPerSecond = 60;
 	private float stepLength;
 	private float numberOfUpdateCounter = 0;
 
@@ -22,7 +22,9 @@ public class PhysicsManager : MonoBehaviour
 	List<GameObject> objects;
 	[SerializeField]
 	List<GameObject> joints;
+	FluidManager fluidManager;
 
+	public Vector2 gravity;
 
 	List<MeshColliderScript> meshColliders;
 	List<BasicPhysicObject> physicObjects;
@@ -47,6 +49,12 @@ public class PhysicsManager : MonoBehaviour
 			physicsJoints.Add(joints[i].GetComponent<Joints>());
 
 		}
+
+
+		fluidManager = new FluidManager();
+		fluidManager.InitialiseParticlesSystem(10);
+
+
 		ChangeNumberOfStepsPerSecond(numberOfStepsPerSecond);
 		numberOfUpdateCounter = 0;
 		
@@ -238,8 +246,9 @@ public class PhysicsManager : MonoBehaviour
 		}
 
 
-		
 
+		fluidManager.FluidPhysicsCalculations(stepLength, gravity);
+		
 
 
 	}
