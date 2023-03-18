@@ -28,7 +28,7 @@ public class PhysicsManager : MonoBehaviour
 
 	List<MeshColliderScript> meshColliders;
 	List<BasicPhysicObject> physicObjects;
-	List<Joints> physicsJoints;
+	List<DistanceJoints> physicsJoints;
 
 
 	public void Start()
@@ -36,7 +36,7 @@ public class PhysicsManager : MonoBehaviour
 
 		meshColliders = new List<MeshColliderScript>();
 		physicObjects = new List<BasicPhysicObject>();
-		physicsJoints = new List<Joints>();
+		physicsJoints = new List<DistanceJoints>();
 		for (int i = 0; i < objects.Count; i++)
 		{
 			meshColliders.Add(objects[i].GetComponent<MeshColliderScript>());
@@ -46,7 +46,7 @@ public class PhysicsManager : MonoBehaviour
 		}
 		for (int i = 0; i < joints.Count; i++)
 		{
-			physicsJoints.Add(joints[i].GetComponent<Joints>());
+			physicsJoints.Add(joints[i].GetComponent<DistanceJoints>());
 
 		}
 

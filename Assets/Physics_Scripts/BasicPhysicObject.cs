@@ -165,5 +165,9 @@ public class BasicPhysicObject : MonoBehaviour
     {
         return this.dynamicFriction;
     }
+    public bool getIsStatic()
+    {
+        return this.isStatic;
+    }
 
 }
