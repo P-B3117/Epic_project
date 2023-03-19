@@ -30,7 +30,9 @@ public class PhysicsManager : MonoBehaviour
 	List<BasicPhysicObject> physicObjects;
 	List<DistanceJoints> physicsJoints;
 
-
+	private float numberstepdelay = 60;
+	
+	private float c1 = 0;
 	public void Start()
 	{
 
@@ -46,10 +48,12 @@ public class PhysicsManager : MonoBehaviour
 		}
 		for (int i = 0; i < joints.Count; i++)
 		{
+
 			physicsJoints.Add(joints[i].GetComponent<DistanceJoints>());
 
 		}
-
+        
+        
 
 		fluidManager = new FluidManager();
 		fluidManager.InitialiseParticlesSystem(10);
@@ -73,10 +77,14 @@ public class PhysicsManager : MonoBehaviour
 		{
 
 			PhysicCalculations();
-			if (joints.Count > 0)
+			if (numberstepdelay < c1)
 			{
-				JointPhysicCalculations();
-			}
+				if (joints.Count > 0)
+				{
+					JointPhysicCalculations();
+				}
+            }
+            else { c1++; }
 			numberOfUpdateCounter--;
 		}
 
@@ -92,8 +100,6 @@ public class PhysicsManager : MonoBehaviour
 			physicObjects[i].UpdateState(stepLength);
 			meshColliders[i].UpdateColliderOrientation();
 			physicObjects[i].ApplyForceGravity();
-			
-
 
         }
 

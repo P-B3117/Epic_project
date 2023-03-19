@@ -16,8 +16,8 @@ public class DistanceJoints : MonoBehaviour
     public float dampingRatio;
     public float length;
     public bool onlyPull;
-    public float offsetA;
-    public float offsetB;
+    public Vector3 offsetA;
+    public Vector3 offsetB;
     //private Vector3 localAnchorA;
     //private Vector3 localAnchorB;
     private Transform bodyA;
@@ -49,26 +49,33 @@ public class DistanceJoints : MonoBehaviour
     }
     public void UpdateJointState(float timeStep)
     {
+        bpA = bo1.GetComponent<BasicPhysicObject>();
+        bpB = bo2.GetComponent<BasicPhysicObject>();
+        mcA = bo1.GetComponent<MeshColliderScript>();
+        mcB = bo2.GetComponent<MeshColliderScript>();
+
+
         dampingRatio = Mathf.Clamp(dampingRatio, 0.0f, 1.0f);
         //get positions 
         Transform bodyA = bo1.transform;
         Transform bodyB = bo2.transform;
         anchorA = bodyA.position;
         anchorB = bodyB.position;
+        Vector3 ra = (bodyA.rotation) *offsetA;
+        Vector3 rb = (bodyB.rotation) *offsetB;
         // Compute the vector between the two anchor points
-        Vector3 d = anchorB - anchorA;
+        Vector3 pa = ra + anchorA;
+        Vector3 pb = rb + anchorB;
 
-        // Compute the current length of the constraint
+        Vector3 d = pa - pb;
+
+        // Compute the current length 
         float currentLength = d.magnitude;
 
         // Compute the effective mass of the constraint 
         // M = (J · M^-1 · J^t)^-1
-        //need to be zero for now
-        Vector3 ra = anchorA - bodyA.position;
-        Vector3 rb = anchorB - bodyB.position;
-        //also .z cuz 0 for now 
-        float crossA = Vector3.Cross(ra, Vector3.forward).z;
-        float crossB = Vector3.Cross(rb, Vector3.forward).z;
+        float crossA = d.x * ra.y - d.x * ra.x;
+        float crossB = d.x * rb.y - d.x * rb.x;
         float invMassA = 1.0f / mcA.GetMass();
         float invMassB = 1.0f / mcB.GetMass();
         float invInertiaA = 1.0f / mcA.GetInertia();
@@ -88,8 +95,9 @@ public class DistanceJoints : MonoBehaviour
         // Compute beta and gamma values
         ComputeBetaAndGamma(timeStep);
         // Compute the bias term for the constraint
+      
         float bias = (currentLength - length) * beta / timeStep;
-
+        
         // Compute the relative velocities and Jacobian for the constraint
         // J = [-t^t, -(ra + d)×t, t^t, rb×t]
         Vector3 v1 = bpA.getVelocity();
@@ -105,7 +113,7 @@ public class DistanceJoints : MonoBehaviour
         float jv = Vector3.Dot(dv, J);
 
         // Compute the impulse magnitude for the constraint
-        float impulseMag = m * -(jv + bias + gamma);
+        float impulseMag = m * (jv + bias + gamma);
 
         // Compute the corrective impulse and apply it to the bodies
         float impulseA = impulseMag * invMassA;
@@ -123,14 +131,14 @@ public class DistanceJoints : MonoBehaviour
         //prevent any impulse added if static... 
         if (!bpA.getIsStatic())
         {
-            v1 -= impulseA * invMassA * impulseDir;
-            w1 -= Vector3.Dot(ra, impulse) * invInertiaA;
+            v1 -= impulseA * impulseDir;
+            w1 -= Vector3.Dot(impulse,ra ) * invInertiaA;
             bpA.SetVelocity(v1, w1,timeStep);
         }
         if (!bpB.getIsStatic())
         {
-            v2 += impulseB * invMassB * impulseDir;
-            w2 += Vector3.Dot(rb, impulse) * invInertiaB;
+            v2 += impulseB * impulseDir;
+            w2 += Vector3.Dot(impulse, rb) * invInertiaB;
 
             bpB.SetVelocity(v2, w2,timeStep);
         }
@@ -147,6 +155,7 @@ public class DistanceJoints : MonoBehaviour
             beta = 1.0f;
             gamma = 0.0f;
             jointMass = float.PositiveInfinity;
+            frequency = 0.0f;
         }
         else
         {
@@ -177,6 +186,6 @@ public class DistanceJoints : MonoBehaviour
     private void OnDrawGizmos()
     {
         Gizmos.color = Color.red;
-        Gizmos.DrawLine(anchorA, anchorB);
+        Gizmos.DrawLine(anchorA+offsetA, anchorB+offsetB);
     }
 }
