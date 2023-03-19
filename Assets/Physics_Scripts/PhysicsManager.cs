@@ -33,6 +33,7 @@ public class PhysicsManager : MonoBehaviour
 	private float numberstepdelay = 60;
 	
 	private float c1 = 0;
+	
 	public void Start()
 	{
 
@@ -45,6 +46,7 @@ public class PhysicsManager : MonoBehaviour
 			physicObjects.Add(objects[i].GetComponent<BasicPhysicObject>());
 
 			physicObjects[i].SetCollider(meshColliders[i]);
+			physicObjects[i].Start();
 		}
 		for (int i = 0; i < joints.Count; i++)
 		{
@@ -79,6 +81,7 @@ public class PhysicsManager : MonoBehaviour
 			PhysicCalculations();
 			if (numberstepdelay < c1)
 			{
+				
 				if (joints.Count > 0)
 				{
 					JointPhysicCalculations();

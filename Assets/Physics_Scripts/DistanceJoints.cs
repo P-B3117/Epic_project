@@ -39,6 +39,12 @@ public class DistanceJoints : MonoBehaviour
     private MeshColliderScript mcA;
     private MeshColliderScript mcB;
     private float jointMass;
+    private float invMassA;
+    private float invMassB;
+    private float invInertiaA;
+    private float invInertiaB;
+    private float invInertiaSum;
+    private float invMassSum;
     public void Start()
     {
         // Get references to the BasicPhysicObject and MeshColliderScript components for both bodies
@@ -46,6 +52,12 @@ public class DistanceJoints : MonoBehaviour
         bpB = bo2.GetComponent<BasicPhysicObject>();
         mcA = bo1.GetComponent<MeshColliderScript>();
         mcB = bo2.GetComponent<MeshColliderScript>();
+        invMassA = 1.0f / mcA.GetMass();
+        invMassB = 1.0f / mcB.GetMass();
+        invInertiaA = 1.0f / mcA.GetInertia();
+         invInertiaB = 1.0f / mcB.GetInertia();
+        invInertiaSum = invInertiaA + invInertiaB;
+        invMassSum = invMassA + invMassB;
     }
     public void UpdateJointState(float timeStep)
     {
@@ -53,8 +65,6 @@ public class DistanceJoints : MonoBehaviour
         bpB = bo2.GetComponent<BasicPhysicObject>();
         mcA = bo1.GetComponent<MeshColliderScript>();
         mcB = bo2.GetComponent<MeshColliderScript>();
-
-
         dampingRatio = Mathf.Clamp(dampingRatio, 0.0f, 1.0f);
         //get positions 
         Transform bodyA = bo1.transform;
@@ -76,12 +86,12 @@ public class DistanceJoints : MonoBehaviour
         // M = (J · M^-1 · J^t)^-1
         float crossA = d.x * ra.y - d.x * ra.x;
         float crossB = d.x * rb.y - d.x * rb.x;
-        float invMassA = 1.0f / mcA.GetMass();
-        float invMassB = 1.0f / mcB.GetMass();
-        float invInertiaA = 1.0f / mcA.GetInertia();
-        float invInertiaB = 1.0f / mcB.GetInertia();
-        float invMassSum = invMassA + invMassB;
-        float invInertiaSum = invInertiaA + invInertiaB;
+          invMassA = 1.0f / mcA.GetMass();
+        invMassB = 1.0f / mcB.GetMass();
+        invInertiaA = 1.0f / mcA.GetInertia();
+         invInertiaB = 1.0f / mcB.GetInertia();
+        invInertiaSum = invInertiaA + invInertiaB;
+        invMassSum = invMassA + invMassB;
         float invEffectiveMass;
         if (bpA.getIsStatic()) { invEffectiveMass = invMassB + crossB * crossB * invInertiaB / d.sqrMagnitude; }
         else if (bpB.getIsStatic()) { invEffectiveMass = invMassA + crossA * crossA * invInertiaA / d.sqrMagnitude; }
