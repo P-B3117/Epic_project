@@ -14,10 +14,10 @@ public class FluidManager
 	int gridSize = 25;
 
 	//Viscosity's linear dependence on the velocity
-	float SIGMA = 80f;
+	float SIGMA =3f;
 
 	//Viscosity's quadratic dependence on the velocity
-	float BETA = 69f;
+	float BETA =3f;
 
 
 	//Stiffness used in DoubleDensityRelaxation
@@ -56,24 +56,13 @@ public class FluidManager
 	{
 		//Vector3 gravity = new Vector3(0, -UniversalVariable.GetGravity() * timeStep);
 		Vector3 gravity = -g * timeStep;
-		grid.ResetGrid();
+		
 		for (int i = 0; i < particles.Count; i++) 
 		{
 			Particle p = particles[i];
 
 			//ApplyForces
 			p.AddVelocity(gravity);
-
-
-			//UpdatePositions
-			p.SetPrevPosition(p.GetPosition());
-			p.AddPosition(p.GetVelocity() * timeStep);
-
-
-			//Update hashmap
-			grid.AddParticle(particles[i]);
-
-
 
 			//ApplyViscosity
 			List<int> neighbors = p.GetNeighbors();
@@ -88,9 +77,23 @@ public class FluidManager
 					velInward /= length;
 					float q = length / radius;
 					Vector3 I = 0.5f * timeStep * (1 - q) * (SIGMA * velInward + BETA * velInward * velInward) * vPN;
+					
 					p.AddVelocity(-I);
 				}
 			}
+
+
+			//UpdatePositions
+			p.SetPrevPosition(p.GetPosition());
+			p.AddPosition(p.GetVelocity() * timeStep);
+
+			
+
+			
+
+
+
+			
 
 
 		}
@@ -131,12 +134,12 @@ public class FluidManager
 
 		}
 
-		
 
 
 
 
 
+		grid.ResetGrid();
 		//ResolveCollisions
 		for (int i = 0; i < particles.Count; i++)
 		{
@@ -170,6 +173,8 @@ public class FluidManager
 
 			
 			p.SetPosition(newPos);
+			//Update hashmap
+			grid.AddParticle(particles[i]);
 		}
 
 
