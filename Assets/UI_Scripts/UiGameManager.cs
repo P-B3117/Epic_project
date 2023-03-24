@@ -150,6 +150,9 @@ public class UiGameManager : MonoBehaviour
     {
         // make time frames/calculations equal to 0
         ChangeTime("0");
+        Color normalColor = GameObject.Find("Canvas/GamePanel/BoutonFF2").GetComponent<Button>().colors.normalColor;
+        GameObject.Find("Canvas/GamePanel/BoutonFF2").GetComponent<Image>().color = normalColor;
+        GameObject.Find("Canvas/GamePanel/BoutonFF3").GetComponent<Image>().color = normalColor;
     }
     
     // bouton play (6)
@@ -157,6 +160,9 @@ public class UiGameManager : MonoBehaviour
     {
         // make time frames/calculations start
         ChangeTime("1");
+        Color normalColor = GameObject.Find("Canvas/GamePanel/BoutonFF2").GetComponent<Button>().colors.normalColor;
+        GameObject.Find("Canvas/GamePanel/BoutonFF2").GetComponent<Image>().color = normalColor;
+        GameObject.Find("Canvas/GamePanel/BoutonFF3").GetComponent<Image>().color = normalColor;
     }
 
     // bouton 2x (7)
