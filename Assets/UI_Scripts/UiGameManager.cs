@@ -73,6 +73,145 @@ public class UiGameManager : MonoBehaviour
         SceneManager.LoadScene(1);
     }
 
+    private bool curseur = false, rotation = false, forces = false, twoX = false, threeX = false;
+
+    // bouton curseur (1)
+    public void DeplacerObjets()
+    {
+        if (curseur)
+        {
+            Color normalColor = GameObject.Find("Canvas/GamePanel/BoutonCurseur").GetComponent<Button>().colors.normalColor;
+            GameObject.Find("Canvas/GamePanel/BoutonCurseur").GetComponent<Image>().color = normalColor;
+        }
+
+        else
+        {
+            Color pressedColor = GameObject.Find("Canvas/GamePanel/BoutonCurseur").GetComponent<Button>().colors.pressedColor;
+            GameObject boutonCurseur = GameObject.Find("Canvas/GamePanel/BoutonCurseur");
+            boutonCurseur.GetComponent<Image>().color = pressedColor;
+            
+            // code ici qui fait en sorte qu'on peut déplacer des objets
+            
+        }
+        // une fois qu'il se fait click, faire en sorte que le bouton reste "pesé" jusqu'à ce qu'il soit reclicked
+
+        curseur = !curseur;
+    }
+
+    // bouton rotation (2)
+    public void TournerObjets()
+    {
+        // une fois qu'il se fait click, faire en sorte que le bouton reste "pesé" jusqu'à ce qu'il soit reclicked on
+        if (rotation)
+        {
+            Color normalColor = GameObject.Find("Canvas/GamePanel/BoutonRotation").GetComponent<Button>().colors.normalColor;
+            GameObject.Find("Canvas/GamePanel/BoutonRotation").GetComponent<Image>().color = normalColor;
+        }
+
+        else
+        {
+            Color pressedColor = GameObject.Find("Canvas/GamePanel/BoutonRotation").GetComponent<Button>().colors.pressedColor;
+            GameObject.Find("Canvas/GamePanel/BoutonRotation").GetComponent<Image>().color = pressedColor;
+            // faire en sorte qu'on peut tourner des objets ici
+
+        }
+
+        rotation = !rotation;
+    }
+
+    // bouton F (3)
+    public void AppliquerForcesDePhysique()
+    {
+        // code qui fait en sorte que les forces de physique seront appliquées sur les objets
+        if (forces)
+        {
+            Color normalColor = GameObject.Find("Canvas/GamePanel/BoutonF").GetComponent<Button>().colors.normalColor;
+            GameObject.Find("Canvas/GamePanel/BoutonF").GetComponent<Image>().color = normalColor;
+        }
+
+        else
+        {
+            Color pressedColor = GameObject.Find("Canvas/GamePanel/BoutonF").GetComponent<Button>().colors.pressedColor;
+            GameObject.Find("Canvas/GamePanel/BoutonF").GetComponent<Image>().color = pressedColor;
+            // une fois qu'il se fait click, faire en sorte que le bouton reste "pesé" jusqu'à ce qu'il soit reclicked on
+
+        }
+        forces = !forces;
+    }
+
+    // bouton poubelle (4)
+    public void ResetFenetre()
+    {
+        // code qui fait en sorte que les objets qui étaient dans la fenêtre disparaissent.
+    }
+
+    // bouton pause (5)
+    public void PauseScene()
+    {
+        // make time frames/calculations equal to 0
+        ChangeTime("0");
+        Color normalColor = GameObject.Find("Canvas/GamePanel/BoutonFF2").GetComponent<Button>().colors.normalColor;
+        GameObject.Find("Canvas/GamePanel/BoutonFF2").GetComponent<Image>().color = normalColor;
+        GameObject.Find("Canvas/GamePanel/BoutonFF3").GetComponent<Image>().color = normalColor;
+    }
+    
+    // bouton play (6)
+    public void PlayScene()
+    {
+        // make time frames/calculations start
+        ChangeTime("1");
+        Color normalColor = GameObject.Find("Canvas/GamePanel/BoutonFF2").GetComponent<Button>().colors.normalColor;
+        GameObject.Find("Canvas/GamePanel/BoutonFF2").GetComponent<Image>().color = normalColor;
+        GameObject.Find("Canvas/GamePanel/BoutonFF3").GetComponent<Image>().color = normalColor;
+    }
+
+    // bouton 2x (7)
+    public void TwoXFaster()
+    {
+        // une fois qu'il se fait click, faire en sorte que le bouton reste "pesé" jusqu'à ce qu'il soit reclicked on
+        if (twoX && !threeX)
+        {
+            Color normalColor = GameObject.Find("Canvas/GamePanel/BoutonFF2").GetComponent<Button>().colors.normalColor;
+            GameObject.Find("Canvas/GamePanel/BoutonFF2").GetComponent<Image>().color = normalColor;
+            ChangeTime("1");
+            twoX = !twoX;
+        }
+
+        else if (!threeX)
+        {
+            Color pressedColor = GameObject.Find("Canvas/GamePanel/BoutonFF2").GetComponent<Button>().colors.pressedColor;
+            GameObject.Find("Canvas/GamePanel/BoutonFF2").GetComponent<Image>().color = pressedColor;
+            // make time frames/calculations go twice as fast/second
+            ChangeTime("2");
+            twoX = !twoX;
+        }
+        
+    }
+
+    // bouton 3x (8)
+    public void ThreeXFaster()
+    {
+        // une fois qu'il se fait click, faire en sorte que le bouton reste "pesé" jusqu'à ce qu'il soit reclicked on
+        if (threeX && !twoX)
+        {
+            Color normalColor = GameObject.Find("Canvas/GamePanel/BoutonFF3").GetComponent<Button>().colors.normalColor;
+            GameObject.Find("Canvas/GamePanel/BoutonFF3").GetComponent<Image>().color = normalColor;
+            ChangeTime("1");
+            threeX = !threeX;
+        }
+        
+        else if (!twoX)
+        {
+            Color pressedColor = GameObject.Find("Canvas/GamePanel/BoutonFF3").GetComponent<Button>().colors.pressedColor;
+            GameObject.Find("Canvas/GamePanel/BoutonFF3").GetComponent<Image>().color = pressedColor;
+            // make time frames/calculations go three times as fast/second
+            ChangeTime("3");
+            threeX = !threeX;
+        }
+        
+    }
+
+
     public void ShowSettingsPanel()
     {
         GamePanel.SetActive(false);

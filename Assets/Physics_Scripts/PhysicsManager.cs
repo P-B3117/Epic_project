@@ -67,7 +67,7 @@ public class PhysicsManager : MonoBehaviour
 	//Update the physics objects on a fixed time rate
 	public void Update()
 	{
-		numberOfUpdateCounter += Time.deltaTime / stepLength;
+		numberOfUpdateCounter += UniversalVariable.GetTime() * Time.deltaTime / stepLength;
 
 		while (numberOfUpdateCounter > 1)
 		{
