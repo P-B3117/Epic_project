@@ -2,21 +2,20 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class FluidGrid 
+public class Grid 
 {
 	float cellSize;
 	int gridLength;
-	Vector2 gridOffset;
+
 	
 
 	List<int>[,] gridInfo;
 
 
-	public FluidGrid(float cellSize, int gridLength, Vector2 offset)
+	public Grid(float cellSize, int gridLength)
 	{
 		this.cellSize = cellSize;
 		this.gridLength = gridLength;
-		gridOffset = offset;
 		gridInfo = new List<int>[gridLength,gridLength];
 		for (int i = 0; i < gridLength; i++)
 		{
@@ -38,19 +37,20 @@ public class FluidGrid
 			}
 		}
 	}
-	public void AddParticle( Particle p) 
+	public void AddParticle(Particle p) 
 	{
 		Vector3 pPos = p.GetPosition();
-		int x = (int)((pPos.x-gridOffset.x) / cellSize);
-		int y = (int)((pPos.y-gridOffset.y) / cellSize);
+		int x = (int)(pPos.x / cellSize);
+		int y = (int)(pPos.y / cellSize);
+
+
+
+
 		
 		gridInfo[x, y].Add(p.GetIndex());
-
-		p.SetGridPosition(new intPosition(x, y));
 		
+		p.SetGridPosition(new intPosition(x, y));
 	}
-
-	
 
 	public List<int> PossibleNeighbors(Particle p) 
 	{

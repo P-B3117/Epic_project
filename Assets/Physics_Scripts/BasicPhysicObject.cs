@@ -28,6 +28,7 @@ public class BasicPhysicObject : MonoBehaviour
     [SerializeField]
     float bounciness = 0.5f;
 
+    public List<FrictionInfo> contact;
 
 
 
@@ -42,22 +43,6 @@ public class BasicPhysicObject : MonoBehaviour
     MeshColliderScript collider;
 
 
-
-    Vector3 frictionForce;
-    Vector3 inverseNormal;
-    Vector3 pVelocity;
-
-    public void OnDrawGizmos() 
-    {
-		//Gizmos.color = Color.white;
-		//Gizmos.DrawLine(transform.position, transform.position + frictionForce);
-		//Gizmos.color = Color.red;
-		//Gizmos.DrawLine(transform.position, transform.position + pVelocity * 100);
-		////Gizmos.color = Color.blue;
-		////Gizmos.DrawLine(transform.position, transform.position + inverseNormal * 100);
-	}
-
-
     public void Start()
     {
         resultingForce = Vector3.zero;
@@ -65,7 +50,7 @@ public class BasicPhysicObject : MonoBehaviour
 
         velocity = Vector2.zero;
         angularVelocity = 0;
- 
+        contact = new List<FrictionInfo>();
     }
 
 
@@ -121,8 +106,66 @@ public class BasicPhysicObject : MonoBehaviour
         
 
     }
+    //public void ApplyFrictionForce(Vector3 force, Vector3 r)
+    //{
+    //    Vector3 result = resultingForce + force;
+    //    float test = Vector3.Dot(result, resultingForce);
+    //    if(test >= 0.0f)
+    //    {
+    //        resultingForce += force;
 
-	
+    //        torque += (r.x * force.y) - (r.y * force.x);
+    //    }
+       
+
+
+    //}
+
+    public void ApplyFriction()
+    {
+
+        float force;
+        float friction;
+        float coef;
+
+        Vector3 fric = Vector3.zero;
+        
+       
+        for (int i = 0; i < contact.Count; i++)
+        {
+            Vector3 normal = contact[i].getNormal();
+            force = Vector3.Dot(-normal, resultingForce);
+            BasicPhysicObject autre = contact[i].getBasicPhysicObject();
+
+
+            if (velocity.magnitude < 0.1f)
+            {
+                coef = autre.getStaticFriction();
+                friction = force * coef;
+            }
+            else
+            {
+                coef = autre.getDynamicFriction();
+                friction = force * coef;
+            }
+            Vector3 rbp = transform.position - contact[i].getCollisionPoint();
+            Vector3 rbpPerp = new Vector3(-rbp.y, rbp.x, 0.0f);
+            Vector3 v = velocity - angularVelocity * rbpPerp;
+            Vector3 inverseNormal = new Vector3(-normal.y, normal.x, 0.0f);
+
+            float direction = Vector3.Dot(v, inverseNormal);
+            if(Vector3.Dot(normal,velocity) > 0.0f)
+            {
+                continue;
+            }
+            inverseNormal = inverseNormal * direction;
+
+            fric = inverseNormal.normalized * -1 * friction;
+            Vector3 r = contact[i].getCollisionPoint() - transform.position;
+            ApplyForce(fric, r);
+        }
+        contact.Clear();
+    }
 
     public Vector3 getVelocity()
     {
@@ -164,10 +207,6 @@ public class BasicPhysicObject : MonoBehaviour
     public float getDynamicFriction()
     {
         return this.dynamicFriction;
-    }
-    public bool getIsStatic()
-    {
-        return this.isStatic;
     }
 
 }

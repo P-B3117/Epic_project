@@ -9,7 +9,7 @@ public class CollisionManager
     public CollisionManager() { }
 
     public List<object> CollisionHasHappened(Vector3 objectVelocity, Vector3 otherObjectVelocity, Vector3 normal, float objectMass, float otherObjectMass, float coefficientOfRestitution, float objectAngularVelocity,
-        float otherObjectAngularVelocity, Vector3 rVectorObject, Vector3 rVectorOtherObject, float objectInertia, float otherObjectInertia, float friction1Static, float friction1Dynamic, float friction2Static, float friction2Dynamic)
+        float otherObjectAngularVelocity, Vector3 rVectorObject, Vector3 rVectorOtherObject, float objectInertia, float otherObjectInertia)
     {
 
         normal = normal.normalized; // Calculate the normal vector
@@ -33,9 +33,6 @@ public class CollisionManager
 
         float momentOfInertiaObjectImpulseInhibitor = Mathf.Pow(Vector3.Dot(perpVectorObject, normal), 2) / objectInertia;
         float momentOfInertiaOtherObjectImpulseInhibitor = Mathf.Pow(Vector3.Dot(perpVectorOtherObject, normal), 2) / otherObjectInertia;
-
-       
-
         float massImpulseInhibitor = (1f / objectMass + 1f / otherObjectMass);
 
         // Calculate the new velocity vectors after the collision
@@ -55,55 +52,15 @@ public class CollisionManager
 
         Vector3 impulse = j * normal;
 
-     
-
-
-
-
-
-        //Friction
-        Vector3 tangent = relativeVelocity - (Vector3.Dot(relativeVelocity, normal) * normal);
-        tangent = tangent.normalized;
-
-
-        float momentOfInertiaObjectImpulseInhibitorFRICTION = Mathf.Pow(Vector3.Dot(perpVectorObject, tangent), 2) / objectInertia;
-        float momentOfInertiaOtherObjectImpulseInhibitorFRICTION = Mathf.Pow(Vector3.Dot(perpVectorOtherObject, tangent), 2) / otherObjectInertia;
-        float speedAlongTangent = Vector3.Dot(relativeVelocity, tangent);
-        float jt = -(0.2f)*Vector3.Dot(relativeVelocity, tangent);
-        jt = jt / (massImpulseInhibitor + momentOfInertiaObjectImpulseInhibitorFRICTION +momentOfInertiaOtherObjectImpulseInhibitorFRICTION);
-
-        float mu = Mathf.Sqrt(friction1Static* friction1Static + friction2Static* friction2Static);
-
-        Vector3 frictionImpulse;
-        if (Mathf.Abs(jt) <= j * mu)
-        {
-            frictionImpulse = jt * tangent * mu;
-            
-        }
-        else
-        {
-            float dynamicFriction = Mathf.Sqrt(friction1Dynamic * friction1Dynamic + friction2Dynamic * friction2Dynamic);
-            frictionImpulse = -j * tangent * dynamicFriction;
-            
-        }
-
-
-        // maintenant: position update
         Vector3 newVelocity = objectVelocity + (1f / objectMass) * impulse;
+
         Vector3 newOtherVelocity = otherObjectVelocity - (1f / otherObjectMass) * impulse;
+
         // maintenant: angular rotation
         float newAngularVelocity = objectAngularVelocity + (Vector3.Dot(perpVectorObject, normal * -j) / objectInertia);
         float newOtherAngularVelocity = otherObjectAngularVelocity + (Vector3.Dot(perpVectorOtherObject, normal * j) / otherObjectInertia);
 
-
-        //ApplyFriction
-        newVelocity += (1f / objectMass) * frictionImpulse;
-        newOtherVelocity -= (1f / otherObjectMass) * frictionImpulse;
-
-		newAngularVelocity += (Vector3.Dot(perpVectorObject, -frictionImpulse) / objectInertia);
-		newOtherAngularVelocity += (Vector3.Dot(perpVectorOtherObject, frictionImpulse) / otherObjectInertia);
-
-		return new List<object> { newVelocity, newOtherVelocity, newAngularVelocity, newOtherAngularVelocity };
+        return new List<object> { newVelocity, newOtherVelocity, newAngularVelocity, newOtherAngularVelocity };
     }
 
 }
