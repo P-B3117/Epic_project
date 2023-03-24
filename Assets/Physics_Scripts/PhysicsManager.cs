@@ -22,7 +22,7 @@ public class PhysicsManager : MonoBehaviour
 	List<GameObject> objects;
 	[SerializeField]
 	List<GameObject> joints;
-	FluidManager fluidManager;
+	
 
 	public Vector2 gravity;
 
@@ -51,8 +51,7 @@ public class PhysicsManager : MonoBehaviour
 		}
 
 
-		fluidManager = new FluidManager();
-		fluidManager.InitialiseParticlesSystem(10);
+	
 
 
 		ChangeNumberOfStepsPerSecond(numberOfStepsPerSecond);
@@ -67,7 +66,7 @@ public class PhysicsManager : MonoBehaviour
 	//Update the physics objects on a fixed time rate
 	public void Update()
 	{
-		numberOfUpdateCounter += Time.deltaTime / stepLength;
+		numberOfUpdateCounter += UniversalVariable.GetTime()* Time.deltaTime / stepLength;
 
 		while (numberOfUpdateCounter > 1)
 		{
@@ -246,8 +245,6 @@ public class PhysicsManager : MonoBehaviour
 		}
 
 
-
-		fluidManager.FluidPhysicsCalculations(stepLength, gravity);
 		
 
 
