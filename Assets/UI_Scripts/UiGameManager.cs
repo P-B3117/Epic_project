@@ -143,6 +143,16 @@ public class UiGameManager : MonoBehaviour
     public void ResetFenetre()
     {
         // code qui fait en sorte que les objets qui étaient dans la fenêtre disparaissent.
+        Object[] meshColliders = GameObject.FindObjectsOfType(typeof(MeshColliderScript));
+        Object[] physicObjects = GameObject.FindObjectsOfType(typeof(BasicPhysicObject));
+        Debug.Log(meshColliders.Length);
+        for (int i = 0; i < meshColliders.Length; i++)
+        {
+            Debug.Log(i);
+            MeshColliderScript meshCollider = (MeshColliderScript)meshColliders[i];
+            BasicPhysicObject physicObject = (BasicPhysicObject)physicObjects[i];
+            Destroy(meshCollider.transform.gameObject);
+        }
     }
 
     // bouton pause (5)
