@@ -12,8 +12,10 @@ Shader "Unlit/UnlitBasicShader"
     }
     SubShader
     {
-        Tags { "RenderType"="Opaque" "DisableBatching" = "True"}
+        Tags { "Queue" = "Transparent"  "RenderType"="Transparent" "DisableBatching" = "True"}
         LOD 100
+        ZWrite Off
+        Blend SrcAlpha OneMinusSrcAlpha
 
         Pass
         {
