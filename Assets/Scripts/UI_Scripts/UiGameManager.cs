@@ -147,6 +147,7 @@ public class UiGameManager : MonoBehaviour
         rotation = !rotation;
     }
 
+    private float gravityBefore, airDragBefore;
     // bouton F (3)
     public void AppliquerForcesDePhysique()
     {
@@ -156,6 +157,8 @@ public class UiGameManager : MonoBehaviour
         {
             Color normalColor = GameObject.Find("Canvas/GamePanel/BoutonF").GetComponent<Button>().colors.normalColor;
             GameObject.Find("Canvas/GamePanel/BoutonF").GetComponent<Image>().color = normalColor;
+            if (UniversalVariable.GetGravity() == 0) { UniversalVariable.SetGravity(gravityBefore); } 
+            if (UniversalVariable.GetAirDrag() == 0) { UniversalVariable.SetAirDrag(airDragBefore); }
         }
 
         else
@@ -163,7 +166,10 @@ public class UiGameManager : MonoBehaviour
             Color pressedColor = GameObject.Find("Canvas/GamePanel/BoutonF").GetComponent<Button>().colors.pressedColor;
             GameObject.Find("Canvas/GamePanel/BoutonF").GetComponent<Image>().color = pressedColor;
             // une fois qu'il se fait click, faire en sorte que le bouton reste "pesé" jusqu'à ce qu'il soit reclicked on
-
+            gravityBefore = UniversalVariable.GetGravity();
+            airDragBefore = UniversalVariable.GetAirDrag();
+            UniversalVariable.SetGravity(0);
+            UniversalVariable.SetAirDrag(0);
         }
         forces = !forces;
     }
