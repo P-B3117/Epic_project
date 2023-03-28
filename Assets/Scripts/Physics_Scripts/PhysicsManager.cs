@@ -40,9 +40,13 @@ public class PhysicsManager : MonoBehaviour
 		for (int i = 0; i < objects.Count; i++)
 		{
 			meshColliders.Add(objects[i].GetComponent<MeshColliderScript>());
-			physicObjects.Add(objects[i].GetComponent<BasicPhysicObject>());
+			meshColliders[i].SetUpMesh();
+
+            physicObjects.Add(objects[i].GetComponent<BasicPhysicObject>());
 
 			physicObjects[i].SetCollider(meshColliders[i]);
+			physicObjects[i].IsWall = physicObjects[i].name.Contains("Wall");
+
 		}
 		for (int i = 0; i < joints.Count; i++)
 		{
@@ -77,6 +81,26 @@ public class PhysicsManager : MonoBehaviour
 				JointPhysicCalculations();
 			}
 			numberOfUpdateCounter--;
+		}
+
+	}
+
+	public void ResetList()
+	{
+		int count = physicObjects.Count;
+		
+		for (int i = count - 1; i >= 0; i--)
+		{
+			GameObject obj = objects[i];
+
+
+            if (!physicObjects[i].IsWall)
+			{
+				Destroy(obj);
+				physicObjects.RemoveAt(i);
+				meshColliders.RemoveAt(i);
+				objects.RemoveAt(i);
+			}
 		}
 
 	}

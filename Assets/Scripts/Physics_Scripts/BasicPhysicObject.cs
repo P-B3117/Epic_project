@@ -15,7 +15,7 @@ public class BasicPhysicObject : MonoBehaviour
     [Header("Fondamental variables")]
     [SerializeField]
     bool isStatic = false;
-
+    bool isWall = false;
 
 
 
@@ -46,6 +46,8 @@ public class BasicPhysicObject : MonoBehaviour
     Vector3 frictionForce;
     Vector3 inverseNormal;
     Vector3 pVelocity;
+
+    public bool IsWall { get => isWall; set => isWall = value; }
 
     public void OnDrawGizmos() 
     {

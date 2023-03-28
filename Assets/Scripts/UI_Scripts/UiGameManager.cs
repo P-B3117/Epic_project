@@ -23,6 +23,7 @@ public class UiGameManager : MonoBehaviour
     public Text MusicVolumeText;
     public Text SoundEffectVolumeText;
     public PrefabsHolder PrefabHolder;
+    public PhysicsManager physicsManager;
     // Start is called before the first frame update
 
 
@@ -172,6 +173,7 @@ public class UiGameManager : MonoBehaviour
     {
         ResetMouseState();
         // code qui fait en sorte que les objets qui étaient dans la fenêtre disparaissent.
+        physicsManager.ResetList();
     }
 
     public void ResetMouseState() { MOUSESTATE = -1; Destroy(currentShadowObject); currentShadowObject = null; }
