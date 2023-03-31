@@ -24,12 +24,14 @@ public class UiGameManager : MonoBehaviour
     public Text SoundEffectVolumeText;
     public PrefabsHolder PrefabHolder;
     public PhysicsManager physicsManager;
+
     // Start is called before the first frame update
 
 
 
-    //
+    //Slider functions variables
     private int MOUSESTATE;
+    List<GameObject> meshCreatorPoints;
     GameObject currentShadowObject;
 
 
@@ -49,17 +51,43 @@ public class UiGameManager : MonoBehaviour
 
     void Update()
     {
+       
         if (Input.GetKeyDown(KeyCode.Escape))
         {
             ShowPausePanel();
         }
 
 
+        //Functionality of the slider
         if (MOUSESTATE >= 0 && MOUSESTATE <= 4) 
         {
-          
+            
             Vector3 worldPoint = Camera.main.ScreenToWorldPoint(Input.mousePosition);
             currentShadowObject.transform.position = new Vector3(worldPoint.x, worldPoint.y, 0.0f);
+            //The worldPoint boundaries are : (-28.25, 20)      - (28.25, 20)
+            //                                (-28.25, -20)   - (28.25, -20)
+
+            //Check boundaries
+            MeshColliderScript mc = currentShadowObject.GetComponent<MeshColliderScript>();
+            mc.UpdateColliderOrientation();
+            Rect AABB = mc.GetBoundariesAABB();
+            if (AABB.position.x > -28.25f && AABB.position.x + AABB.width < 28.25 &&
+                AABB.position.y > -20 && AABB.position.y + AABB.height < 20)
+            {
+                currentShadowObject.GetComponent<MeshRenderer>().material.color = new Color(0.0f, 1.0f, 0.0f, 0.5f);
+                if (Input.GetMouseButtonDown(0)) 
+                {
+                    GameObject newGO = Instantiate(currentShadowObject);
+                    physicsManager.AddPhysicObject(newGO);
+                }
+            }
+            else 
+            {
+                currentShadowObject.GetComponent<MeshRenderer>().material.color = new Color(1.0f, 0.0f, 0.0f, 0.5f);
+                
+            }
+
+
             
 
         }
@@ -107,14 +135,14 @@ public class UiGameManager : MonoBehaviour
 
         if (curseur)
         {
-            Color normalColor = GameObject.Find("Canvas/GamePanel/BoutonCurseur").GetComponent<Button>().colors.normalColor;
-            GameObject.Find("Canvas/GamePanel/BoutonCurseur").GetComponent<Image>().color = normalColor;
+            Color normalColor = GameObject.Find("Canvas/ToolPanel/BoutonCurseur").GetComponent<Button>().colors.normalColor;
+            GameObject.Find("Canvas/ToolPanel/BoutonCurseur").GetComponent<Image>().color = normalColor;
         }
 
         else
         {
-            Color pressedColor = GameObject.Find("Canvas/GamePanel/BoutonCurseur").GetComponent<Button>().colors.pressedColor;
-            GameObject boutonCurseur = GameObject.Find("Canvas/GamePanel/BoutonCurseur");
+            Color pressedColor = GameObject.Find("Canvas/ToolPanel/BoutonCurseur").GetComponent<Button>().colors.pressedColor;
+            GameObject boutonCurseur = GameObject.Find("Canvas/ToolPanel/BoutonCurseur");
             boutonCurseur.GetComponent<Image>().color = pressedColor;
             
             // code ici qui fait en sorte qu'on peut déplacer des objets
@@ -132,14 +160,14 @@ public class UiGameManager : MonoBehaviour
         // une fois qu'il se fait click, faire en sorte que le bouton reste "pesé" jusqu'à ce qu'il soit reclicked on
         if (rotation)
         {
-            Color normalColor = GameObject.Find("Canvas/GamePanel/BoutonRotation").GetComponent<Button>().colors.normalColor;
-            GameObject.Find("Canvas/GamePanel/BoutonRotation").GetComponent<Image>().color = normalColor;
+            Color normalColor = GameObject.Find("Canvas/ToolPanel/BoutonRotation").GetComponent<Button>().colors.normalColor;
+            GameObject.Find("Canvas/ToolPanel/BoutonRotation").GetComponent<Image>().color = normalColor;
         }
 
         else
         {
-            Color pressedColor = GameObject.Find("Canvas/GamePanel/BoutonRotation").GetComponent<Button>().colors.pressedColor;
-            GameObject.Find("Canvas/GamePanel/BoutonRotation").GetComponent<Image>().color = pressedColor;
+            Color pressedColor = GameObject.Find("Canvas/ToolPanel/BoutonRotation").GetComponent<Button>().colors.pressedColor;
+            GameObject.Find("Canvas/ToolPanel/BoutonRotation").GetComponent<Image>().color = pressedColor;
             // faire en sorte qu'on peut tourner des objets ici
 
         }
@@ -155,16 +183,16 @@ public class UiGameManager : MonoBehaviour
         // code qui fait en sorte que les forces de physique seront appliquées sur les objets
         if (forces)
         {
-            Color normalColor = GameObject.Find("Canvas/GamePanel/BoutonF").GetComponent<Button>().colors.normalColor;
-            GameObject.Find("Canvas/GamePanel/BoutonF").GetComponent<Image>().color = normalColor;
+            Color normalColor = GameObject.Find("Canvas/ToolPanel/BoutonF").GetComponent<Button>().colors.normalColor;
+            GameObject.Find("Canvas/ToolPanel/BoutonF").GetComponent<Image>().color = normalColor;
             if (UniversalVariable.GetGravity() == 0) { UniversalVariable.SetGravity(gravityBefore); } 
             if (UniversalVariable.GetAirDrag() == 0) { UniversalVariable.SetAirDrag(airDragBefore); }
         }
 
         else
         {
-            Color pressedColor = GameObject.Find("Canvas/GamePanel/BoutonF").GetComponent<Button>().colors.pressedColor;
-            GameObject.Find("Canvas/GamePanel/BoutonF").GetComponent<Image>().color = pressedColor;
+            Color pressedColor = GameObject.Find("Canvas/ToolPanel/BoutonF").GetComponent<Button>().colors.pressedColor;
+            GameObject.Find("Canvas/ToolPanel/BoutonF").GetComponent<Image>().color = pressedColor;
             // une fois qu'il se fait click, faire en sorte que le bouton reste "pesé" jusqu'à ce qu'il soit reclicked on
             gravityBefore = UniversalVariable.GetGravity();
             airDragBefore = UniversalVariable.GetAirDrag();
@@ -189,6 +217,8 @@ public class UiGameManager : MonoBehaviour
     public void SetMouseState3() { ResetMouseState(); MOUSESTATE = 3; currentShadowObject = PrefabHolder.GetMiddleTriangle(); currentShadowObject.transform.SetParent(GamePanel.transform); }
     public void SetMouseState4() { ResetMouseState(); MOUSESTATE = 4; currentShadowObject = PrefabHolder.GetBigSquare(); currentShadowObject.transform.SetParent(GamePanel.transform); }
 
+    public void SetMouseState5() { ResetMouseState(); MOUSESTATE = 5; currentShadowObject = PrefabHolder.GetMeshCreatorPoint(); currentShadowObject.transform.SetParent(GamePanel.transform); }
+
 
     // bouton pause (5)
     public void PauseScene()
@@ -196,9 +226,9 @@ public class UiGameManager : MonoBehaviour
         ResetMouseState();
         // make time frames/calculations equal to 0
         ChangeTime("0");
-        Color normalColor = GameObject.Find("Canvas/GamePanel/BoutonFF2").GetComponent<Button>().colors.normalColor;
-        GameObject.Find("Canvas/GamePanel/BoutonFF2").GetComponent<Image>().color = normalColor;
-        GameObject.Find("Canvas/GamePanel/BoutonFF3").GetComponent<Image>().color = normalColor;
+        Color normalColor = GameObject.Find("Canvas/ToolPanel/BoutonFF2").GetComponent<Button>().colors.normalColor;
+        GameObject.Find("Canvas/ToolPanel/BoutonFF2").GetComponent<Image>().color = normalColor;
+        GameObject.Find("Canvas/ToolPanel/BoutonFF3").GetComponent<Image>().color = normalColor;
     }
     
     // bouton play (6)
@@ -207,9 +237,9 @@ public class UiGameManager : MonoBehaviour
         ResetMouseState();
         // make time frames/calculations start
         ChangeTime("1");
-        Color normalColor = GameObject.Find("Canvas/GamePanel/BoutonFF2").GetComponent<Button>().colors.normalColor;
-        GameObject.Find("Canvas/GamePanel/BoutonFF2").GetComponent<Image>().color = normalColor;
-        GameObject.Find("Canvas/GamePanel/BoutonFF3").GetComponent<Image>().color = normalColor;
+        Color normalColor = GameObject.Find("Canvas/ToolPanel/BoutonFF2").GetComponent<Button>().colors.normalColor;
+        GameObject.Find("Canvas/ToolPanel/BoutonFF2").GetComponent<Image>().color = normalColor;
+        GameObject.Find("Canvas/ToolPanel/BoutonFF3").GetComponent<Image>().color = normalColor;
     }
 
     // bouton 2x (7)
@@ -219,18 +249,19 @@ public class UiGameManager : MonoBehaviour
         // une fois qu'il se fait click, faire en sorte que le bouton reste "pesé" jusqu'à ce qu'il soit reclicked on
         if (twoX && !threeX)
         {
-            Color normalColor = GameObject.Find("Canvas/GamePanel/BoutonFF2").GetComponent<Button>().colors.normalColor;
-            GameObject.Find("Canvas/GamePanel/BoutonFF2").GetComponent<Image>().color = normalColor;
+            Color normalColor = GameObject.Find("Canvas/ToolPanel/BoutonFF2").GetComponent<Button>().colors.normalColor;
+            GameObject.Find("Canvas/ToolPanel/BoutonFF2").GetComponent<Image>().color = normalColor;
             ChangeTime("1");
             twoX = !twoX;
         }
 
         else if (!threeX)
         {
-            Color pressedColor = GameObject.Find("Canvas/GamePanel/BoutonFF2").GetComponent<Button>().colors.pressedColor;
-            GameObject.Find("Canvas/GamePanel/BoutonFF2").GetComponent<Image>().color = pressedColor;
+            Color pressedColor = GameObject.Find("Canvas/ToolPanel/BoutonFF2").GetComponent<Button>().colors.pressedColor;
+            GameObject.Find("Canvas/ToolPanel/BoutonFF2").GetComponent<Image>().color = pressedColor;
             // make time frames/calculations go twice as fast/second
             ChangeTime("2");
+            Debug.Log("times 2");
             twoX = !twoX;
         }
         
@@ -243,16 +274,16 @@ public class UiGameManager : MonoBehaviour
         // une fois qu'il se fait click, faire en sorte que le bouton reste "pesé" jusqu'à ce qu'il soit reclicked on
         if (threeX && !twoX)
         {
-            Color normalColor = GameObject.Find("Canvas/GamePanel/BoutonFF3").GetComponent<Button>().colors.normalColor;
-            GameObject.Find("Canvas/GamePanel/BoutonFF3").GetComponent<Image>().color = normalColor;
+            Color normalColor = GameObject.Find("Canvas/ToolPanel/BoutonFF3").GetComponent<Button>().colors.normalColor;
+            GameObject.Find("Canvas/ToolPanel/BoutonFF3").GetComponent<Image>().color = normalColor;
             ChangeTime("1");
             threeX = !threeX;
         }
         
         else if (!twoX)
         {
-            Color pressedColor = GameObject.Find("Canvas/GamePanel/BoutonFF3").GetComponent<Button>().colors.pressedColor;
-            GameObject.Find("Canvas/GamePanel/BoutonFF3").GetComponent<Image>().color = pressedColor;
+            Color pressedColor = GameObject.Find("Canvas/ToolPanel/BoutonFF3").GetComponent<Button>().colors.pressedColor;
+            GameObject.Find("Canvas/ToolPanel/BoutonFF3").GetComponent<Image>().color = pressedColor;
             // make time frames/calculations go three times as fast/second
             ChangeTime("3");
             threeX = !threeX;

@@ -43,21 +43,11 @@ public class BasicPhysicObject : MonoBehaviour
 
 
 
-    Vector3 frictionForce;
-    Vector3 inverseNormal;
-    Vector3 pVelocity;
+ 
 
     public bool IsWall { get => isWall; set => isWall = value; }
 
-    public void OnDrawGizmos() 
-    {
-		//Gizmos.color = Color.white;
-		//Gizmos.DrawLine(transform.position, transform.position + frictionForce);
-		//Gizmos.color = Color.red;
-		//Gizmos.DrawLine(transform.position, transform.position + pVelocity * 100);
-		////Gizmos.color = Color.blue;
-		////Gizmos.DrawLine(transform.position, transform.position + inverseNormal * 100);
-	}
+ 
 
 
     public void Start()
@@ -83,7 +73,7 @@ public class BasicPhysicObject : MonoBehaviour
     {
         if (isStatic) { velocity = Vector3.zero; angularVelocity = 0; return; }
 
-
+        
 
         Vector3 acceleration = resultingForce / collider.GetMass();
         

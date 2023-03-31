@@ -273,6 +273,22 @@ public class PhysicsManager : MonoBehaviour
 
 
 	}
+
+
+	public void AddPhysicObject(GameObject go) 
+	{
+		objects.Add(go);
+		MeshColliderScript mc = go.GetComponent<MeshColliderScript>();
+		mc.SetBasicMaterial();
+		BasicPhysicObject po = go.GetComponent<BasicPhysicObject>();
+		mc.SetUpMesh();
+		po.SetCollider(mc);
+		meshColliders.Add(mc);
+		physicObjects.Add(po);
+		
+	}
+
+
 	private void JointPhysicCalculations()
 	{
 		for (int i = 0; i < joints.Count; i++)

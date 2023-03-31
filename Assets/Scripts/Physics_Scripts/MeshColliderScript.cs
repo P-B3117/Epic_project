@@ -229,6 +229,7 @@ public class MeshColliderScript : MonoBehaviour
 		}
 
 		
+		
 	}
 
 
@@ -237,6 +238,10 @@ public class MeshColliderScript : MonoBehaviour
 		
 		GetComponent<MeshRenderer>().material = new Material(shadowMaterial);
 		
+	}
+	public void SetBasicMaterial() 
+	{
+		GetComponent<MeshRenderer>().material = new Material(this.material);
 	}
 
 	public List<Vector3> GetWorldSpacePoints()
