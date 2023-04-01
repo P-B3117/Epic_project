@@ -517,6 +517,15 @@ public static class HelperFunctionClass
 
 
 
-
-
+	//Line intersection testing 
+	//Code adapted from this Stack Overflow's thread :
+	//https://stackoverflow.com/questions/3838329/how-can-i-check-if-two-segments-intersect
+	public static bool LineIntersect(Vector3 A, Vector3 B, Vector3 C, Vector3 D) 
+	{
+		return (CCW(A,C,D) != CCW(B,C,D)) && (CCW(A,B,C) != CCW(A,B,D));
+	}
+	private static bool CCW(Vector3 A, Vector3 B, Vector3 C) 
+	{
+		return (C.y - A.y) * (B.x - A.x) > (B.y - A.y) * (C.x - A.x);
+	}
 }

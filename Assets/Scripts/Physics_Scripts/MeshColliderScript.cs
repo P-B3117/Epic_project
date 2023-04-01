@@ -42,6 +42,12 @@ public class MeshColliderScript : MonoBehaviour
 
 	}
 
+	public void Initialize(List<Vector3> ModelPoints, PrefabsHolder ph) 
+	{
+		modelPoints = ModelPoints;
+		material = ph.GetBasicUnlitMaterial();
+		shadowMaterial = ph.GetShadowObjectMaterial();
+	}
 
 	//Update the points of the collider
 	//NECESSARY FOR THE COLLISION DETECTION TO FUNCTION

@@ -20,13 +20,23 @@ public class PrefabsHolder : MonoBehaviour
 	private GameObject meshCreatorPoint;
 
 
+	[SerializeField]
+	private Material basicUnlitMaterial;
+	[SerializeField]
+	private Material shadowObjectMaterial;
+
+
 	public GameObject GetLittleCircle() {return GetPrefab(littleCircle);}
 	public GameObject GetMiddleCircle() { return GetPrefab(middleCircle); }
 	public GameObject GetBigCircle() { return GetPrefab(bigCircle); }
 	public GameObject GetMiddleTriangle() { return GetPrefab(middleTriangle); }
 	public GameObject GetBigSquare() { return GetPrefab(bigSquare); }
 
-	public GameObject GetMeshCreatorPoint() { return meshCreatorPoint; }
+	public GameObject GetMeshCreatorPoint() { return Instantiate(meshCreatorPoint); }
+
+	public Material GetBasicUnlitMaterial() { return basicUnlitMaterial; }
+	public Material GetShadowObjectMaterial() { return shadowObjectMaterial; }
+
 
 	private GameObject GetPrefab(GameObject go) 
 	{
