@@ -45,6 +45,7 @@ public class DistanceJoints : MonoBehaviour
     private float invInertiaB;
     private float invInertiaSum;
     private float invMassSum;
+    private LineRenderer lr;
     public void Start()
     {
         // Get references to the BasicPhysicObject and MeshColliderScript components for both bodies
@@ -58,6 +59,11 @@ public class DistanceJoints : MonoBehaviour
          invInertiaB = 1.0f / mcB.GetInertia();
         invInertiaSum = invInertiaA + invInertiaB;
         invMassSum = invMassA + invMassB;
+
+
+        lr = this.gameObject.AddComponent<LineRenderer>();
+        lr.SetWidth(0.2f,0.2f);
+
     }
     public void UpdateJointState(float timeStep)
     {
@@ -155,6 +161,10 @@ public class DistanceJoints : MonoBehaviour
 
         //just for keeping track of the position 
         transform.position = (anchorB + anchorA) / 2.0f;
+        Vector3[] LinePoints = new Vector3[2];
+        LinePoints[0] = anchorA;
+        LinePoints[1] = anchorB;
+        lr.SetPositions(LinePoints);
     }
     private void ComputeBetaAndGamma(float timeStep)
     {
@@ -193,9 +203,4 @@ public class DistanceJoints : MonoBehaviour
         return this.gamma;
     }
 
-    private void OnDrawGizmos()
-    {
-        Gizmos.color = Color.red;
-        Gizmos.DrawLine(anchorA+offsetA, anchorB+offsetB);
-    }
 }
