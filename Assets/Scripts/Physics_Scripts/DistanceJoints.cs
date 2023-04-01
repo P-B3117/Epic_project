@@ -16,8 +16,8 @@ public class DistanceJoints : MonoBehaviour
     public float dampingRatio;
     public float length;
     public bool onlyPull;
-    public float offsetA;
-    public float offsetB;
+    public Vector3 offsetA;
+    public Vector3 offsetB;
     //private Vector3 localAnchorA;
     //private Vector3 localAnchorB;
     private Transform bodyA;
@@ -39,6 +39,13 @@ public class DistanceJoints : MonoBehaviour
     private MeshColliderScript mcA;
     private MeshColliderScript mcB;
     private float jointMass;
+    private float invMassA;
+    private float invMassB;
+    private float invInertiaA;
+    private float invInertiaB;
+    private float invInertiaSum;
+    private float invMassSum;
+    private LineRenderer lr;
     public void Start()
     {
         // Get references to the BasicPhysicObject and MeshColliderScript components for both bodies
@@ -46,35 +53,51 @@ public class DistanceJoints : MonoBehaviour
         bpB = bo2.GetComponent<BasicPhysicObject>();
         mcA = bo1.GetComponent<MeshColliderScript>();
         mcB = bo2.GetComponent<MeshColliderScript>();
+        invMassA = 1.0f / mcA.GetMass();
+        invMassB = 1.0f / mcB.GetMass();
+        invInertiaA = 1.0f / mcA.GetInertia();
+        invInertiaB = 1.0f / mcB.GetInertia();
+        invInertiaSum = invInertiaA + invInertiaB;
+        invMassSum = invMassA + invMassB;
+
+
+        lr = this.gameObject.AddComponent<LineRenderer>();
+        lr.SetWidth(0.2f, 0.2f);
+
     }
     public void UpdateJointState(float timeStep)
     {
+        bpA = bo1.GetComponent<BasicPhysicObject>();
+        bpB = bo2.GetComponent<BasicPhysicObject>();
+        mcA = bo1.GetComponent<MeshColliderScript>();
+        mcB = bo2.GetComponent<MeshColliderScript>();
         dampingRatio = Mathf.Clamp(dampingRatio, 0.0f, 1.0f);
         //get positions 
         Transform bodyA = bo1.transform;
         Transform bodyB = bo2.transform;
         anchorA = bodyA.position;
         anchorB = bodyB.position;
+        Vector3 ra = (bodyA.rotation) * offsetA;
+        Vector3 rb = (bodyB.rotation) * offsetB;
         // Compute the vector between the two anchor points
-        Vector3 d = anchorB - anchorA;
+        Vector3 pa = ra + anchorA;
+        Vector3 pb = rb + anchorB;
 
-        // Compute the current length of the constraint
+        Vector3 d = pa - pb;
+
+        // Compute the current length 
         float currentLength = d.magnitude;
 
         // Compute the effective mass of the constraint 
         // M = (J · M^-1 · J^t)^-1
-        //need to be zero for now
-        Vector3 ra = anchorA - bodyA.position;
-        Vector3 rb = anchorB - bodyB.position;
-        //also .z cuz 0 for now 
-        float crossA = Vector3.Cross(ra, Vector3.forward).z;
-        float crossB = Vector3.Cross(rb, Vector3.forward).z;
-        float invMassA = 1.0f / mcA.GetMass();
-        float invMassB = 1.0f / mcB.GetMass();
-        float invInertiaA = 1.0f / mcA.GetInertia();
-        float invInertiaB = 1.0f / mcB.GetInertia();
-        float invMassSum = invMassA + invMassB;
-        float invInertiaSum = invInertiaA + invInertiaB;
+        float crossA = d.x * ra.y - d.x * ra.x;
+        float crossB = d.x * rb.y - d.x * rb.x;
+        invMassA = 1.0f / mcA.GetMass();
+        invMassB = 1.0f / mcB.GetMass();
+        invInertiaA = 1.0f / mcA.GetInertia();
+        invInertiaB = 1.0f / mcB.GetInertia();
+        invInertiaSum = invInertiaA + invInertiaB;
+        invMassSum = invMassA + invMassB;
         float invEffectiveMass;
         if (bpA.getIsStatic()) { invEffectiveMass = invMassB + crossB * crossB * invInertiaB / d.sqrMagnitude; }
         else if (bpB.getIsStatic()) { invEffectiveMass = invMassA + crossA * crossA * invInertiaA / d.sqrMagnitude; }
@@ -88,6 +111,7 @@ public class DistanceJoints : MonoBehaviour
         // Compute beta and gamma values
         ComputeBetaAndGamma(timeStep);
         // Compute the bias term for the constraint
+
         float bias = (currentLength - length) * beta / timeStep;
 
         // Compute the relative velocities and Jacobian for the constraint
@@ -105,7 +129,7 @@ public class DistanceJoints : MonoBehaviour
         float jv = Vector3.Dot(dv, J);
 
         // Compute the impulse magnitude for the constraint
-        float impulseMag = m * -(jv + bias + gamma);
+        float impulseMag = m * (jv + bias + gamma);
 
         // Compute the corrective impulse and apply it to the bodies
         float impulseA = impulseMag * invMassA;
@@ -123,20 +147,24 @@ public class DistanceJoints : MonoBehaviour
         //prevent any impulse added if static... 
         if (!bpA.getIsStatic())
         {
-            v1 -= impulseA * invMassA * impulseDir;
-            w1 -= Vector3.Dot(ra, impulse) * invInertiaA;
-            bpA.SetVelocity(v1, w1,timeStep);
+            v1 -= impulseA * impulseDir;
+            w1 -= Vector3.Dot(impulse, ra) * invInertiaA;
+            bpA.SetVelocity(v1, w1, timeStep);
         }
         if (!bpB.getIsStatic())
         {
-            v2 += impulseB * invMassB * impulseDir;
-            w2 += Vector3.Dot(rb, impulse) * invInertiaB;
+            v2 += impulseB * impulseDir;
+            w2 += Vector3.Dot(impulse, rb) * invInertiaB;
 
-            bpB.SetVelocity(v2, w2,timeStep);
+            bpB.SetVelocity(v2, w2, timeStep);
         }
 
         //just for keeping track of the position 
         transform.position = (anchorB + anchorA) / 2.0f;
+        Vector3[] LinePoints = new Vector3[2];
+        LinePoints[0] = anchorA;
+        LinePoints[1] = anchorB;
+        lr.SetPositions(LinePoints);
     }
     private void ComputeBetaAndGamma(float timeStep)
     {
@@ -147,6 +175,7 @@ public class DistanceJoints : MonoBehaviour
             beta = 1.0f;
             gamma = 0.0f;
             jointMass = float.PositiveInfinity;
+            frequency = 0.0f;
         }
         else
         {
@@ -174,9 +203,4 @@ public class DistanceJoints : MonoBehaviour
         return this.gamma;
     }
 
-    private void OnDrawGizmos()
-    {
-        Gizmos.color = Color.red;
-        Gizmos.DrawLine(anchorA, anchorB);
-    }
 }
