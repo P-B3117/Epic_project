@@ -7410,6 +7410,7 @@ MonoBehaviour:
   meshCreatorPoint: {fileID: 7476109825553098928, guid: f4570f05e2d270d41bb14d10465c4111, type: 3}
   basicUnlitMaterial: {fileID: 2100000, guid: f8ea0197e3e47dd4aac55742c67427e4, type: 2}
   shadowObjectMaterial: {fileID: 2100000, guid: e6ed93ae35f67b14ca1c28b98e60e05b, type: 2}
+  selecteObjectdMaterial: {fileID: 2100000, guid: 94c2e4d6f210b5b4aac88490026bbb3e, type: 2}
 --- !u!4 &1196685257
 Transform:
   m_ObjectHideFlags: 0
@@ -7736,7 +7737,7 @@ Camera:
   far clip plane: 1000
   field of view: 60
   orthographic: 1
-  orthographic size: 27.5
+  orthographic size: 27.7
   m_Depth: -1
   m_CullingMask:
     serializedVersion: 2
@@ -7760,7 +7761,7 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1214018329}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0, y: 7.5, z: -10}
+  m_LocalPosition: {x: 0, y: 7, z: -10}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []

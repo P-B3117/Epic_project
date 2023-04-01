@@ -265,7 +265,7 @@ public static class HelperFunctionClass
 	}
 	//SubFunction used in the Circle vs Polygon algorithm
 	//Detect if the circle is inside the polygon
-	private static bool polygonPoint(List<Vector3> p1, Vector3 circlePosition)
+	public static bool polygonPoint(List<Vector3> p1, Vector3 circlePosition)
 	{
 		int count = 0;
 		for (int i = 0; i < p1.Count; i++) 

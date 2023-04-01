@@ -103,6 +103,13 @@ public class PhysicsManager : MonoBehaviour
 			}
 		}
 
+		for (int i = joints.Count-1 ; i >= 0; i--) 
+		{
+			Destroy(joints[i]);
+			joints.RemoveAt(i);
+			physicsJoints.RemoveAt(i);
+		}
+
 	}
 
 	//Simulate all the physics behaviours
@@ -275,6 +282,7 @@ public class PhysicsManager : MonoBehaviour
 	}
 
 
+	//Add physic object to list of physicObjects
 	public void AddPhysicObject(GameObject go) 
 	{
 		objects.Add(go);
@@ -289,6 +297,59 @@ public class PhysicsManager : MonoBehaviour
 	}
 
 
+	//Return the index of the Object that the mouse clicked on
+	//-1 = nothing was touched
+	//anything bigger or equal to 0 = the function returns the index of the polygon clicked
+	public int FindClickIndex(Vector3 mousePos) 
+	{
+
+		for (int i = 0; i < meshColliders.Count; i++) 
+		{
+			MeshColliderScript mc = meshColliders[i];
+			if (mc.IsCircle())
+			{
+				Vector3 diff = mousePos - mc.transform.position;
+				float length = diff.magnitude;
+				if (length <= mc.RayonOfCircle()) { return i; }
+			}
+			else 
+			{
+				bool isInside = HelperFunctionClass.polygonPoint(mc.GetWorldSpacePoints(), mousePos);
+				bool isWall = mc.transform.gameObject.name.Contains("Wall");
+				if (isInside && !isWall) { return i; }
+			}
+		}
+		return -1;
+	}
+
+	//Change material based on index of the selection
+	public void SelectSpecificObject(int index, PrefabsHolder ph) 
+	{
+
+		if (index < meshColliders.Count && index != -1)
+		{
+			
+			for (int i = 0; i < index; i++)
+			{
+				meshColliders[i].SetBasicMaterial();
+			}
+			meshColliders[index].SetSelectedMaterial(ph);
+			for (int i = index + 1; i < physicObjects.Count; i++)
+			{
+				meshColliders[i].SetBasicMaterial();
+
+			}
+		}
+		else if (index < 0) 
+		{
+			for (int i = 0; i < meshColliders.Count; i++)
+			{
+				meshColliders[i].SetBasicMaterial();
+			}
+		}
+	}
+
+	//Method for the calculations of the joints properties
 	private void JointPhysicCalculations()
 	{
 		for (int i = 0; i < joints.Count; i++)

@@ -64,6 +64,17 @@ public class UiGameManager : MonoBehaviour
             ResetMouseState();
         }
 
+        //If click check if clicked on a physicObject
+        if (Input.GetMouseButtonDown(0)) 
+        {
+            Vector3 worldPoint = Camera.main.ScreenToWorldPoint(Input.mousePosition);
+            worldPoint = new Vector3(worldPoint.x, worldPoint.y, 0.0f);
+            int selectedIndex = (physicsManager.FindClickIndex(worldPoint));
+ 
+            physicsManager.SelectSpecificObject(selectedIndex, prefabHolder);
+            
+
+        }
 
 
         //!!!!!Functionality of the slider!!!!!
@@ -208,72 +219,71 @@ public class UiGameManager : MonoBehaviour
                 }
             }
 
-            if (AABB.position.x > -28.25f && AABB.position.x + AABB.width < 28.25 &&
-                AABB.position.y > -20 && AABB.position.y + AABB.height < 20 &&
-                angle < 180 && noLineIntersect && noPointAlreadyThere)
+
+            ///Mesh Creators Conditions
+            bool isPoint = false;
+            Vector3 initialPoint = Vector3.zero;
+            if (meshCreatorPoints.Count > 0) { isPoint = true; initialPoint = meshCreatorPoints[0].transform.position; }
+
+            //If the current point is close to the initial point
+            if (meshCreatorPoints.Count >= 3 && isPoint && (currentShadowObject.transform.position - initialPoint).magnitude < 2)
             {
+                currentShadowObject.transform.position = initialPoint;
+                currentShadowObject.GetComponent<MeshRenderer>().material.color = new Color(0.0f, 1.0f, 1.0f, 1.0f);
+                meshCreatorLineRenderer.SetColors(Color.cyan, Color.cyan);
+                meshCreatorLineRenderer.SetPosition(meshCreatorPoints.Count, initialPoint);
 
-                
-
-
-                bool isPoint = false;
-                Vector3 initialPoint = Vector3.zero;
-                if (meshCreatorPoints.Count > 0) { isPoint = true; initialPoint = meshCreatorPoints[0].transform.position; }
-
-                //If the current point is close to the initial point
-                if (meshCreatorPoints.Count >= 3 && isPoint && (currentShadowObject.transform.position - initialPoint).magnitude < 2)
+                if (Input.GetMouseButtonDown(0))
                 {
-                    currentShadowObject.transform.position = initialPoint;
-                    currentShadowObject.GetComponent<MeshRenderer>().material.color = new Color(0.0f, 1.0f, 1.0f, 1.0f);
-                    meshCreatorLineRenderer.SetColors(Color.cyan, Color.cyan);
-                    meshCreatorLineRenderer.SetPosition(meshCreatorPoints.Count, initialPoint);
-
-                    if (Input.GetMouseButtonDown(0)) 
+                    Vector3 moy = Vector3.zero;
+                    for (int i = 0; i < meshCreatorPoints.Count; i++)
                     {
-                        Vector3 moy = Vector3.zero;
-                        for (int i = 0; i < meshCreatorPoints.Count; i++) 
-                        {
-                            moy += meshCreatorPoints[i].transform.position;
-                        }
-                        moy /= meshCreatorPoints.Count;
-                        List<Vector3> modelPoints = new List<Vector3>();
-
-
-                        Vector3 first = meshCreatorPoints[0].transform.position - moy;
-                        Vector3 second = meshCreatorPoints[1].transform.position - moy;
-                        Vector3 dir = Vector3.Cross(first, second);
-                        if (dir == Vector3.back)
-                        {
-                            for (int i = 0; i < meshCreatorPoints.Count; i++)
-                            {
-                                modelPoints.Add(meshCreatorPoints[i].transform.position - moy);
-                            }
-                        }
-                        else 
-                        {
-                            for (int i = meshCreatorPoints.Count-1; i >= 0; i--)
-                            {
-                                modelPoints.Add(meshCreatorPoints[i].transform.position - moy);
-                            }
-                        }
-
-                       
-                       
-                        GameObject empty = new GameObject();
-                        empty.transform.position = moy;
-                        empty.AddComponent<BasicPhysicObject>();
-                        empty.AddComponent<MeshColliderScript>();
-                        MeshColliderScript mc = empty.GetComponent<MeshColliderScript>();
-                        mc.Initialize(modelPoints, prefabHolder);
-                        mc.SetUpMesh();
-                        GameObject newGO = Instantiate(empty);
-                        Destroy(empty);
-                        physicsManager.AddPhysicObject(newGO);
-                        ResetMouseState();
+                        moy += meshCreatorPoints[i].transform.position;
                     }
+                    moy /= meshCreatorPoints.Count;
+                    List<Vector3> modelPoints = new List<Vector3>();
+
+
+                    Vector3 first = meshCreatorPoints[0].transform.position - moy;
+                    Vector3 second = meshCreatorPoints[1].transform.position - moy;
+                    Vector3 dir = Vector3.Cross(first, second);
+                    if (dir == Vector3.back)
+                    {
+                        for (int i = 0; i < meshCreatorPoints.Count; i++)
+                        {
+                            modelPoints.Add(meshCreatorPoints[i].transform.position - moy);
+                        }
+                    }
+                    else
+                    {
+                        for (int i = meshCreatorPoints.Count - 1; i >= 0; i--)
+                        {
+                            modelPoints.Add(meshCreatorPoints[i].transform.position - moy);
+                        }
+                    }
+
+
+
+                    GameObject empty = new GameObject();
+                    empty.transform.position = moy;
+                    empty.AddComponent<BasicPhysicObject>();
+                    empty.AddComponent<MeshColliderScript>();
+                    MeshColliderScript mc = empty.GetComponent<MeshColliderScript>();
+                    mc.Initialize(modelPoints, prefabHolder);
+                    mc.SetUpMesh();
+                    GameObject newGO = Instantiate(empty);
+                    Destroy(empty);
+                    physicsManager.AddPhysicObject(newGO);
+                    ResetMouseState();
                 }
-                //If we are simply adding another normal point
-                else 
+            }
+            //If the current point isn't close the initial point
+            else 
+            {
+                //If the current segment is valid, instantiate it
+                if (AABB.position.x > -28.25f && AABB.position.x + AABB.width < 28.25 &&
+                    AABB.position.y > -20 && AABB.position.y + AABB.height < 20 &&
+                    angle < 180 && noLineIntersect && noPointAlreadyThere)
                 {
                     currentShadowObject.GetComponent<MeshRenderer>().material.color = new Color(1.0f, 1.0f, 0.0f, 1.0f);
                     meshCreatorLineRenderer.SetColors(Color.magenta, Color.magenta);
@@ -296,13 +306,111 @@ public class UiGameManager : MonoBehaviour
 
                     }
                 }
+                //If the current segment is invalid
+                else 
+                {
+                    currentShadowObject.GetComponent<MeshRenderer>().material.color = new Color(1.0f, 0.0f, 0.0f, 1.0f);
+                    meshCreatorLineRenderer.SetColors(Color.red, Color.red);
+                }
+            }
+
+
+            ////BigCondition
+            //if (AABB.position.x > -28.25f && AABB.position.x + AABB.width < 28.25 &&
+            //    AABB.position.y > -20 && AABB.position.y + AABB.height < 20 &&
+            //    angle < 180 && noLineIntersect && noPointAlreadyThere)
+            //{
+
                 
-            }
-            else
-            {
-                currentShadowObject.GetComponent<MeshRenderer>().material.color = new Color(1.0f, 0.0f, 0.0f, 1.0f);
-                meshCreatorLineRenderer.SetColors(Color.red, Color.red);
-            }
+
+
+            //    bool isPoint = false;
+            //    Vector3 initialPoint = Vector3.zero;
+            //    if (meshCreatorPoints.Count > 0) { isPoint = true; initialPoint = meshCreatorPoints[0].transform.position; }
+
+            //    //If the current point is close to the initial point
+            //    if (meshCreatorPoints.Count >= 3 && isPoint && (currentShadowObject.transform.position - initialPoint).magnitude < 2)
+            //    {
+            //        currentShadowObject.transform.position = initialPoint;
+            //        currentShadowObject.GetComponent<MeshRenderer>().material.color = new Color(0.0f, 1.0f, 1.0f, 1.0f);
+            //        meshCreatorLineRenderer.SetColors(Color.cyan, Color.cyan);
+            //        meshCreatorLineRenderer.SetPosition(meshCreatorPoints.Count, initialPoint);
+
+            //        if (Input.GetMouseButtonDown(0)) 
+            //        {
+            //            Vector3 moy = Vector3.zero;
+            //            for (int i = 0; i < meshCreatorPoints.Count; i++) 
+            //            {
+            //                moy += meshCreatorPoints[i].transform.position;
+            //            }
+            //            moy /= meshCreatorPoints.Count;
+            //            List<Vector3> modelPoints = new List<Vector3>();
+
+
+            //            Vector3 first = meshCreatorPoints[0].transform.position - moy;
+            //            Vector3 second = meshCreatorPoints[1].transform.position - moy;
+            //            Vector3 dir = Vector3.Cross(first, second);
+            //            if (dir == Vector3.back)
+            //            {
+            //                for (int i = 0; i < meshCreatorPoints.Count; i++)
+            //                {
+            //                    modelPoints.Add(meshCreatorPoints[i].transform.position - moy);
+            //                }
+            //            }
+            //            else 
+            //            {
+            //                for (int i = meshCreatorPoints.Count-1; i >= 0; i--)
+            //                {
+            //                    modelPoints.Add(meshCreatorPoints[i].transform.position - moy);
+            //                }
+            //            }
+
+                       
+                       
+            //            GameObject empty = new GameObject();
+            //            empty.transform.position = moy;
+            //            empty.AddComponent<BasicPhysicObject>();
+            //            empty.AddComponent<MeshColliderScript>();
+            //            MeshColliderScript mc = empty.GetComponent<MeshColliderScript>();
+            //            mc.Initialize(modelPoints, prefabHolder);
+            //            mc.SetUpMesh();
+            //            GameObject newGO = Instantiate(empty);
+            //            Destroy(empty);
+            //            physicsManager.AddPhysicObject(newGO);
+            //            ResetMouseState();
+            //        }
+            //    }
+            //    //If we are simply adding another normal point
+            //    else 
+            //    {
+            //        currentShadowObject.GetComponent<MeshRenderer>().material.color = new Color(1.0f, 1.0f, 0.0f, 1.0f);
+            //        meshCreatorLineRenderer.SetColors(Color.magenta, Color.magenta);
+            //        if (Input.GetMouseButtonDown(0))
+            //        {
+            //            //Instantiate the mesh creator point
+            //            GameObject newGO = Instantiate(currentShadowObject);
+            //            meshCreatorPoints.Add(newGO);
+
+
+            //            //Update the line renderer
+            //            meshCreatorLineRenderer.positionCount++;
+            //            Vector3[] points = new Vector3[meshCreatorPoints.Count + 1];
+            //            for (int i = 0; i < meshCreatorPoints.Count; i++)
+            //            {
+            //                points[i] = meshCreatorPoints[i].transform.position;
+            //            }
+            //            points[meshCreatorPoints.Count] = currentShadowObject.transform.position;
+            //            meshCreatorLineRenderer.SetPositions(points);
+
+            //        }
+            //    }
+                
+            //}
+            //else
+            //{
+            //    currentShadowObject.GetComponent<MeshRenderer>().material.color = new Color(1.0f, 0.0f, 0.0f, 1.0f);
+            //    meshCreatorLineRenderer.SetColors(Color.red, Color.red);
+            //}
 
 
 

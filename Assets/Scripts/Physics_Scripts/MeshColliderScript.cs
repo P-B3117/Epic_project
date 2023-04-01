@@ -249,6 +249,10 @@ public class MeshColliderScript : MonoBehaviour
 	{
 		GetComponent<MeshRenderer>().material = new Material(this.material);
 	}
+	public void SetSelectedMaterial(PrefabsHolder ph) 
+	{
+		GetComponent<MeshRenderer>().material = ph.GetSelectedObjectMaterial();
+	}
 
 	public List<Vector3> GetWorldSpacePoints()
 	{
