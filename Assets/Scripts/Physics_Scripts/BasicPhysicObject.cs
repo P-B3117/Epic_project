@@ -133,10 +133,18 @@ public class BasicPhysicObject : MonoBehaviour
 	{
         return this.bounciness;
 	}
+    public void setBouciness(float bounceLevel) 
+    {
+        bounciness = bounceLevel;
+    }
 
     public void SetCollider(MeshColliderScript script) 
     {
         collider = script;
+    }
+    public MeshColliderScript GetCollider() 
+    {
+        return collider;
     }
     public float getAngularVelocity()
     {
@@ -161,13 +169,25 @@ public class BasicPhysicObject : MonoBehaviour
     {
         return this.staticFriction;
     }
+    public void setStaticFriction(float frictionLevel)
+    {
+        staticFriction = frictionLevel;
+    }
     public float getDynamicFriction()
     {
         return this.dynamicFriction;
     }
+    public void setDynamicFriction(float frictionLevel)
+    {
+        dynamicFriction = frictionLevel;
+    }
     public bool getIsStatic()
     {
         return this.isStatic;
+    }
+    public void setIsStatic(bool newStatic) 
+    {
+        isStatic = newStatic;
     }
 
 }

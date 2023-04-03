@@ -143,11 +143,12 @@ public class MeshColliderScript : MonoBehaviour
 			if (GetComponent<MeshRenderer>() == null)
 			{
 				gameObject.AddComponent<MeshRenderer>();
+				GetComponent<MeshRenderer>().material = material;
 			}
 
 			GameObject sphere = GameObject.CreatePrimitive(PrimitiveType.Sphere);
 			GetComponent<MeshFilter>().mesh = sphere.GetComponent<MeshFilter>().mesh;
-			GetComponent<MeshRenderer>().material = material;
+			
 			transform.localScale = new Vector3(rayonOfCircle * 2, rayonOfCircle * 2, rayonOfCircle * 2);
 			Destroy(sphere);
 
@@ -212,13 +213,14 @@ public class MeshColliderScript : MonoBehaviour
 			if (GetComponent<MeshRenderer>() == null)
 			{
 				gameObject.AddComponent<MeshRenderer>();
+				GetComponent<MeshRenderer>().material = material;
 			}
 			List<Vector3> vertices = new List<Vector3>(modelPoints);
 			vertices.Insert(0, Vector3.zero);
 
 			Mesh mesh = new Mesh();
 			GetComponent<MeshFilter>().mesh = mesh;
-			GetComponent<MeshRenderer>().material = material;
+			
 			mesh.vertices = vertices.ToArray();
 			int[] newTriangles = new int[(modelPoints.Count) * 3];
 			for (int i = 0; i < modelPoints.Count; i++)
@@ -261,6 +263,11 @@ public class MeshColliderScript : MonoBehaviour
 	public float GetMass()
 	{
 		return mass;
+	}
+	public void SetMass(float mass) 
+	{
+		this.mass = mass;
+		SetUpMesh();
 	}
 	public float GetInertia()
 	{

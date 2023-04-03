@@ -290,6 +290,7 @@ public class PhysicsManager : MonoBehaviour
 		mc.SetBasicMaterial();
 		BasicPhysicObject po = go.GetComponent<BasicPhysicObject>();
 		mc.SetUpMesh();
+		mc.UpdateColliderOrientation();
 		po.SetCollider(mc);
 		meshColliders.Add(mc);
 		physicObjects.Add(po);
@@ -323,9 +324,9 @@ public class PhysicsManager : MonoBehaviour
 	}
 
 	//Change material based on index of the selection
-	public void SelectSpecificObject(int index, PrefabsHolder ph) 
+	public BasicPhysicObject SelectSpecificObject(int index, PrefabsHolder ph) 
 	{
-
+		
 		if (index < meshColliders.Count && index != -1)
 		{
 			
@@ -334,11 +335,13 @@ public class PhysicsManager : MonoBehaviour
 				meshColliders[i].SetBasicMaterial();
 			}
 			meshColliders[index].SetSelectedMaterial(ph);
+			
 			for (int i = index + 1; i < physicObjects.Count; i++)
 			{
 				meshColliders[i].SetBasicMaterial();
 
 			}
+			return physicObjects[index];
 		}
 		else if (index < 0) 
 		{
@@ -347,6 +350,8 @@ public class PhysicsManager : MonoBehaviour
 				meshColliders[i].SetBasicMaterial();
 			}
 		}
+		
+		return null;
 	}
 
 	//Method for the calculations of the joints properties
@@ -370,5 +375,21 @@ public class PhysicsManager : MonoBehaviour
 		}
 	}
 
+	public MeshColliderScript GetMeshCollliderObjectAt(int index)
+	{
+		if (index < meshColliders.Count && index != -1)
+		{
+			return meshColliders[index];
+		}
+		else { return null; }
+	}
+	public BasicPhysicObject GetPhysicObjectAt(int index)
+	{
+		if (index < physicObjects.Count && index != -1)
+		{
+			return physicObjects[index];
+		}
+		else { return null; }
+	}
 
 }

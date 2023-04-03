@@ -9,6 +9,7 @@ using TMPro;
 
 public class UiGameManager : MonoBehaviour
 {
+    [Header("Reference for UI basic functions")]
     public GameObject GamePanel;
     public GameObject PausePanel;
     public GameObject PhysicsPanel;
@@ -32,9 +33,24 @@ public class UiGameManager : MonoBehaviour
     //Slider functions variables
     private int MOUSESTATE;
     List<GameObject> meshCreatorPoints;
+    [Header("Reference for the slider")]
     public LineRenderer meshCreatorLineRenderer;
     GameObject currentShadowObject;
 
+    //Inspector variables
+    [Header("Reference for the inspector")]
+    private int SELECTEDOBJECT = -1;
+    public GameObject InspectorContent;
+    public Slider MassSlider;
+    public Slider BoucinessSlider;
+    public Slider DynamicFrictionSlider;
+    public Slider StaticFrictionSlider;
+    public Toggle IsStaticToggle;
+    public TextMeshProUGUI MassText;
+    public TextMeshProUGUI BoucinessText;
+    public TextMeshProUGUI DynamicFrictionText;
+    public TextMeshProUGUI StaticFrictionText;
+    
 
     void Start()
     {
@@ -64,17 +80,8 @@ public class UiGameManager : MonoBehaviour
             ResetMouseState();
         }
 
-        //If click check if clicked on a physicObject
-        if (Input.GetMouseButtonDown(0)) 
-        {
-            Vector3 worldPoint = Camera.main.ScreenToWorldPoint(Input.mousePosition);
-            worldPoint = new Vector3(worldPoint.x, worldPoint.y, 0.0f);
-            int selectedIndex = (physicsManager.FindClickIndex(worldPoint));
- 
-            physicsManager.SelectSpecificObject(selectedIndex, prefabHolder);
-            
-
-        }
+        //If click check if clicked on a physicObject and update inspector
+       
 
 
         //!!!!!Functionality of the slider!!!!!
@@ -112,13 +119,13 @@ public class UiGameManager : MonoBehaviour
 
         }
         //mouse functinality for the Mesh creator
-        else if (MOUSESTATE == 5) 
+        else if (MOUSESTATE == 5)
         {
             Vector3 worldPoint = Camera.main.ScreenToWorldPoint(Input.mousePosition);
             currentShadowObject.transform.position = new Vector3(worldPoint.x, worldPoint.y, 0.0f);
 
             //move the last point of line renderer based on the mouse
-            if (meshCreatorPoints.Count > 0) 
+            if (meshCreatorPoints.Count > 0)
             {
                 meshCreatorLineRenderer.SetPosition(meshCreatorPoints.Count, currentShadowObject.transform.position);
             }
@@ -129,8 +136,8 @@ public class UiGameManager : MonoBehaviour
 
             //Look if angle is good (smaller than 180)
             float angle = 0;
-          
-            if (meshCreatorPoints.Count >= 3) 
+
+            if (meshCreatorPoints.Count >= 3)
             {
                 Vector3 p0 = meshCreatorPoints[meshCreatorPoints.Count - 3].transform.position;
                 Vector3 p1 = meshCreatorPoints[meshCreatorPoints.Count - 2].transform.position;
@@ -153,38 +160,39 @@ public class UiGameManager : MonoBehaviour
                 Vector3 r3 = Vector3.Cross(v3, v4).normalized;
                 Vector3 r4 = Vector3.Cross(v4, v5).normalized;
 
-                if (!(r1==r2 && r2 == r3 && r3 == r4)) { angle = 360; }
+                if (!(r1 == r2 && r2 == r3 && r3 == r4)) { angle = 360; }
 
-                
+
             }
+
 
             bool noLineIntersect = true;
             //Look if line intersect 
             if (meshCreatorPoints.Count >= 3)
-			{
-				Vector3 m1 = meshCreatorPoints[meshCreatorPoints.Count - 1].transform.position;
-				Vector3 m2 = currentShadowObject.transform.position;
-               
-                
-				for (int i = 0; i < meshCreatorPoints.Count - 2; i++)
-				{
-					Vector3 m3 = meshCreatorPoints[i].transform.position;
-					Vector3 m4 = meshCreatorPoints[i + 1].transform.position;
-                   
-					if (HelperFunctionClass.LineIntersect(m1, m2, m3, m4))
-					{
-                       
-						noLineIntersect = false;
-						break;
-					}
+            {
+                Vector3 m1 = meshCreatorPoints[meshCreatorPoints.Count - 1].transform.position;
+                Vector3 m2 = currentShadowObject.transform.position;
 
-                   
+
+                for (int i = 0; i < meshCreatorPoints.Count - 2; i++)
+                {
+                    Vector3 m3 = meshCreatorPoints[i].transform.position;
+                    Vector3 m4 = meshCreatorPoints[i + 1].transform.position;
+
+                    if (HelperFunctionClass.LineIntersect(m1, m2, m3, m4))
+                    {
+
+                        noLineIntersect = false;
+                        break;
+                    }
+
+
                 }
-                
+
             }
 
             //Check if there is colinearity in the wrong direction with the other segment
-            if (meshCreatorPoints.Count >= 2) 
+            if (meshCreatorPoints.Count >= 2)
             {
                 Vector3 m1 = meshCreatorPoints[meshCreatorPoints.Count - 1].transform.position;
                 Vector3 m2 = currentShadowObject.transform.position;
@@ -211,9 +219,9 @@ public class UiGameManager : MonoBehaviour
                     }
                 }
             }
-            else if(meshCreatorPoints.Count > 0)
+            else if (meshCreatorPoints.Count > 0)
             {
-                if (meshCreatorPoints[0].transform.position == currentShadowObject.transform.position) 
+                if (meshCreatorPoints[0].transform.position == currentShadowObject.transform.position)
                 {
                     noPointAlreadyThere = false;
                 }
@@ -271,6 +279,7 @@ public class UiGameManager : MonoBehaviour
                     MeshColliderScript mc = empty.GetComponent<MeshColliderScript>();
                     mc.Initialize(modelPoints, prefabHolder);
                     mc.SetUpMesh();
+                    mc.UpdateColliderOrientation();
                     GameObject newGO = Instantiate(empty);
                     Destroy(empty);
                     physicsManager.AddPhysicObject(newGO);
@@ -278,7 +287,7 @@ public class UiGameManager : MonoBehaviour
                 }
             }
             //If the current point isn't close the initial point
-            else 
+            else
             {
                 //If the current segment is valid, instantiate it
                 if (AABB.position.x > -28.25f && AABB.position.x + AABB.width < 28.25 &&
@@ -307,7 +316,7 @@ public class UiGameManager : MonoBehaviour
                     }
                 }
                 //If the current segment is invalid
-                else 
+                else
                 {
                     currentShadowObject.GetComponent<MeshRenderer>().material.color = new Color(1.0f, 0.0f, 0.0f, 1.0f);
                     meshCreatorLineRenderer.SetColors(Color.red, Color.red);
@@ -315,109 +324,51 @@ public class UiGameManager : MonoBehaviour
             }
 
 
-            ////BigCondition
-            //if (AABB.position.x > -28.25f && AABB.position.x + AABB.width < 28.25 &&
-            //    AABB.position.y > -20 && AABB.position.y + AABB.height < 20 &&
-            //    angle < 180 && noLineIntersect && noPointAlreadyThere)
-            //{
-
-                
-
-
-            //    bool isPoint = false;
-            //    Vector3 initialPoint = Vector3.zero;
-            //    if (meshCreatorPoints.Count > 0) { isPoint = true; initialPoint = meshCreatorPoints[0].transform.position; }
-
-            //    //If the current point is close to the initial point
-            //    if (meshCreatorPoints.Count >= 3 && isPoint && (currentShadowObject.transform.position - initialPoint).magnitude < 2)
-            //    {
-            //        currentShadowObject.transform.position = initialPoint;
-            //        currentShadowObject.GetComponent<MeshRenderer>().material.color = new Color(0.0f, 1.0f, 1.0f, 1.0f);
-            //        meshCreatorLineRenderer.SetColors(Color.cyan, Color.cyan);
-            //        meshCreatorLineRenderer.SetPosition(meshCreatorPoints.Count, initialPoint);
-
-            //        if (Input.GetMouseButtonDown(0)) 
-            //        {
-            //            Vector3 moy = Vector3.zero;
-            //            for (int i = 0; i < meshCreatorPoints.Count; i++) 
-            //            {
-            //                moy += meshCreatorPoints[i].transform.position;
-            //            }
-            //            moy /= meshCreatorPoints.Count;
-            //            List<Vector3> modelPoints = new List<Vector3>();
-
-
-            //            Vector3 first = meshCreatorPoints[0].transform.position - moy;
-            //            Vector3 second = meshCreatorPoints[1].transform.position - moy;
-            //            Vector3 dir = Vector3.Cross(first, second);
-            //            if (dir == Vector3.back)
-            //            {
-            //                for (int i = 0; i < meshCreatorPoints.Count; i++)
-            //                {
-            //                    modelPoints.Add(meshCreatorPoints[i].transform.position - moy);
-            //                }
-            //            }
-            //            else 
-            //            {
-            //                for (int i = meshCreatorPoints.Count-1; i >= 0; i--)
-            //                {
-            //                    modelPoints.Add(meshCreatorPoints[i].transform.position - moy);
-            //                }
-            //            }
-
-                       
-                       
-            //            GameObject empty = new GameObject();
-            //            empty.transform.position = moy;
-            //            empty.AddComponent<BasicPhysicObject>();
-            //            empty.AddComponent<MeshColliderScript>();
-            //            MeshColliderScript mc = empty.GetComponent<MeshColliderScript>();
-            //            mc.Initialize(modelPoints, prefabHolder);
-            //            mc.SetUpMesh();
-            //            GameObject newGO = Instantiate(empty);
-            //            Destroy(empty);
-            //            physicsManager.AddPhysicObject(newGO);
-            //            ResetMouseState();
-            //        }
-            //    }
-            //    //If we are simply adding another normal point
-            //    else 
-            //    {
-            //        currentShadowObject.GetComponent<MeshRenderer>().material.color = new Color(1.0f, 1.0f, 0.0f, 1.0f);
-            //        meshCreatorLineRenderer.SetColors(Color.magenta, Color.magenta);
-            //        if (Input.GetMouseButtonDown(0))
-            //        {
-            //            //Instantiate the mesh creator point
-            //            GameObject newGO = Instantiate(currentShadowObject);
-            //            meshCreatorPoints.Add(newGO);
-
-
-            //            //Update the line renderer
-            //            meshCreatorLineRenderer.positionCount++;
-            //            Vector3[] points = new Vector3[meshCreatorPoints.Count + 1];
-            //            for (int i = 0; i < meshCreatorPoints.Count; i++)
-            //            {
-            //                points[i] = meshCreatorPoints[i].transform.position;
-            //            }
-            //            points[meshCreatorPoints.Count] = currentShadowObject.transform.position;
-            //            meshCreatorLineRenderer.SetPositions(points);
-
-            //        }
-            //    }
-                
-            //}
-            //else
-            //{
-            //    currentShadowObject.GetComponent<MeshRenderer>().material.color = new Color(1.0f, 0.0f, 0.0f, 1.0f);
-            //    meshCreatorLineRenderer.SetColors(Color.red, Color.red);
-            //}
-
-
-
-            
 
         }
+        else 
+        {
+            if (Input.GetMouseButtonDown(0))
+            {
+                Vector3 worldPoint = Camera.main.ScreenToWorldPoint(Input.mousePosition);
+                worldPoint = new Vector3(worldPoint.x, worldPoint.y, 0.0f);
 
+                if (worldPoint.x > -28.25f && worldPoint.x < 28.25 &&
+                    worldPoint.y > -20 && worldPoint.y < 20)
+                {
+                    int selectedIndex = (physicsManager.FindClickIndex(worldPoint));
+                    SELECTEDOBJECT = selectedIndex;
+                    if (selectedIndex == -1) { InspectorContent.SetActive(false); }
+                    else { InspectorContent.SetActive(true); }
+
+
+                    BasicPhysicObject bo = physicsManager.SelectSpecificObject(selectedIndex, prefabHolder);
+
+                    if (bo != null)
+                    {
+
+                        MeshColliderScript mc = bo.GetCollider();
+                        MassText.text = mc.GetMass().ToString();
+                        BoucinessText.text = bo.getBounciness().ToString();
+                        StaticFrictionText.text = bo.getStaticFriction().ToString();
+                        DynamicFrictionText.text = bo.getDynamicFriction().ToString();
+                        IsStaticToggle.isOn = bo.getIsStatic();
+
+                        MassSlider.value = mc.GetMass();
+
+                        BoucinessSlider.value = bo.getBounciness();
+                        StaticFrictionSlider.value = bo.getStaticFriction();
+                        DynamicFrictionSlider.value = bo.getDynamicFriction();
+
+                    }
+
+
+                }
+
+
+
+            }
+        }
 
        
     }
@@ -653,7 +604,7 @@ public class UiGameManager : MonoBehaviour
 
     public void ShowPausePanel()
     {
-        Time.timeScale = 0;
+       
         GamePanel.SetActive(true);
         SettingsPanel.SetActive(false);
         PhysicsPanel.SetActive(false);
@@ -693,6 +644,43 @@ public class UiGameManager : MonoBehaviour
     {
         SoundEffectVolumeText.text = Mathf.RoundToInt(value * 100) + "%";
         GameConstants.SoundEffectVolume = value * 100;
+    }
+
+
+
+
+
+    public void InspectorChangeMass(System.Single newMass)
+    {
+        MassText.text = newMass.ToString();
+        MeshColliderScript mc = physicsManager.GetMeshCollliderObjectAt(SELECTEDOBJECT);
+        if (mc != null) { mc.SetMass(newMass); }
+    }
+    public void InspectorChangeBouciness(System.Single newBouciness) 
+    {
+        BoucinessText.text = newBouciness.ToString();
+        BasicPhysicObject bo = physicsManager.GetPhysicObjectAt(SELECTEDOBJECT);
+        if (bo != null) { bo.setBouciness(newBouciness); }
+        
+    }
+    public void InspectorChangeDynamicFriction(System.Single newDynamicFriction)
+    {
+         DynamicFrictionText.text = newDynamicFriction.ToString();
+        BasicPhysicObject bo = physicsManager.GetPhysicObjectAt(SELECTEDOBJECT);
+        if (bo != null) { bo.setDynamicFriction(newDynamicFriction); }
+
+    }
+    public void InspectorChangeStaticFriction(System.Single newStaticFriction)
+    {
+        StaticFrictionText.text = newStaticFriction.ToString();
+        BasicPhysicObject bo = physicsManager.GetPhysicObjectAt(SELECTEDOBJECT);
+        if (bo != null) { bo.setStaticFriction(newStaticFriction); }
+
+    }
+    public void InspectorChangeStatic(System.Boolean newStatic)
+    {
+        BasicPhysicObject bo = physicsManager.GetPhysicObjectAt(SELECTEDOBJECT);
+        if (bo != null) { bo.setIsStatic(newStatic); }
     }
 
 
