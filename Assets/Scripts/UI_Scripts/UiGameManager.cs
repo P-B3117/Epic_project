@@ -81,7 +81,7 @@ public class UiGameManager : MonoBehaviour
         }
 
         //If click check if clicked on a physicObject and update inspector
-       
+
 
 
         //!!!!!Functionality of the slider!!!!!
@@ -326,7 +326,34 @@ public class UiGameManager : MonoBehaviour
 
 
         }
-        else 
+        else if (MOUSESTATE == 6)
+        {
+            Vector3 worldPoint = Camera.main.ScreenToWorldPoint(Input.mousePosition);
+            currentShadowObject.transform.position = new Vector3(worldPoint.x, worldPoint.y, 0.0f);
+            //The worldPoint boundaries are : (-28.25, 20)      - (28.25, 20)
+            //                                (-28.25, -20)   - (28.25, -20)
+
+            //Check boundaries
+            MeshColliderScript mc = currentShadowObject.GetComponent<MeshColliderScript>();
+            mc.UpdateColliderOrientation();
+            Rect AABB = mc.GetBoundariesAABB();
+            if (AABB.position.x > -28.25f && AABB.position.x + AABB.width < 28.25 &&
+                AABB.position.y > -20 && AABB.position.y + AABB.height < 20)
+            {
+                currentShadowObject.GetComponent<MeshRenderer>().material.color = new Color(0.0f, 1.0f, 0.0f, 0.5f);
+                if (Input.GetMouseButtonDown(0))
+                {
+                    GameObject newGO = Instantiate(currentShadowObject);
+                    physicsManager.AddPhysicObject(newGO);
+                }
+            }
+            else
+            {
+                currentShadowObject.GetComponent<MeshRenderer>().material.color = new Color(1.0f, 0.0f, 0.0f, 0.5f);
+
+            }
+        }
+        else
         {
             if (Input.GetMouseButtonDown(0))
             {
@@ -512,6 +539,14 @@ public class UiGameManager : MonoBehaviour
         currentShadowObject = prefabHolder.GetMeshCreatorPoint(); 
         currentShadowObject.transform.SetParent(GamePanel.transform);  
     }
+
+    public void SetMouseState6()
+    {
+        ResetMouseState();
+        MOUSESTATE = 6;
+        currentShadowObject = prefabHolder.GetLittleCircle();
+		currentShadowObject.transform.SetParent(GamePanel.transform);
+	}
 
 
     // bouton pause (5)
