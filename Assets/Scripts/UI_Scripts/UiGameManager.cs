@@ -254,7 +254,7 @@ public class UiGameManager : MonoBehaviour
 
                     Vector3 first = meshCreatorPoints[0].transform.position - moy;
                     Vector3 second = meshCreatorPoints[1].transform.position - moy;
-                    Vector3 dir = Vector3.Cross(first, second);
+                    Vector3 dir = Vector3.Cross(first, second).normalized;
                     if (dir == Vector3.back)
                     {
                         for (int i = 0; i < meshCreatorPoints.Count; i++)
@@ -269,7 +269,7 @@ public class UiGameManager : MonoBehaviour
                             modelPoints.Add(meshCreatorPoints[i].transform.position - moy);
                         }
                     }
-
+                    
 
 
                     GameObject empty = new GameObject();

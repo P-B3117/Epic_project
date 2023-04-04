@@ -71,7 +71,7 @@ public class BasicPhysicObject : MonoBehaviour
     }
 	public void UpdateState(float timeStep) 
     {
-        if (isStatic) { velocity = Vector3.zero; angularVelocity = 0; return; }
+        if (isStatic) { velocity = Vector3.zero; angularVelocity = 0; resultingForce = Vector3.zero; torque = 0; return; }
 
         
 

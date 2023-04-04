@@ -57,7 +57,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 3806196724452386551, guid: 2fca7d1fabb075c479d804fad64fe191, type: 3}
       propertyPath: mass
-      value: 500
+      value: 50
       objectReference: {fileID: 0}
     - target: {fileID: 3806196724452386551, guid: 2fca7d1fabb075c479d804fad64fe191, type: 3}
       propertyPath: rayonOfCircle

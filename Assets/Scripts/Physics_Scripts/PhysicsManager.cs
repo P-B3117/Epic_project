@@ -171,11 +171,21 @@ public class PhysicsManager : MonoBehaviour
 
 					bool iStatic = physicObjects[i].IsStatic();
 					bool jStatic = physicObjects[j].IsStatic();
+					bool iWall = physicObjects[i].IsWall;
+					bool jWall = physicObjects[j].IsWall;
 					if (col != null && col.GetMTV() != Vector3.zero)
 					{
 						//Displacement based on their respective mass
 						//Oriente la normale en fonction du polygone de reference
-						if (iStatic && !jStatic)
+						if (iWall)
+						{
+							meshColliders[j].Translate(col.GetMTV() * changeUp);
+						}
+						else if(jWall) 
+						{
+							meshColliders[i].Translate(col.GetMTV() * changeUp);
+						}
+						else if (iStatic && !jStatic)
 						{
 							meshColliders[j].Translate(col.GetMTV() * changeUp);
 
