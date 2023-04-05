@@ -14,7 +14,8 @@ public class PrefabsHolder : MonoBehaviour
 	private GameObject middleTriangle;
 	[SerializeField]
 	private GameObject bigSquare;
-
+	[SerializeField]
+	private GameObject softBody1;
 
 	[SerializeField]
 	private GameObject meshCreatorPoint;
@@ -34,12 +35,16 @@ public class PrefabsHolder : MonoBehaviour
 	public GameObject GetMiddleTriangle() { return GetPrefab(middleTriangle); }
 	public GameObject GetBigSquare() { return GetPrefab(bigSquare); }
 
+	public GameObject GetSoftBody1() { return GetSoftBody(softBody1); }
+
 	public GameObject GetMeshCreatorPoint() { return Instantiate(meshCreatorPoint); }
 
 	public Material GetBasicUnlitMaterial() { return basicUnlitMaterial; }
 	public Material GetShadowObjectMaterial() { return shadowObjectMaterial; }
 
 	public Material GetSelectedObjectMaterial() { return selecteObjectdMaterial; }
+
+
 
 	private GameObject GetPrefab(GameObject go) 
 	{
@@ -51,5 +56,12 @@ public class PrefabsHolder : MonoBehaviour
 		mc.SetShadowMaterial();
 		
 		return LC;
+	}
+
+	private GameObject GetSoftBody(GameObject softBO) 
+	{
+		SoftBody sb = softBO.GetComponent<SoftBody>();
+		sb.Initialise();
+		return Instantiate(softBO);
 	}
 }

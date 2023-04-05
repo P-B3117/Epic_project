@@ -329,16 +329,18 @@ public class UiGameManager : MonoBehaviour
         else if (MOUSESTATE == 6)
         {
             Vector3 worldPoint = Camera.main.ScreenToWorldPoint(Input.mousePosition);
-            currentShadowObject.transform.position = new Vector3(worldPoint.x, worldPoint.y, 0.0f);
+            
+
+            
             //The worldPoint boundaries are : (-28.25, 20)      - (28.25, 20)
             //                                (-28.25, -20)   - (28.25, -20)
 
             //Check boundaries
-            MeshColliderScript mc = currentShadowObject.GetComponent<MeshColliderScript>();
-            mc.UpdateColliderOrientation();
-            Rect AABB = mc.GetBoundariesAABB();
-            if (AABB.position.x > -28.25f && AABB.position.x + AABB.width < 28.25 &&
-                AABB.position.y > -20 && AABB.position.y + AABB.height < 20)
+            
+           
+            
+            if (worldPoint.x > -28.25f && worldPoint.x < 28.25 &&
+                worldPoint.y > -20 && worldPoint.y < 20)
             {
                 currentShadowObject.GetComponent<MeshRenderer>().material.color = new Color(0.0f, 1.0f, 0.0f, 0.5f);
                 if (Input.GetMouseButtonDown(0))
@@ -349,7 +351,7 @@ public class UiGameManager : MonoBehaviour
             }
             else
             {
-                currentShadowObject.GetComponent<MeshRenderer>().material.color = new Color(1.0f, 0.0f, 0.0f, 0.5f);
+                currentShadowObject.GetComponent<MeshRenderer>().material.color = new Color(1.0f, 1.0f, 0.0f, 0.5f);
 
             }
         }
@@ -511,6 +513,11 @@ public class UiGameManager : MonoBehaviour
     {
         ResetMouseState();
         // code qui fait en sorte que les objets qui étaient dans la fenêtre disparaissent.
+        SoftBody[] softBodies = FindObjectsOfType<SoftBody>();
+        for (int i = softBodies.Length-1; i >= 0; i--) 
+        {
+            Destroy(softBodies[i].gameObject);
+        }
         physicsManager.ResetList();
     }
 
@@ -544,7 +551,7 @@ public class UiGameManager : MonoBehaviour
     {
         ResetMouseState();
         MOUSESTATE = 6;
-        currentShadowObject = prefabHolder.GetLittleCircle();
+        currentShadowObject = prefabHolder.GetSoftBody1();
 		currentShadowObject.transform.SetParent(GamePanel.transform);
 	}
 

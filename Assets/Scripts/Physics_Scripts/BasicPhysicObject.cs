@@ -17,7 +17,8 @@ public class BasicPhysicObject : MonoBehaviour
     bool isStatic = false;
     bool isWall = false;
 
-
+    [SerializeField]
+    bool lockRoll = false;
 
 
     [Header("Property of the material of the object")]
@@ -72,7 +73,7 @@ public class BasicPhysicObject : MonoBehaviour
 	public void UpdateState(float timeStep) 
     {
         if (isStatic) { velocity = Vector3.zero; angularVelocity = 0; resultingForce = Vector3.zero; torque = 0; return; }
-
+        else if (lockRoll) { torque = 0; angularVelocity = 0; }
         
 
         Vector3 acceleration = resultingForce / collider.GetMass();
