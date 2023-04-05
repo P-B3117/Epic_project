@@ -41,25 +41,26 @@ public class SoftBody : MonoBehaviour
         mesh.triangles = newTriangles;
 
 
-        LineRenderer[] listLR = GetComponentsInChildren<LineRenderer>();
-        for (int i = 0; i < listLR.Length; i++) 
-        {
-            listLR[i].enabled = false;
-        }
-        MeshRenderer[] listMR = GetComponentsInChildren<MeshRenderer>();
-        for (int i = 0; i < listMR.Length; i++) 
-        {
-			if (!listMR[i].name.Equals(this.name)) { 
-                listMR[i].enabled = false;
-            }
-        }
+		LineRenderer[] listLR = GetComponentsInChildren<LineRenderer>();
+		for (int i = 0; i < listLR.Length; i++)
+		{
+			listLR[i].enabled = false;
+		}
+		MeshRenderer[] listMR = GetComponentsInChildren<MeshRenderer>();
+		for (int i = 0; i < listMR.Length; i++)
+		{
+			if (!listMR[i].name.Equals(this.name))
+			{
+				listMR[i].enabled = false;
+			}
+		}
 
-    }
+	}
     public void UpdateSoftBody() 
     {
         Mesh mesh = new Mesh();
         GetComponent<MeshFilter>().mesh = mesh;
-        GetComponent<MeshRenderer>().material = material;
+       
         Vector3[] modelPoints = new Vector3[points.Count];
 
         modelPoints[0] = points[0].transform.position;
@@ -100,5 +101,14 @@ public class SoftBody : MonoBehaviour
 	{
 		UpdateSoftBody();
 	}
+
+    public void SetBasicMaterial() 
+    {
+        GetComponent<MeshRenderer>().material = this.material;
+    }
+    public void SetShadowMaterial(PrefabsHolder ph) 
+    {
+        GetComponent<MeshRenderer>().material = ph.GetSoftBodyShadowMaterial();
+    }
 }
 

@@ -46,7 +46,8 @@ public class DistanceJoints : MonoBehaviour
     private float invInertiaSum;
     private float invMassSum;
     private LineRenderer lr;
-    public void Start()
+  
+    public void Initialize() 
     {
         // Get references to the BasicPhysicObject and MeshColliderScript components for both bodies
         bpA = bo1.GetComponent<BasicPhysicObject>();
@@ -63,14 +64,10 @@ public class DistanceJoints : MonoBehaviour
 
         lr = this.gameObject.AddComponent<LineRenderer>();
         lr.SetWidth(0.2f, 0.2f);
-
     }
     public void UpdateJointState(float timeStep)
     {
-        bpA = bo1.GetComponent<BasicPhysicObject>();
-        bpB = bo2.GetComponent<BasicPhysicObject>();
-        mcA = bo1.GetComponent<MeshColliderScript>();
-        mcB = bo2.GetComponent<MeshColliderScript>();
+      
         dampingRatio = Mathf.Clamp(dampingRatio, 0.0f, 1.0f);
         //get positions 
         Transform bodyA = bo1.transform;

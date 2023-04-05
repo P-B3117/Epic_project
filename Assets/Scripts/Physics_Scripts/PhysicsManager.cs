@@ -53,6 +53,10 @@ public class PhysicsManager : MonoBehaviour
 			physicsJoints.Add(joints[i].GetComponent<DistanceJoints>());
 
 		}
+		for (int i = 0; i < physicsJoints.Count; i++) 
+		{
+			physicsJoints[i].Initialize();
+		}
 
 
 	
@@ -76,10 +80,9 @@ public class PhysicsManager : MonoBehaviour
 		{
 
 			PhysicCalculations();
-			if (joints.Count > 0)
-			{
-				JointPhysicCalculations();
-			}
+			
+			JointPhysicCalculations();
+			
 			numberOfUpdateCounter--;
 		}
 
@@ -306,6 +309,33 @@ public class PhysicsManager : MonoBehaviour
 		physicObjects.Add(po);
 		
 	}
+	public void AddSoftBody(GameObject softBody) 
+	{
+		BasicPhysicObject[] bos = softBody.GetComponentsInChildren<BasicPhysicObject>();
+		DistanceJoints[] djs = softBody.GetComponentsInChildren<DistanceJoints>();
+
+		for (int i = 0; i < bos.Length; i++) 
+		{
+			MeshColliderScript mc = bos[i].gameObject.GetComponent<MeshColliderScript>();
+			mc.SetUpMesh();
+			mc.UpdateColliderOrientation();
+			bos[i].SetCollider(mc);
+			meshColliders.Add(mc);
+			physicObjects.Add(bos[i]);
+			objects.Add(bos[i].gameObject);
+
+		}
+
+		for (int i = 0; i < djs.Length; i++) 
+		{
+			
+			djs[i].Initialize();
+			physicsJoints.Add(djs[i]);
+			joints.Add(djs[i].gameObject);
+			
+		}
+		softBody.GetComponent<SoftBody>().Initialise();
+	}
 
 
 	//Return the index of the Object that the mouse clicked on
@@ -367,7 +397,7 @@ public class PhysicsManager : MonoBehaviour
 	//Method for the calculations of the joints properties
 	private void JointPhysicCalculations()
 	{
-		for (int i = 0; i < joints.Count; i++)
+		for (int i = 0; i < physicsJoints.Count; i++)
 		{
 			physicsJoints[i].UpdateJointState(stepLength);
 		}

@@ -28,6 +28,8 @@ public class PrefabsHolder : MonoBehaviour
 	[SerializeField]
 	private Material selecteObjectdMaterial;
 
+	[SerializeField]
+	private Material softBodyShadowMaterial;
 
 	public GameObject GetLittleCircle() {return GetPrefab(littleCircle);}
 	public GameObject GetMiddleCircle() { return GetPrefab(middleCircle); }
@@ -43,6 +45,8 @@ public class PrefabsHolder : MonoBehaviour
 	public Material GetShadowObjectMaterial() { return shadowObjectMaterial; }
 
 	public Material GetSelectedObjectMaterial() { return selecteObjectdMaterial; }
+
+	public Material GetSoftBodyShadowMaterial() { return softBodyShadowMaterial; }
 
 
 
@@ -62,6 +66,7 @@ public class PrefabsHolder : MonoBehaviour
 	{
 		SoftBody sb = softBO.GetComponent<SoftBody>();
 		sb.Initialise();
+		sb.SetShadowMaterial(this);
 		return Instantiate(softBO);
 	}
 }

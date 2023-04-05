@@ -326,34 +326,48 @@ public class UiGameManager : MonoBehaviour
 
 
         }
+        //SoftBody
         else if (MOUSESTATE == 6)
         {
             Vector3 worldPoint = Camera.main.ScreenToWorldPoint(Input.mousePosition);
-            
 
-            
+
+
             //The worldPoint boundaries are : (-28.25, 20)      - (28.25, 20)
             //                                (-28.25, -20)   - (28.25, -20)
 
             //Check boundaries
-            
+            currentShadowObject.transform.position = new Vector3(worldPoint.x / 2, worldPoint.y / 2, 0.0f);
            
             
             if (worldPoint.x > -28.25f && worldPoint.x < 28.25 &&
                 worldPoint.y > -20 && worldPoint.y < 20)
             {
-                currentShadowObject.GetComponent<MeshRenderer>().material.color = new Color(0.0f, 1.0f, 0.0f, 0.5f);
+                currentShadowObject.GetComponent<MeshRenderer>().material.color = new Color(1.0f, 1.0f, 0.0f, 0.5f);
                 if (Input.GetMouseButtonDown(0))
                 {
+                   
+                    currentShadowObject.transform.position = Vector3.zero;
                     GameObject newGO = Instantiate(currentShadowObject);
-                    physicsManager.AddPhysicObject(newGO);
+                    newGO.GetComponent<SoftBody>().SetBasicMaterial();
+                    BasicPhysicObject[] bos = newGO.GetComponentsInChildren<BasicPhysicObject>();
+                    for (int i = 0; i < bos.Length; i++) 
+                    {
+                        bos[i].transform.position += new Vector3(worldPoint.x, worldPoint.y, 0.0f);
+                    }
+                    
+                    
+                    
+                    physicsManager.AddSoftBody(newGO);
                 }
             }
             else
             {
-                currentShadowObject.GetComponent<MeshRenderer>().material.color = new Color(1.0f, 1.0f, 0.0f, 0.5f);
+                currentShadowObject.GetComponent<MeshRenderer>().material.color = new Color(1.0f, 0.0f, 0.0f, 0.5f);
 
             }
+
+
         }
         else
         {
