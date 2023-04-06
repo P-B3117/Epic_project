@@ -6,8 +6,12 @@ using UnityEngine.SceneManagement;
 public class PlayButtonScript : MonoBehaviour
 {
 
-    public void OnClick()
+    public void OnClickBasicSandBox()
     {
             SceneManager.LoadScene(0);
+    }
+    public void OnClickFluidSandBox() 
+    {
+        SceneManager.LoadScene(2);
     }
 }

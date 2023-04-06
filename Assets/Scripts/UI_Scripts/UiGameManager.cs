@@ -644,7 +644,7 @@ public class UiGameManager : MonoBehaviour
 
     public void ShowSettingsPanel()
     {
-        GamePanel.SetActive(false);
+        //GamePanel.SetActive(false);
         PausePanel.SetActive(false);
         PhysicsPanel.SetActive(false);
         SettingsPanel.SetActive(true);
@@ -652,7 +652,7 @@ public class UiGameManager : MonoBehaviour
 
     public void ShowPhysicsPanel()
     {
-        GamePanel.SetActive(false);
+        //GamePanel.SetActive(false);
         PausePanel.SetActive(false);
         SettingsPanel.SetActive(false);
         PhysicsPanel.SetActive(true);
@@ -661,7 +661,7 @@ public class UiGameManager : MonoBehaviour
     public void ShowPausePanel()
     {
        
-        GamePanel.SetActive(true);
+        //GamePanel.SetActive(true);
         SettingsPanel.SetActive(false);
         PhysicsPanel.SetActive(false);
         PausePanel.SetActive(true);

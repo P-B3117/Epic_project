@@ -45,17 +45,17 @@ public class FluidManager
 			for(int j = 0; j < numberOfParticles; j++) 
 			{
 				float r = Random.Range(0.0f, 1.0f);
-				particles.Add(new Particle(new Vector3(gridPosition.x + i*r, gridPosition.y  + j*r, 0.0f), Vector3.zero, i*numberOfParticles + j, radius));
-				grid.AddParticle(particles[i]);
+				particles.Add(new Particle(new Vector3(gridPosition.x + i*0.5f*r, gridPosition.y  + j*0.5f*r, 0.0f), Vector3.zero, i*numberOfParticles + j, radius));
+				grid.AddParticle(particles[i*numberOfParticles+j]);
 			}
 			
 		}
 
 	}
-	public void FluidPhysicsCalculations(float timeStep, Vector2 g)
+	public void FluidPhysicsCalculations(float timeStep)
 	{
-		//Vector3 gravity = new Vector3(0, -UniversalVariable.GetGravity() * timeStep);
-		Vector3 gravity = -g * timeStep;
+
+		Vector3 gravity = new Vector3(0.0f, -UniversalVariable.GetGravity() , 0.0f);
 		
 		for (int i = 0; i < particles.Count; i++) 
 		{
@@ -64,23 +64,23 @@ public class FluidManager
 			//ApplyForces
 			p.AddVelocity(gravity);
 
-			//ApplyViscosity
-			List<int> neighbors = p.GetNeighbors();
-			for (int j = 0; j < neighbors.Count; j++)
-			{
-				Particle n = particles[neighbors[j]];
-				Vector3 vPN = n.GetPosition() - p.GetPosition();
-				float velInward = Vector3.Dot((p.GetVelocity() - n.GetVelocity()), vPN);
-				if (velInward > 0)
-				{
-					float length = vPN.magnitude;
-					velInward /= length;
-					float q = length / radius;
-					Vector3 I = 0.5f * timeStep * (1 - q) * (SIGMA * velInward + BETA * velInward * velInward) * vPN;
+			////ApplyViscosity
+			//List<int> neighbors = p.GetNeighbors();
+			//for (int j = 0; j < neighbors.Count; j++)
+			//{
+			//	Particle n = particles[neighbors[j]];
+			//	Vector3 vPN = n.GetPosition() - p.GetPosition();
+			//	float velInward = Vector3.Dot((p.GetVelocity() - n.GetVelocity()), vPN);
+			//	if (velInward > 0)
+			//	{
+			//		float length = vPN.magnitude;
+			//		velInward /= length;
+			//		float q = length / radius;
+			//		Vector3 I = 0.5f * timeStep * (1 - q) * (SIGMA * velInward + BETA * velInward * velInward) * vPN;
 					
-					p.AddVelocity(-I);
-				}
-			}
+			//		p.AddVelocity(-I);
+			//	}
+			//}
 
 
 			//UpdatePositions
