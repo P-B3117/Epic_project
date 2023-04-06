@@ -9,14 +9,14 @@ public class ObjectFluidManager : MonoBehaviour
 	private float stepLength;
 	private float numberOfUpdateCounter = 0;
 
-
+	public Vector2 Gravity;
 	FluidManager fluidManager;
 
 	public void Start()
 	{
 
 		fluidManager = new FluidManager();
-		fluidManager.InitialiseParticlesSystem(5);
+		fluidManager.InitialiseParticlesSystem(10);
 
 
 
@@ -52,7 +52,7 @@ public class ObjectFluidManager : MonoBehaviour
 	private void PhysicCalculations()
 	{
 
-		fluidManager.FluidPhysicsCalculations(stepLength);
+		fluidManager.FluidPhysicsCalculations(stepLength, Gravity);
 
 	}
 
