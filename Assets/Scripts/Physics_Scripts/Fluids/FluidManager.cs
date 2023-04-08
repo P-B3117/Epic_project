@@ -2,21 +2,22 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class FluidManager
+public class FluidManager : MonoBehaviour
 {
 	List<Particle> particles;
 	FluidGrid grid;
 	Vector2 gridPosition;
 	Vector2 gridDimension;
 
-	float radius = 0.5f;
-	int gridSize = 25;
+	float radius = 1.0f;
+	int gridSizeX = 56;
+	int gridSizeY = 40;
 
 	//Viscosity's linear dependence on the velocity
-	float SIGMA = 3f;
+	float SIGMA = 20.0f;
 
 	//Viscosity's quadratic dependence on the velocity
-	float BETA = 3f;
+	float BETA = 20.0f;
 
 
 	//Stiffness used in DoubleDensityRelaxation
@@ -31,20 +32,20 @@ public class FluidManager
 	{
 
 	}
-	public void InitialiseParticlesSystem(int numberOfParticles)
+	public void InitialiseParticlesSystem(int numberOfParticles, PrefabsHolder ph)
 	{
 		particles = new List<Particle>();
-		gridPosition = new Vector2(-7.5f, -7.5f);
-		grid = new FluidGrid(radius, gridSize, gridPosition);
+		gridPosition = new Vector2(-27.75f, -19.25f);
+		grid = new FluidGrid(radius, gridSizeX, gridSizeY, gridPosition);
 
-		gridDimension = new Vector2(gridPosition.x + gridSize * radius, gridPosition.y + gridSize * radius);
+		gridDimension = new Vector2(gridPosition.x + gridSizeX * radius, gridPosition.y + gridSizeY * radius);
 
 		for (int i = 0; i < numberOfParticles; i++)
 		{
 			for (int j = 0; j < numberOfParticles; j++)
 			{
-				float r = Random.Range(0.0f, 1.0f);
-				particles.Add(new Particle(new Vector3(gridPosition.x + i * r, gridPosition.y + j * r, 0.0f), Vector3.zero, i * numberOfParticles + j, radius));
+				float r = Random.Range(0.1f, 1.0f);
+				particles.Add(new Particle(new Vector3(gridPosition.x + i+ i * r, gridPosition.y + j+j * r, 0.0f), Vector3.zero, i * numberOfParticles + j, radius, ph));
 				grid.AddParticle(particles[i * numberOfParticles + j]);
 			}
 
@@ -121,12 +122,18 @@ public class FluidManager
 			Vector3 delta = Vector3.zero;
 			for (int j = 0; j < neighbors.Count; j++)
 			{
-				float tempN = (part.GetPosition() - particles[neighbors[j]].GetPosition()).magnitude;
-				float q = 1.0f - (tempN / radius);
-				Vector3 vPN = (part.GetPosition() - particles[neighbors[j]].GetPosition()).normalized;
-				Vector3 D = (0.5f * timeStep * timeStep * (P * q + PNear * q * q)) * vPN;
-				particles[neighbors[j]].AddPosition(D);
-				delta -= D;
+				Particle neighbor = particles[neighbors[j]];
+				
+					float tempN = (part.GetPosition() - neighbor.GetPosition()).magnitude;
+					float q = 1.0f - (tempN / radius);
+					Vector3 vPN = (part.GetPosition() - neighbor.GetPosition()).normalized;
+				
+					Vector3 D = (0.5f * timeStep * timeStep * (P * q + PNear * q * q)) * vPN;
+
+				
+					particles[neighbors[j]].AddPosition(D);
+					delta -= D;
+				
 
 			}
 			part.AddPosition(delta);

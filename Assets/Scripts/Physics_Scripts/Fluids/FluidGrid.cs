@@ -5,22 +5,24 @@ using UnityEngine;
 public class FluidGrid 
 {
 	float cellSize;
-	int gridLength;
+	int gridLengthX;
+	int gridLengthY;
 	Vector2 gridOffset;
 	
 
 	List<int>[,] gridInfo;
 
 
-	public FluidGrid(float cellSize, int gridLength, Vector2 offset)
+	public FluidGrid(float cellSize, int gridLengthX, int gridLengthY, Vector2 offset)
 	{
 		this.cellSize = cellSize;
-		this.gridLength = gridLength;
+		this.gridLengthX = gridLengthX;
+		this.gridLengthY = gridLengthY;
 		gridOffset = offset;
-		gridInfo = new List<int>[gridLength,gridLength];
-		for (int i = 0; i < gridLength; i++)
+		gridInfo = new List<int>[gridLengthX,gridLengthY];
+		for (int i = 0; i < gridLengthX; i++)
 		{
-			for (int j = 0; j < gridLength; j++)
+			for (int j = 0; j < gridLengthY; j++)
 			{
 				gridInfo[i, j] = new List<int>();
 			}
@@ -30,9 +32,9 @@ public class FluidGrid
 
 	public void ResetGrid() 
 	{
-		for (int i = 0; i < gridLength; i++) 
+		for (int i = 0; i < gridLengthX; i++) 
 		{
-			for (int j = 0; j < gridLength; j++) 
+			for (int j = 0; j < gridLengthY; j++) 
 			{
 				gridInfo[i, j].Clear();
 			}
@@ -65,7 +67,7 @@ public class FluidGrid
 				possibleNeighbors.Add(gridInfo[midCell.x, midCell.y][i]);
 		}
 		//Check Top
-		if (midCell.y + 1 < gridLength) 
+		if (midCell.y + 1 < gridLengthY) 
 		{
 			newCoord = new intPosition(midCell.x, midCell.y + 1);
 			for (int i = 0; i < gridInfo[newCoord.x, newCoord.y].Count; i++)
@@ -88,7 +90,7 @@ public class FluidGrid
 		if (midCell.x - 1 >= 0) 
 		{
 			//Top left
-			if (midCell.y + 1 < gridLength) 
+			if (midCell.y + 1 < gridLengthY) 
 			{
 				newCoord = new intPosition(midCell.x-1, midCell.y+1);
 				for (int i = 0; i < gridInfo[newCoord.x, newCoord.y].Count; i++)
@@ -118,10 +120,10 @@ public class FluidGrid
 
 
 		//Check right column
-		if (midCell.x + 1 < gridLength)
+		if (midCell.x + 1 < gridLengthX)
 		{
 			//Top right
-			if (midCell.y + 1 < gridLength)
+			if (midCell.y + 1 < gridLengthY)
 			{
 				newCoord = new intPosition(midCell.x + 1, midCell.y + 1);
 				for (int i = 0; i < gridInfo[newCoord.x, newCoord.y].Count; i++)

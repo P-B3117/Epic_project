@@ -5,18 +5,20 @@ using UnityEngine;
 public class ObjectFluidManager : MonoBehaviour
 {
 	//Change the variable numberOfStepsPerSecond to change the timerate calculations
-	private int numberOfStepsPerSecond = 100;
+	private int numberOfStepsPerSecond = 60;
 	private float stepLength;
 	private float numberOfUpdateCounter = 0;
 
 	public Vector2 Gravity;
 	FluidManager fluidManager;
 
+	public PrefabsHolder prefabHolder;
+
 	public void Start()
 	{
 
 		fluidManager = new FluidManager();
-		fluidManager.InitialiseParticlesSystem(10);
+		fluidManager.InitialiseParticlesSystem(15, prefabHolder);
 
 
 

@@ -25,11 +25,12 @@ public class Particle
     List<int> neighbors;
 
 
-    public Particle(Vector3 initialPos, Vector3 initialVel, int i, float radius) 
+    public Particle(Vector3 initialPos, Vector3 initialVel, int i, float radius, PrefabsHolder ph) 
     {
         particle = GameObject.CreatePrimitive(PrimitiveType.Sphere);
         particle.transform.localScale = new Vector3(radius * 2, radius * 2, radius * 2);
-        
+        particle.GetComponent<MeshRenderer>().material = ph.GetFluidMaterial();
+
         particle.transform.position = initialPos;
         oldPosition = initialPos;
         velocity = initialVel;
@@ -57,7 +58,9 @@ public class Particle
     }
     public void AddPosition(Vector3 addPos) 
     {
-        particle.transform.position += addPos;
+
+        particle.transform.Translate(addPos);
+        
     }
 
     public Vector3 GetVelocity()

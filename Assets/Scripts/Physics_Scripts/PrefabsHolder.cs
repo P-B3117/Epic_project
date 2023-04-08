@@ -31,6 +31,9 @@ public class PrefabsHolder : MonoBehaviour
 	[SerializeField]
 	private Material softBodyShadowMaterial;
 
+	[SerializeField]
+	private Material fluidMaterial;
+
 	public GameObject GetLittleCircle() {return GetPrefab(littleCircle);}
 	public GameObject GetMiddleCircle() { return GetPrefab(middleCircle); }
 	public GameObject GetBigCircle() { return GetPrefab(bigCircle); }
@@ -48,7 +51,7 @@ public class PrefabsHolder : MonoBehaviour
 
 	public Material GetSoftBodyShadowMaterial() { return softBodyShadowMaterial; }
 
-
+	public Material GetFluidMaterial() { return fluidMaterial; }
 
 	private GameObject GetPrefab(GameObject go) 
 	{
