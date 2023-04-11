@@ -40,6 +40,7 @@ public class UiGameManager : MonoBehaviour
     //Inspector variables
     [Header("Reference for the inspector")]
     private int SELECTEDOBJECT = -1;
+    private GameObject SELECTEDOBJECTGAMEOBJECT = null;
     public GameObject InspectorContent;
     public Slider MassSlider;
     public Slider BoucinessSlider;
@@ -71,6 +72,7 @@ public class UiGameManager : MonoBehaviour
     void Update()
     {
        
+        //Universal inputs functionality
         if (Input.GetKeyDown(KeyCode.Escape))
         {
             ShowPausePanel();
@@ -80,15 +82,17 @@ public class UiGameManager : MonoBehaviour
             ResetMouseState();
         }
 
-        //If click check if clicked on a physicObject and update inspector
+       
 
 
 
         //!!!!!Functionality of the slider!!!!!
         //Mouse functionality for basic objects
+        //Move the shadow object of the basic physics object selected with the mouse
         if (MOUSESTATE >= 0 && MOUSESTATE <= 4)
         {
 
+            //Get the position of the mouse on the screen
             Vector3 worldPoint = Camera.main.ScreenToWorldPoint(Input.mousePosition);
             currentShadowObject.transform.position = new Vector3(worldPoint.x, worldPoint.y, 0.0f);
             //The worldPoint boundaries are : (-28.25, 20)      - (28.25, 20)
@@ -101,6 +105,7 @@ public class UiGameManager : MonoBehaviour
             if (AABB.position.x > -28.25f && AABB.position.x + AABB.width < 28.25 &&
                 AABB.position.y > -20 && AABB.position.y + AABB.height < 20)
             {
+                //If the mouse is in bound, change the color to green and if the mouse is clicked, initialize the new object
                 currentShadowObject.GetComponent<MeshRenderer>().material.color = new Color(0.0f, 1.0f, 0.0f, 0.5f);
                 if (Input.GetMouseButtonDown(0))
                 {
@@ -108,6 +113,7 @@ public class UiGameManager : MonoBehaviour
                     physicsManager.AddPhysicObject(newGO);
                 }
             }
+            //If the mouse isn't in bound, change the material color to red
             else
             {
                 currentShadowObject.GetComponent<MeshRenderer>().material.color = new Color(1.0f, 0.0f, 0.0f, 0.5f);
@@ -118,7 +124,8 @@ public class UiGameManager : MonoBehaviour
 
 
         }
-        //mouse functinality for the Mesh creator
+        //Mouse functinality for the Mesh creator
+        //Allows player to add points on the game scene to create custom mesh
         else if (MOUSESTATE == 5)
         {
             Vector3 worldPoint = Camera.main.ScreenToWorldPoint(Input.mousePosition);
@@ -326,7 +333,8 @@ public class UiGameManager : MonoBehaviour
 
 
         }
-        //SoftBody
+        //Mouse functionality for the softbody
+        //Allows user to add softbodies to the scene
         else if (MOUSESTATE == 6)
         {
             Vector3 worldPoint = Camera.main.ScreenToWorldPoint(Input.mousePosition);
@@ -335,14 +343,14 @@ public class UiGameManager : MonoBehaviour
 
             //The worldPoint boundaries are : (-28.25, 20)      - (28.25, 20)
             //                                (-28.25, -20)   - (28.25, -20)
-
             //Check boundaries
-            currentShadowObject.transform.position = new Vector3(worldPoint.x / 2, worldPoint.y / 2, 0.0f);
-           
-            
+
+
+            currentShadowObject.transform.position = new Vector3(worldPoint.x / 2, worldPoint.y / 2, 0.0f); //I have literally no clue why i have to do this??? But it works !
             if (worldPoint.x > -28.25f && worldPoint.x < 28.25 &&
                 worldPoint.y > -20 && worldPoint.y < 20)
             {
+                //If the mouse is in boundaries, change color to good color and if moused clicked add softbody to scene
                 currentShadowObject.GetComponent<MeshRenderer>().material.color = new Color(1.0f, 1.0f, 0.0f, 0.5f);
                 if (Input.GetMouseButtonDown(0))
                 {
@@ -361,6 +369,7 @@ public class UiGameManager : MonoBehaviour
                     physicsManager.AddSoftBody(newGO);
                 }
             }
+            //If mouse is out of the boundaries, change color to red
             else
             {
                 currentShadowObject.GetComponent<MeshRenderer>().material.color = new Color(1.0f, 0.0f, 0.0f, 0.5f);
@@ -369,6 +378,7 @@ public class UiGameManager : MonoBehaviour
 
 
         }
+        //Mouse functionality for object selection
         else
         {
             if (Input.GetMouseButtonDown(0))
@@ -376,32 +386,66 @@ public class UiGameManager : MonoBehaviour
                 Vector3 worldPoint = Camera.main.ScreenToWorldPoint(Input.mousePosition);
                 worldPoint = new Vector3(worldPoint.x, worldPoint.y, 0.0f);
 
+                //Check boundaries when click
                 if (worldPoint.x > -28.25f && worldPoint.x < 28.25 &&
                     worldPoint.y > -20 && worldPoint.y < 20)
                 {
+                    //Check if mouse click was in a specific object
+                    //return the index of the object if there is one
+                    //return -1 of there is no object
                     int selectedIndex = (physicsManager.FindClickIndex(worldPoint));
                     SELECTEDOBJECT = selectedIndex;
-                    if (selectedIndex == -1) { InspectorContent.SetActive(false); }
-                    else { InspectorContent.SetActive(true); }
+                    if (selectedIndex == -1) { SetOffInspectorContent(); }
 
 
-                    BasicPhysicObject bo = physicsManager.SelectSpecificObject(selectedIndex, prefabHolder);
+                    BasicPhysicObject bo = physicsManager.SelectSpecificObject(selectedIndex, prefabHolder, SELECTEDOBJECTGAMEOBJECT);
 
                     if (bo != null)
                     {
 
-                        MeshColliderScript mc = bo.GetCollider();
-                        MassText.text = mc.GetMass().ToString();
-                        BoucinessText.text = bo.getBounciness().ToString();
-                        StaticFrictionText.text = bo.getStaticFriction().ToString();
-                        DynamicFrictionText.text = bo.getDynamicFriction().ToString();
-                        IsStaticToggle.isOn = bo.getIsStatic();
 
-                        MassSlider.value = mc.GetMass();
+                        
 
-                        BoucinessSlider.value = bo.getBounciness();
-                        StaticFrictionSlider.value = bo.getStaticFriction();
-                        DynamicFrictionSlider.value = bo.getDynamicFriction();
+                        GameObject parent = bo.transform.parent.gameObject;
+                        
+                        //If the parent object isn't a soft body, show the regular settings
+                        if (parent.GetComponent<SoftBody>() == null)
+                        {
+                            SetOnInspectorContent();
+                            SELECTEDOBJECTGAMEOBJECT = bo.gameObject;
+                            MeshColliderScript mc = bo.GetCollider();
+                            MassText.text = mc.GetMass().ToString();
+                            BoucinessText.text = bo.getBounciness().ToString();
+                            StaticFrictionText.text = bo.getStaticFriction().ToString();
+                            DynamicFrictionText.text = bo.getDynamicFriction().ToString();
+                            IsStaticToggle.isOn = bo.getIsStatic();
+
+                            MassSlider.value = mc.GetMass();
+
+                            BoucinessSlider.value = bo.getBounciness();
+                            StaticFrictionSlider.value = bo.getStaticFriction();
+                            DynamicFrictionSlider.value = bo.getDynamicFriction();
+                        }
+                        //If the parent object is a softbody
+                        else 
+                        {
+                            SetOffInspectorContent();
+                            //Resets the materials for everyobject
+                            physicsManager.SelectSpecificObject(-1, prefabHolder, SELECTEDOBJECTGAMEOBJECT);
+                            SELECTEDOBJECTGAMEOBJECT = parent;
+                            //Set the material for the softbody
+                            parent.GetComponent<MeshRenderer>().material = prefabHolder.GetSelectedObjectMaterial();
+
+
+                            //C'est ta place Antho!!!!!!!!!!
+                            //!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+                            //!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+
+                            DistanceJoints[] softBodyDJ = parent.GetComponentsInChildren<DistanceJoints>();
+                            BasicPhysicObject[] softBodyBO = parent.GetComponentsInChildren<BasicPhysicObject>();
+                        }
+
+                        
 
                     }
 
@@ -533,6 +577,11 @@ public class UiGameManager : MonoBehaviour
             Destroy(softBodies[i].gameObject);
         }
         physicsManager.ResetList();
+
+        //enleve la selection de l'objet presentement
+        SELECTEDOBJECT = -1;
+        InspectorContent.SetActive(false);
+        SELECTEDOBJECTGAMEOBJECT = null;
     }
 
     public void ResetMouseState() { 
@@ -546,6 +595,8 @@ public class UiGameManager : MonoBehaviour
         meshCreatorPoints = new List<GameObject>();
 
         meshCreatorLineRenderer.positionCount = 1;
+
+        
     }
     public void SetMouseState0() { ResetMouseState(); MOUSESTATE = 0; currentShadowObject = prefabHolder.GetLittleCircle();  currentShadowObject.transform.SetParent(GamePanel.transform); }
     public void SetMouseState1() { ResetMouseState(); MOUSESTATE = 1; currentShadowObject = prefabHolder.GetMiddleCircle(); currentShadowObject.transform.SetParent(GamePanel.transform); }
@@ -704,7 +755,14 @@ public class UiGameManager : MonoBehaviour
 
 
 
-
+    public void SetOnInspectorContent() 
+    {
+        InspectorContent.SetActive(true);
+    }
+    public void SetOffInspectorContent() 
+    {
+        InspectorContent.SetActive(false);
+    }
 
     public void InspectorChangeMass(System.Single newMass)
     {

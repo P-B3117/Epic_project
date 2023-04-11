@@ -364,9 +364,22 @@ public class PhysicsManager : MonoBehaviour
 	}
 
 	//Change material based on index of the selection
-	public BasicPhysicObject SelectSpecificObject(int index, PrefabsHolder ph) 
+	//when index is -1 : Resets the selected object
+	//when index is bigger or equal to 0 : Resets all objects except for the selected one;
+	public BasicPhysicObject SelectSpecificObject(int index, PrefabsHolder ph, GameObject oldSelectedObject) 
 	{
-		
+		//For deselecting the selected softbody
+		if (oldSelectedObject != null)
+		{
+			
+			SoftBody sb = oldSelectedObject.GetComponent<SoftBody>();
+			if (sb != null)
+			{
+				
+				sb.SetBasicMaterial();
+			}
+		}
+
 		if (index < meshColliders.Count && index != -1)
 		{
 			
@@ -390,7 +403,11 @@ public class PhysicsManager : MonoBehaviour
 				meshColliders[i].SetBasicMaterial();
 			}
 		}
+
 		
+		
+
+
 		return null;
 	}
 
