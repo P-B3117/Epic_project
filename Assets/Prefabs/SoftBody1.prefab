@@ -47,11 +47,14 @@ MonoBehaviour:
   bo1: {fileID: 7786418397615626307}
   bo2: {fileID: 7786418398148345337}
   frequency: 2
-  dampingRatio: 0.3
+  dampingRatio: 0.1
   length: 3
   onlyPull: 0
   offsetA: {x: 0, y: 0, z: 0}
   offsetB: {x: 0, y: 0, z: 0}
+  fakemass: 0
+  fakeSoftness: 0
+  fakeSize: 0
 --- !u!1 &7786418396729871499
 GameObject:
   m_ObjectHideFlags: 0
@@ -99,11 +102,14 @@ MonoBehaviour:
   bo1: {fileID: 7786418397159843181}
   bo2: {fileID: 7786418397102927319}
   frequency: 2
-  dampingRatio: 0.3
+  dampingRatio: 0.1
   length: 3
   onlyPull: 0
   offsetA: {x: 0, y: 0, z: 0}
   offsetB: {x: 0, y: 0, z: 0}
+  fakemass: 0
+  fakeSoftness: 0
+  fakeSize: 0
 --- !u!1 &7786418396856114888
 GameObject:
   m_ObjectHideFlags: 0
@@ -151,11 +157,14 @@ MonoBehaviour:
   bo1: {fileID: 7786418398148345337}
   bo2: {fileID: 7786418397159843181}
   frequency: 2
-  dampingRatio: 0.3
+  dampingRatio: 0.1
   length: 3
   onlyPull: 0
   offsetA: {x: 0, y: 0, z: 0}
   offsetB: {x: 0, y: 0, z: 0}
+  fakemass: 0
+  fakeSoftness: 0
+  fakeSize: 0
 --- !u!1 &7786418397049532782
 GameObject:
   m_ObjectHideFlags: 0
@@ -203,11 +212,14 @@ MonoBehaviour:
   bo1: {fileID: 7786418397107708912}
   bo2: {fileID: 7786418397691633698}
   frequency: 2
-  dampingRatio: 0.3
+  dampingRatio: 0.1
   length: 3
   onlyPull: 0
   offsetA: {x: 0, y: 0, z: 0}
   offsetB: {x: 0, y: 0, z: 0}
+  fakemass: 0
+  fakeSoftness: 0
+  fakeSize: 0
 --- !u!1 &7786418397102927319
 GameObject:
   m_ObjectHideFlags: 0
@@ -270,7 +282,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 04d0400a5f2940746b61481fc5db2b70, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  mass: 5
+  mass: 3
   modelPoints: []
   material: {fileID: 2100000, guid: f8ea0197e3e47dd4aac55742c67427e4, type: 2}
   shadowMaterial: {fileID: 2100000, guid: e6ed93ae35f67b14ca1c28b98e60e05b, type: 2}
@@ -323,11 +335,14 @@ MonoBehaviour:
   bo1: {fileID: 7786418398048380289}
   bo2: {fileID: 7786418397615626307}
   frequency: 2
-  dampingRatio: 0.3
+  dampingRatio: 0.1
   length: 3
   onlyPull: 0
   offsetA: {x: 0, y: 0, z: 0}
   offsetB: {x: 0, y: 0, z: 0}
+  fakemass: 0
+  fakeSoftness: 0
+  fakeSize: 0
 --- !u!1 &7786418397107708912
 GameObject:
   m_ObjectHideFlags: 0
@@ -390,7 +405,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 04d0400a5f2940746b61481fc5db2b70, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  mass: 5
+  mass: 3
   modelPoints: []
   material: {fileID: 2100000, guid: f8ea0197e3e47dd4aac55742c67427e4, type: 2}
   shadowMaterial: {fileID: 2100000, guid: e6ed93ae35f67b14ca1c28b98e60e05b, type: 2}
@@ -458,7 +473,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 04d0400a5f2940746b61481fc5db2b70, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  mass: 5
+  mass: 3
   modelPoints: []
   material: {fileID: 2100000, guid: f8ea0197e3e47dd4aac55742c67427e4, type: 2}
   shadowMaterial: {fileID: 2100000, guid: e6ed93ae35f67b14ca1c28b98e60e05b, type: 2}
@@ -511,11 +526,14 @@ MonoBehaviour:
   bo1: {fileID: 7786418398048380289}
   bo2: {fileID: 7786418397691633698}
   frequency: 2
-  dampingRatio: 0.3
+  dampingRatio: 0.1
   length: 3
   onlyPull: 0
   offsetA: {x: 0, y: 0, z: 0}
   offsetB: {x: 0, y: 0, z: 0}
+  fakemass: 0
+  fakeSoftness: 0
+  fakeSize: 0
 --- !u!1 &7786418397313204772
 GameObject:
   m_ObjectHideFlags: 0
@@ -688,11 +706,14 @@ MonoBehaviour:
   bo1: {fileID: 7786418398048380289}
   bo2: {fileID: 7786418397159843181}
   frequency: 2
-  dampingRatio: 0.3
+  dampingRatio: 0.1
   length: 3
   onlyPull: 0
   offsetA: {x: 0, y: 0, z: 0}
   offsetB: {x: 0, y: 0, z: 0}
+  fakemass: 0
+  fakeSoftness: 0
+  fakeSize: 0
 --- !u!1 &7786418397615626307
 GameObject:
   m_ObjectHideFlags: 0
@@ -755,7 +776,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 04d0400a5f2940746b61481fc5db2b70, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  mass: 5
+  mass: 3
   modelPoints: []
   material: {fileID: 2100000, guid: f8ea0197e3e47dd4aac55742c67427e4, type: 2}
   shadowMaterial: {fileID: 2100000, guid: e6ed93ae35f67b14ca1c28b98e60e05b, type: 2}
@@ -823,7 +844,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 04d0400a5f2940746b61481fc5db2b70, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  mass: 5
+  mass: 3
   modelPoints: []
   material: {fileID: 2100000, guid: f8ea0197e3e47dd4aac55742c67427e4, type: 2}
   shadowMaterial: {fileID: 2100000, guid: e6ed93ae35f67b14ca1c28b98e60e05b, type: 2}
@@ -876,11 +897,14 @@ MonoBehaviour:
   bo1: {fileID: 7786418398048380289}
   bo2: {fileID: 7786418398148345337}
   frequency: 2
-  dampingRatio: 0.3
+  dampingRatio: 0.1
   length: 3
   onlyPull: 0
   offsetA: {x: 0, y: 0, z: 0}
   offsetB: {x: 0, y: 0, z: 0}
+  fakemass: 0
+  fakeSoftness: 0
+  fakeSize: 0
 --- !u!1 &7786418397729987698
 GameObject:
   m_ObjectHideFlags: 0
@@ -928,11 +952,14 @@ MonoBehaviour:
   bo1: {fileID: 7786418398048380289}
   bo2: {fileID: 7786418397102927319}
   frequency: 2
-  dampingRatio: 0.3
+  dampingRatio: 0.1
   length: 3
   onlyPull: 0
   offsetA: {x: 0, y: 0, z: 0}
   offsetB: {x: 0, y: 0, z: 0}
+  fakemass: 0
+  fakeSoftness: 0
+  fakeSize: 0
 --- !u!1 &7786418398048380289
 GameObject:
   m_ObjectHideFlags: 0
@@ -995,7 +1022,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 04d0400a5f2940746b61481fc5db2b70, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  mass: 5
+  mass: 3
   modelPoints: []
   material: {fileID: 2100000, guid: f8ea0197e3e47dd4aac55742c67427e4, type: 2}
   shadowMaterial: {fileID: 2100000, guid: e6ed93ae35f67b14ca1c28b98e60e05b, type: 2}
@@ -1048,11 +1075,14 @@ MonoBehaviour:
   bo1: {fileID: 7786418397102927319}
   bo2: {fileID: 7786418397107708912}
   frequency: 2
-  dampingRatio: 0.3
+  dampingRatio: 0.1
   length: 3
   onlyPull: 0
   offsetA: {x: 0, y: 0, z: 0}
   offsetB: {x: 0, y: 0, z: 0}
+  fakemass: 0
+  fakeSoftness: 0
+  fakeSize: 0
 --- !u!1 &7786418398053305294
 GameObject:
   m_ObjectHideFlags: 0
@@ -1100,11 +1130,14 @@ MonoBehaviour:
   bo1: {fileID: 7786418398048380289}
   bo2: {fileID: 7786418397107708912}
   frequency: 2
-  dampingRatio: 0.3
+  dampingRatio: 0.1
   length: 3
   onlyPull: 0
   offsetA: {x: 0, y: 0, z: 0}
   offsetB: {x: 0, y: 0, z: 0}
+  fakemass: 0
+  fakeSoftness: 0
+  fakeSize: 0
 --- !u!1 &7786418398106104464
 GameObject:
   m_ObjectHideFlags: 0
@@ -1152,11 +1185,14 @@ MonoBehaviour:
   bo1: {fileID: 7786418397691633698}
   bo2: {fileID: 7786418397615626307}
   frequency: 2
-  dampingRatio: 0.3
+  dampingRatio: 0.1
   length: 3
   onlyPull: 0
   offsetA: {x: 0, y: 0, z: 0}
   offsetB: {x: 0, y: 0, z: 0}
+  fakemass: 0
+  fakeSoftness: 0
+  fakeSize: 0
 --- !u!1 &7786418398148345337
 GameObject:
   m_ObjectHideFlags: 0
@@ -1219,7 +1255,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 04d0400a5f2940746b61481fc5db2b70, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  mass: 5
+  mass: 3
   modelPoints: []
   material: {fileID: 2100000, guid: f8ea0197e3e47dd4aac55742c67427e4, type: 2}
   shadowMaterial: {fileID: 2100000, guid: e6ed93ae35f67b14ca1c28b98e60e05b, type: 2}

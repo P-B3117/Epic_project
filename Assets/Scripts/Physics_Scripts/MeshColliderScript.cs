@@ -287,4 +287,5 @@ public class MeshColliderScript : MonoBehaviour
 	{
 		return boundariesAABB;
 	}
+	
 }

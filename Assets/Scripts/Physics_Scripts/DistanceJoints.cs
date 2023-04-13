@@ -25,6 +25,11 @@ public class DistanceJoints : MonoBehaviour
     private Vector3 anchorA;
     private Vector3 anchorB;
 
+    public float fakemass;
+   public float fakeSoftness;
+   public  float fakeSize;
+
+
     private Vector3 d;
 
     private float m;
@@ -61,7 +66,9 @@ public class DistanceJoints : MonoBehaviour
         invInertiaSum = invInertiaA + invInertiaB;
         invMassSum = invMassA + invMassB;
 
-
+        fakemass = 1;
+        fakeSoftness = 0.5f;
+        fakeSize = 1;
         lr = this.gameObject.AddComponent<LineRenderer>();
         lr.SetWidth(0.2f, 0.2f);
     }
@@ -199,5 +206,41 @@ public class DistanceJoints : MonoBehaviour
     {
         return this.gamma;
     }
+    public void setfrequency(float freq)
+    {
+        this.frequency = freq;
+    }
+    public void setdampingRatio(float damp)
+    {
+        this.dampingRatio = damp;   
+    }
+    public void setlength(float leng)
+    {
+        this.length = leng;
+    }
+    public void setFakeMass(float fakemass)
+    {
+        this.fakemass= fakemass;
+    }
+    public void setFakeSoftness(float soft)
+    {
+        this.fakeSoftness = soft;
+    }
+    public void setFakeSize(float fakesize)
+    {
+        this.fakeSize = fakesize;
+    }
+    public float getFakeMass()
+    {
+        return this.fakemass;   
+    }
+    public float getFakeSoftness()
+    {
+        return this.fakeSoftness;
 
+    }
+    public float getFakeSize()
+    {
+        return this.fakeSize;
+    }
 }

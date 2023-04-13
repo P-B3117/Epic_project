@@ -36,7 +36,7 @@ public class UiGameManager : MonoBehaviour
     [Header("Reference for the slider")]
     public LineRenderer meshCreatorLineRenderer;
     GameObject currentShadowObject;
-
+    GameObject jo;
     //Inspector variables
     [Header("Reference for the inspector")]
     private int SELECTEDOBJECT = -1;
@@ -51,8 +51,14 @@ public class UiGameManager : MonoBehaviour
     public TextMeshProUGUI BoucinessText;
     public TextMeshProUGUI DynamicFrictionText;
     public TextMeshProUGUI StaticFrictionText;
-    
-
+    public Slider MassSoftSlider;
+    public Slider SoftnessSlider;
+    public Slider SizeSlider;
+    public Toggle SoftisStaticToggle;
+    public TextMeshProUGUI MassSoftText;
+    public TextMeshProUGUI SoftnessText;
+    public TextMeshProUGUI SizeText;
+    public GameObject InspectorSoftContent;
     void Start()
     {
         ShowGamePanel();
@@ -403,15 +409,29 @@ public class UiGameManager : MonoBehaviour
                     if (bo != null)
                     {
 
+                        if (curseur)
+                        {
+                            jo = new GameObject();
+                            jo.AddComponent<GrabJoint>();
+                            GrabJoint joint = jo.GetComponent<GrabJoint>();
 
+                            joint.bo1 = bo.gameObject;
+                            joint.frequency = 1;
+                            joint.dampingRatio = 0.2f;
+
+                            physicsManager.AddGrabJoint(jo);
+                        }
+
+
+                        GameObject parent = null;
+                        if (bo.transform.parent != null)parent = bo.transform.parent.gameObject;
                         
 
-                        GameObject parent = bo.transform.parent.gameObject;
-                        
                         //If the parent object isn't a soft body, show the regular settings
-                        if (parent.GetComponent<SoftBody>() == null)
+                        if (parent == null || parent.GetComponent<SoftBody>() == null)
                         {
                             SetOnInspectorContent();
+                            SetOffInspectorSoftContent();
                             SELECTEDOBJECTGAMEOBJECT = bo.gameObject;
                             MeshColliderScript mc = bo.GetCollider();
                             MassText.text = mc.GetMass().ToString();
@@ -425,24 +445,32 @@ public class UiGameManager : MonoBehaviour
                             BoucinessSlider.value = bo.getBounciness();
                             StaticFrictionSlider.value = bo.getStaticFriction();
                             DynamicFrictionSlider.value = bo.getDynamicFriction();
+
+
+
+
                         }
                         //If the parent object is a softbody
-                        else 
+                        else if(parent.GetComponent<SoftBody>() != null)
                         {
                             SetOffInspectorContent();
+                            SetOnInspectorSoftContent();
                             //Resets the materials for everyobject
                             physicsManager.SelectSpecificObject(-1, prefabHolder, SELECTEDOBJECTGAMEOBJECT);
                             SELECTEDOBJECTGAMEOBJECT = parent;
                             //Set the material for the softbody
                             parent.GetComponent<MeshRenderer>().material = prefabHolder.GetSelectedObjectMaterial();
 
-
-                            //C'est ta place Antho!!!!!!!!!!
-                            //!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-                            //!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-
                             DistanceJoints[] softBodyDJ = parent.GetComponentsInChildren<DistanceJoints>();
                             BasicPhysicObject[] softBodyBO = parent.GetComponentsInChildren<BasicPhysicObject>();
+
+                            MassSoftText.text = softBodyDJ[0].getFakeMass().ToString();
+                            SoftnessText.text = softBodyDJ[0].getFakeSoftness().ToString();
+                            SizeText.text = softBodyDJ[0].getFakeSize().ToString();
+                            MassSoftSlider.value = softBodyDJ[0].getFakeMass();
+                            SoftnessSlider.value = softBodyDJ[0].getFakeSoftness();
+                            SizeSlider.value = softBodyDJ[0].getFakeSize();
+
                         }
 
                         
@@ -454,6 +482,10 @@ public class UiGameManager : MonoBehaviour
 
 
 
+            }
+            else if (Input.GetMouseButtonUp(0))
+            {
+                physicsManager.ResetGrabJoint();
             }
         }
 
@@ -759,6 +791,14 @@ public class UiGameManager : MonoBehaviour
     {
         InspectorContent.SetActive(true);
     }
+    public void SetOnInspectorSoftContent()
+    {
+        InspectorSoftContent.SetActive(true);
+    }
+    public void SetOffInspectorSoftContent()
+    {
+        InspectorSoftContent.SetActive(false);
+    }
     public void SetOffInspectorContent() 
     {
         InspectorContent.SetActive(false);
@@ -796,7 +836,61 @@ public class UiGameManager : MonoBehaviour
         BasicPhysicObject bo = physicsManager.GetPhysicObjectAt(SELECTEDOBJECT);
         if (bo != null) { bo.setIsStatic(newStatic); }
     }
+    public void InspectorChangeMassSoft(System.Single newMassSoft)
+    {
+        DistanceJoints[] softBodyDJ = SELECTEDOBJECTGAMEOBJECT.GetComponentsInChildren<DistanceJoints>();
+        BasicPhysicObject[] softBodyBO = SELECTEDOBJECTGAMEOBJECT.GetComponentsInChildren<BasicPhysicObject>();
+        MassSoftText.text = newMassSoft.ToString();
+        float individualmass = 1;
+        float frequency = 1;
+        switch (newMassSoft)
+        {
+            case 1: individualmass = 3; frequency = 2;  break;
+            case 2: individualmass = 8; frequency = 2; break; 
+            case 3: individualmass = 14; frequency = 3; break;
+            case 4: individualmass = 20; frequency = 3; break;
+            case 5: individualmass = 26; frequency = 4; break;
+            default: individualmass = 2;break;
+        }
+        for (int i = 0; i < softBodyBO.Length; i++)
+        {
+            softBodyBO[i].GetCollider().SetMass(individualmass);
+        }
+        for (int i = 0; i < softBodyDJ.Length; i++)
+        {
+            softBodyDJ[i].setFakeMass(newMassSoft);
+            softBodyDJ[i].setfrequency(frequency);
+        }
+        
+    }
+    public void InspectorChangeSoftness(System.Single newSoftness)
+    {
+        DistanceJoints[] softBodyDJ = SELECTEDOBJECTGAMEOBJECT.GetComponentsInChildren<DistanceJoints>();
+        BasicPhysicObject[] softBodyBO = SELECTEDOBJECTGAMEOBJECT.GetComponentsInChildren<BasicPhysicObject>();
+    }
+    public void InspectorChangeSize(System.Single newSize)
+    {
 
+        DistanceJoints[] softBodyDJ = SELECTEDOBJECTGAMEOBJECT.GetComponentsInChildren<DistanceJoints>();
+        BasicPhysicObject[] softBodyBO = SELECTEDOBJECTGAMEOBJECT.GetComponentsInChildren<BasicPhysicObject>();
+        if (newSize == 1)
+        {
+
+        }
+        if (newSize == 2)
+        {
+
+        }
+        if(newSize == 3)
+        {
+
+        }
+    }
+    public void InspectorChangeStaticSoft(System.Boolean newStaticSoft)
+    {
+        DistanceJoints[] softBodyDJ = SELECTEDOBJECTGAMEOBJECT.GetComponentsInChildren<DistanceJoints>();
+        BasicPhysicObject[] softBodyBO = SELECTEDOBJECTGAMEOBJECT.GetComponentsInChildren<BasicPhysicObject>();
+    }
 
 
 

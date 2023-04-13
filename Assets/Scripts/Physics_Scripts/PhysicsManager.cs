@@ -29,7 +29,7 @@ public class PhysicsManager : MonoBehaviour
 	List<MeshColliderScript> meshColliders;
 	List<BasicPhysicObject> physicObjects;
 	List<DistanceJoints> physicsJoints;
-
+	List<GrabJoint> physicsGrabJoints;
 
 	public void Start()
 	{
@@ -37,6 +37,7 @@ public class PhysicsManager : MonoBehaviour
 		meshColliders = new List<MeshColliderScript>();
 		physicObjects = new List<BasicPhysicObject>();
 		physicsJoints = new List<DistanceJoints>();
+		physicsGrabJoints = new List<GrabJoint>();
 		for (int i = 0; i < objects.Count; i++)
 		{
 			meshColliders.Add(objects[i].GetComponent<MeshColliderScript>());
@@ -57,7 +58,10 @@ public class PhysicsManager : MonoBehaviour
 		{
 			physicsJoints[i].Initialize();
 		}
-
+		for (int i = 0; i < physicsGrabJoints.Count; i++)
+        {
+            physicsGrabJoints[i].Initialize();
+        }
 
 	
 
@@ -410,13 +414,30 @@ public class PhysicsManager : MonoBehaviour
 
 		return null;
 	}
-
+	public void AddGrabJoint(GameObject jo)
+	{
+		GrabJoint gb = jo.GetComponent<GrabJoint>();
+		gb.Initialize();
+		physicsGrabJoints.Add(gb);
+	}
+	public void ResetGrabJoint()
+	{
+		for (int i = physicsGrabJoints.Count - 1; i >= 0; i--)
+		{
+			Destroy(physicsGrabJoints[i].gameObject);
+			physicsGrabJoints.RemoveAt(i);
+		}
+	}
 	//Method for the calculations of the joints properties
 	private void JointPhysicCalculations()
 	{
 		for (int i = 0; i < physicsJoints.Count; i++)
 		{
 			physicsJoints[i].UpdateJointState(stepLength);
+		}
+		for (int i = 0; i < physicsGrabJoints.Count; i++)
+		{
+			physicsGrabJoints[i].UpdateJointState(stepLength);
 		}
 	}
 
