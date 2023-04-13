@@ -67,7 +67,7 @@ public class DistanceJoints : MonoBehaviour
         invMassSum = invMassA + invMassB;
 
         fakemass = 1;
-        fakeSoftness = 0.5f;
+        fakeSoftness = 0.0f;
         fakeSize = 1;
         lr = this.gameObject.AddComponent<LineRenderer>();
         lr.SetWidth(0.2f, 0.2f);
@@ -242,5 +242,9 @@ public class DistanceJoints : MonoBehaviour
     public float getFakeSize()
     {
         return this.fakeSize;
+    }
+    public void setDampingRatio(float dampingRatio)
+    {
+        this.dampingRatio = dampingRatio;
     }
 }

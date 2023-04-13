@@ -470,6 +470,7 @@ public class UiGameManager : MonoBehaviour
                             MassSoftSlider.value = softBodyDJ[0].getFakeMass();
                             SoftnessSlider.value = softBodyDJ[0].getFakeSoftness();
                             SizeSlider.value = softBodyDJ[0].getFakeSize();
+                            SoftisStaticToggle.isOn = softBodyBO[0].getIsStatic();
 
                         }
 
@@ -867,29 +868,56 @@ public class UiGameManager : MonoBehaviour
     {
         DistanceJoints[] softBodyDJ = SELECTEDOBJECTGAMEOBJECT.GetComponentsInChildren<DistanceJoints>();
         BasicPhysicObject[] softBodyBO = SELECTEDOBJECTGAMEOBJECT.GetComponentsInChildren<BasicPhysicObject>();
+        SoftnessText.text = newSoftness.ToString();
+        for (int i = 0; i < 6; i++)
+        {
+            softBodyDJ[i].setDampingRatio(newSoftness + 0.1f);
+            softBodyDJ[i].setFakeSoftness(newSoftness);
+        }
+        for (int i = 6; i < softBodyDJ.Length; i++)
+        {
+            softBodyDJ[i].setDampingRatio(newSoftness);
+            softBodyDJ[i].setFakeSoftness(newSoftness);
+        }
+
     }
     public void InspectorChangeSize(System.Single newSize)
     {
 
         DistanceJoints[] softBodyDJ = SELECTEDOBJECTGAMEOBJECT.GetComponentsInChildren<DistanceJoints>();
         BasicPhysicObject[] softBodyBO = SELECTEDOBJECTGAMEOBJECT.GetComponentsInChildren<BasicPhysicObject>();
-        if (newSize == 1)
+        SizeText.text = newSize.ToString();
+        float radius = 0;
+        float length = 0;
+        float softsize = 0;
+        switch (newSize)
         {
+            case 1: length = 3.0f; radius = 1.0f; softsize = 1.2f; break;
+            case 2: length = 6.0f; radius = 2.5f; softsize = 2.7f; break;
+            case 3: length = 9.0f; radius = 3.5f; softsize = 3.7f; break;
+        }
+        for (int i = 0; i < softBodyDJ.Length; i++)
+        {
+            softBodyDJ[i].setFakeSize(newSize);
+            softBodyDJ[i].setlength(length);
 
         }
-        if (newSize == 2)
+        for (int i = 0; i < softBodyBO.Length; i++)
         {
-
+            softBodyBO[i].GetCollider().setRadius(radius);
         }
-        if(newSize == 3)
-        {
+        SELECTEDOBJECTGAMEOBJECT.GetComponent<SoftBody>().size = softsize;
 
-        }
     }
     public void InspectorChangeStaticSoft(System.Boolean newStaticSoft)
     {
         DistanceJoints[] softBodyDJ = SELECTEDOBJECTGAMEOBJECT.GetComponentsInChildren<DistanceJoints>();
         BasicPhysicObject[] softBodyBO = SELECTEDOBJECTGAMEOBJECT.GetComponentsInChildren<BasicPhysicObject>();
+        for(int i = 0;i< softBodyBO.Length; i++)
+        {
+            softBodyBO[i].setIsStatic(newStaticSoft);
+        }
+
     }
 
 

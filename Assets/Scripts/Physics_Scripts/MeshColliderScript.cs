@@ -287,5 +287,8 @@ public class MeshColliderScript : MonoBehaviour
 	{
 		return boundariesAABB;
 	}
-	
+	public void setRadius(float radius)
+    {
+		this.rayonOfCircle = radius; 
+    }
 }
