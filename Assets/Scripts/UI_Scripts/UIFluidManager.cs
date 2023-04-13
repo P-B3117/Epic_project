@@ -11,24 +11,32 @@ public class UIFluidManager : MonoBehaviour
     [Header("Reference for UI basic functions")]
   
     public GameObject PausePanel;
-    public GameObject PhysicsPanel;
+    
     public GameObject SettingsPanel;
     public GameObject FullscreenToggle;
     public GameObject MusicSlider;
     public GameObject SoundEffectSlider;
-    public GameObject GravityInputField;
+    
  
     public AudioSource MusicSource;
     public Text MusicVolumeText;
     public Text SoundEffectVolumeText;
-   
 
-  
-
+    public PrefabsHolder prefabHolder;
 
 
-   
-   
+    [Header("Reference for sliders and button functionalities")]
+    public ObjectFluidManager fluidManager;
+    public TextMeshProUGUI GravityXNumber;
+    public TextMeshProUGUI GravityYNumber;
+    public TextMeshProUGUI ViscosityNumber;
+
+
+
+    private int MOUSESTATE = -1;
+    private float addFluidTIMER = 0.1f;
+    private GameObject currentShadowObject;
+
 
 
     void Start()
@@ -38,7 +46,7 @@ public class UIFluidManager : MonoBehaviour
         FullscreenToggle.GetComponent<Toggle>().isOn = GameConstants.Fullscreen;
         MusicSlider.GetComponent<Slider>().value = GameConstants.MusicVolume;
         SoundEffectSlider.GetComponent<Slider>().value = GameConstants.SoundEffectVolume;
-        GravityInputField.GetComponent<TMP_InputField>().text = "9.8";
+        
 
 
        
@@ -51,49 +59,94 @@ public class UIFluidManager : MonoBehaviour
         {
             ShowPausePanel();
         }
+        if (Input.GetMouseButtonDown(1)) 
+        {
+            ResetMouseState();
+        }
+
+        if (MOUSESTATE == 0) 
+        {
+            Vector3 worldPoint = Camera.main.ScreenToWorldPoint(Input.mousePosition);
+            Vector3 screenPos = new Vector3(worldPoint.x, worldPoint.y, 0.0f);
+            currentShadowObject.transform.position = screenPos;
+
+            if (worldPoint.x > -28.25f + 2 && worldPoint.x < 28.25 - 2 &&
+                worldPoint.y > -20  + 2&& worldPoint.y < 20 - 2)
+            {
+                SpriteRenderer spr = currentShadowObject.GetComponent<SpriteRenderer>();
+                if (spr != null)
+                {
+                    spr.color = new Color(0.0f, 1.0f, 0.0f, 0.5f);
+                }
+                if (Input.GetMouseButton(0)) 
+                {
+                    addFluidTIMER += Time.deltaTime;
+                    if(addFluidTIMER > 0.1f) 
+                    {
+                        fluidManager.AddParticle(screenPos, prefabHolder);
+                        for (int i = 0; i < 6; i++)
+                        {
+                            float r1 = Random.Range(-1.5f, 1.5f);
+                            float r2 = Random.Range(-1.5f, 1.5f);
+                            Vector3 D = new Vector3(r1, r2, 0.0f);
+                            D = D.normalized * fluidManager.GetParticleSize() * 2;
+                            fluidManager.AddParticle(screenPos + D, prefabHolder);
+                        }
+                        addFluidTIMER = 0;
+                    }
+                    
+                }
+            }
+            else 
+            {
+                SpriteRenderer spr = currentShadowObject.GetComponent<SpriteRenderer>();
+                if (spr != null) 
+                {
+                    spr.color = new Color(1.0f, 0.0f, 0.0f, 0.5f);
+                }
+            }
+
+
+
+        }
        
 
        
 
 
     }
+
+
+    public void SetMouseState0() 
+    {
+        MOUSESTATE = 0;
+        currentShadowObject = prefabHolder.GetWaterAddSprite();
+    }
+    public void ResetMouseState() 
+    {
+        MOUSESTATE = -1;
+        Destroy(currentShadowObject);
+    }
+
 
     public void ChangeTime(string time)
     {
         UniversalVariable.SetTime(float.Parse(time));
     }
 
-    public void ChangeGravity(string gravity)
-    {
-        UniversalVariable.SetGravity(float.Parse(gravity));
-    }
-
-    public void ChangeAirDrag(string airDrag)
-    {
-        UniversalVariable.SetAirDrag(float.Parse(airDrag));
-    }
-
-    public void ChangeToDefault()
-    {
-        GravityInputField.GetComponent<TMP_InputField>().text = "9.8";
-    
-        UniversalVariable.SetGravity(float.Parse("9,8"));
-        UniversalVariable.SetTime(float.Parse("1"));
-        UniversalVariable.SetAirDrag(float.Parse("1"));
-    }
+   
 
     public void LoadMenuScene()
     {
         SceneManager.LoadScene(1);
     }
 
-    private bool curseur = false, rotation = false, forces = false, twoX = false, threeX = false;
-
+    private bool curseur = false, twoX = false, threeX = false;
     // bouton curseur (1)
     public void DeplacerObjets()
     {
-        
 
+        ResetMouseState();
         if (curseur)
         {
             Color normalColor = GameObject.Find("Canvas/ToolPanel/BoutonCurseur").GetComponent<Button>().colors.normalColor;
@@ -106,67 +159,21 @@ public class UIFluidManager : MonoBehaviour
             GameObject boutonCurseur = GameObject.Find("Canvas/ToolPanel/BoutonCurseur");
             boutonCurseur.GetComponent<Image>().color = pressedColor;
 
-            // code ici qui fait en sorte qu'on peut déplacer des objets
+           
 
         }
-        // une fois qu'il se fait click, faire en sorte que le bouton reste "pesé" jusqu'à ce qu'il soit reclicked
+        
 
         curseur = !curseur;
     }
 
-    // bouton rotation (2)
-    public void TournerObjets()
-    {
-       
-        // une fois qu'il se fait click, faire en sorte que le bouton reste "pesé" jusqu'à ce qu'il soit reclicked on
-        if (rotation)
-        {
-            Color normalColor = GameObject.Find("Canvas/ToolPanel/BoutonRotation").GetComponent<Button>().colors.normalColor;
-            GameObject.Find("Canvas/ToolPanel/BoutonRotation").GetComponent<Image>().color = normalColor;
-        }
-
-        else
-        {
-            Color pressedColor = GameObject.Find("Canvas/ToolPanel/BoutonRotation").GetComponent<Button>().colors.pressedColor;
-            GameObject.Find("Canvas/ToolPanel/BoutonRotation").GetComponent<Image>().color = pressedColor;
-            // faire en sorte qu'on peut tourner des objets ici
-
-        }
-
-        rotation = !rotation;
-    }
-
-    private float gravityBefore, airDragBefore;
-    // bouton F (3)
-    public void AppliquerForcesDePhysique()
-    {
-        
-        // code qui fait en sorte que les forces de physique seront appliquées sur les objets
-        if (forces)
-        {
-            Color normalColor = GameObject.Find("Canvas/ToolPanel/BoutonF").GetComponent<Button>().colors.normalColor;
-            GameObject.Find("Canvas/ToolPanel/BoutonF").GetComponent<Image>().color = normalColor;
-            if (UniversalVariable.GetGravity() == 0) { UniversalVariable.SetGravity(gravityBefore); }
-            if (UniversalVariable.GetAirDrag() == 0) { UniversalVariable.SetAirDrag(airDragBefore); }
-        }
-
-        else
-        {
-            Color pressedColor = GameObject.Find("Canvas/ToolPanel/BoutonF").GetComponent<Button>().colors.pressedColor;
-            GameObject.Find("Canvas/ToolPanel/BoutonF").GetComponent<Image>().color = pressedColor;
-            // une fois qu'il se fait click, faire en sorte que le bouton reste "pesé" jusqu'à ce qu'il soit reclicked on
-            gravityBefore = UniversalVariable.GetGravity();
-            airDragBefore = UniversalVariable.GetAirDrag();
-            UniversalVariable.SetGravity(0);
-            UniversalVariable.SetAirDrag(0);
-        }
-        forces = !forces;
-    }
+   
 
     // bouton poubelle (4)
     public void ResetFenetre()
     {
-       
+        ResetMouseState();
+        fluidManager.RemoveAllParticles();
     }
 
 
@@ -179,7 +186,7 @@ public class UIFluidManager : MonoBehaviour
     // bouton pause (5)
     public void PauseScene()
     {
-       
+        ResetMouseState();
         // make time frames/calculations equal to 0
         ChangeTime("0");
         Color normalColor = GameObject.Find("Canvas/ToolPanel/BoutonFF2").GetComponent<Button>().colors.normalColor;
@@ -190,7 +197,7 @@ public class UIFluidManager : MonoBehaviour
     // bouton play (6)
     public void PlayScene()
     {
-       
+        ResetMouseState();
         // make time frames/calculations start
         ChangeTime("1");
         Color normalColor = GameObject.Find("Canvas/ToolPanel/BoutonFF2").GetComponent<Button>().colors.normalColor;
@@ -201,7 +208,8 @@ public class UIFluidManager : MonoBehaviour
     // bouton 2x (7)
     public void TwoXFaster()
     {
-       
+
+        ResetMouseState();
         // une fois qu'il se fait click, faire en sorte que le bouton reste "pesé" jusqu'à ce qu'il soit reclicked on
         if (twoX && !threeX)
         {
@@ -226,7 +234,7 @@ public class UIFluidManager : MonoBehaviour
     // bouton 3x (8)
     public void ThreeXFaster()
     {
-        
+        ResetMouseState();
         // une fois qu'il se fait click, faire en sorte que le bouton reste "pesé" jusqu'à ce qu'il soit reclicked on
         if (threeX && !twoX)
         {
@@ -249,34 +257,25 @@ public class UIFluidManager : MonoBehaviour
 
 
     public void ShowSettingsPanel()
-    {
-        //GamePanel.SetActive(false);
+    { 
         PausePanel.SetActive(false);
-        PhysicsPanel.SetActive(false);
+       
         SettingsPanel.SetActive(true);
     }
 
-    public void ShowPhysicsPanel()
-    {
-        //GamePanel.SetActive(false);
-        PausePanel.SetActive(false);
-        SettingsPanel.SetActive(false);
-        PhysicsPanel.SetActive(true);
-    }
-
+  
     public void ShowPausePanel()
     {
-
-        //GamePanel.SetActive(true);
+        ResetMouseState();
         SettingsPanel.SetActive(false);
-        PhysicsPanel.SetActive(false);
+       
         PausePanel.SetActive(true);
     }
 
     public void PauseResume() 
     {
         SettingsPanel.SetActive(false);
-        PhysicsPanel.SetActive(false);
+        
         PausePanel.SetActive(false);
     }
 
@@ -307,6 +306,24 @@ public class UIFluidManager : MonoBehaviour
         GameConstants.SoundEffectVolume = value * 100;
     }
 
+    public void ChangeGravityX(System.Single newGX) 
+    {
+        ResetMouseState();
+        fluidManager.Gravity = new Vector2(newGX, fluidManager.Gravity.y);
+        GravityXNumber.text = newGX.ToString();
+    }
+    public void ChangeGravityY(System.Single newGY) 
+    {
+        ResetMouseState();
+        fluidManager.Gravity = new Vector2(fluidManager.Gravity.x, newGY);
+        GravityYNumber.text = newGY.ToString();
+    }
+    public void ChangeViscosity(System.Single newVis) 
+    {
+        ResetMouseState();
+        fluidManager.Viscosity = newVis;
+        ViscosityNumber.text = newVis.ToString();
+    }
 
 
 

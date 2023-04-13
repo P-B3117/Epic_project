@@ -30,12 +30,12 @@ public class Particle
         particle = GameObject.CreatePrimitive(PrimitiveType.Sphere);
         particle.transform.localScale = new Vector3(radius * 2, radius * 2, radius * 2);
         particle.GetComponent<MeshRenderer>().material = ph.GetFluidMaterial();
-
+        Object.Destroy(particle.GetComponent<SphereCollider>());
         particle.transform.position = initialPos;
         oldPosition = initialPos;
         velocity = initialVel;
         index = i;
-
+        
 
         neighbors = new List<int>();
     }
@@ -111,5 +111,10 @@ public class Particle
     public void InverseVelocityY()
     {
         velocity = new Vector3(velocity.x, -velocity.y, 0);
+    }
+
+    public void Delete() 
+    {
+        Object.Destroy(particle);
     }
 }

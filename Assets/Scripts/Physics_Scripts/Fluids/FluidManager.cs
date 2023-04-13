@@ -45,16 +45,22 @@ public class FluidManager : MonoBehaviour
 			for (int j = 0; j < numberOfParticles; j++)
 			{
 				float r = Random.Range(0.1f, 1.0f);
-				particles.Add(new Particle(new Vector3(gridPosition.x + i+ i * r, gridPosition.y + j+j * r, 0.0f), Vector3.zero, i * numberOfParticles + j, radius, ph));
-				grid.AddParticle(particles[i * numberOfParticles + j]);
+				particles.Add(new Particle(new Vector3(gridPosition.x + i+ i * r, gridPosition.y + j+j * r, 0.0f), Vector3.zero, particles.Count, radius, ph));
+				grid.AddParticle(particles[particles.Count-1]);
 			}
 
 		}
 
 	}
+	public void AddParticle(Vector3 pos, PrefabsHolder ph) 
+	{
+		particles.Add(new Particle(pos, Vector3.zero, particles.Count, radius, ph));
+		grid.AddParticle(particles[particles.Count - 1]);
+		
+	}
 	public void FluidPhysicsCalculations(float timeStep, Vector2 g)
 	{
-		//Vector3 gravity = new Vector3(0, -UniversalVariable.GetGravity() * timeStep);
+		
 		Vector3 gravity = -g * timeStep;
 
 		for (int i = 0; i < particles.Count; i++)
@@ -228,5 +234,17 @@ public class FluidManager : MonoBehaviour
 
 
 
+	public void RemoveAllParticles() 
+	{
+		for (int i = 0; i < particles.Count; i++) 
+		{
+			particles[i].Delete();
+		}
+		particles.Clear();
+	}
 
+	public float GetParticleSize() 
+	{
+		return radius;
+	}
 }

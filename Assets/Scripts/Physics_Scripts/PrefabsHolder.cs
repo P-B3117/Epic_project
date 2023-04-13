@@ -22,6 +22,9 @@ public class PrefabsHolder : MonoBehaviour
 
 
 	[SerializeField]
+	private GameObject waterAddSprite;
+
+	[SerializeField]
 	private Material basicUnlitMaterial;
 	[SerializeField]
 	private Material shadowObjectMaterial;
@@ -43,6 +46,8 @@ public class PrefabsHolder : MonoBehaviour
 	public GameObject GetSoftBody1() { return GetSoftBody(softBody1); }
 
 	public GameObject GetMeshCreatorPoint() { return Instantiate(meshCreatorPoint); }
+
+	public GameObject GetWaterAddSprite() { return Instantiate(waterAddSprite); }
 
 	public Material GetBasicUnlitMaterial() { return basicUnlitMaterial; }
 	public Material GetShadowObjectMaterial() { return shadowObjectMaterial; }

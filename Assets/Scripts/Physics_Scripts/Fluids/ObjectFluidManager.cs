@@ -10,6 +10,7 @@ public class ObjectFluidManager : MonoBehaviour
 	private float numberOfUpdateCounter = 0;
 
 	public Vector2 Gravity;
+	public float Viscosity;
 	FluidManager fluidManager;
 
 	public PrefabsHolder prefabHolder;
@@ -70,6 +71,19 @@ public class ObjectFluidManager : MonoBehaviour
 			numberOfStepsPerSecond = newNumberOfStepsPerSecond;
 			stepLength = 1.0f / numberOfStepsPerSecond;
 		}
+	}
+
+	public void RemoveAllParticles() 
+	{
+		fluidManager.RemoveAllParticles();
+	}
+	public void AddParticle(Vector3 pos, PrefabsHolder ph) 
+	{
+		fluidManager.AddParticle(pos, ph);
+	}
+	public float GetParticleSize() 
+	{
+		return fluidManager.GetParticleSize();
 	}
 
 }
