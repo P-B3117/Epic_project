@@ -416,8 +416,8 @@ public class UiGameManager : MonoBehaviour
                             GrabJoint joint = jo.GetComponent<GrabJoint>();
 
                             joint.bo1 = bo.gameObject;
-                            joint.frequency = 1;
-                            joint.dampingRatio = 0.2f;
+                            joint.frequency = 0.5f;
+                            joint.dampingRatio = 0.5f;
 
                             physicsManager.AddGrabJoint(jo);
                         }
