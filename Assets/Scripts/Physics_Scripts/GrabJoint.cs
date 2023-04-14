@@ -38,7 +38,7 @@ public class GrabJoint : MonoBehaviour
         mcA = bo1.GetComponent<MeshColliderScript>();
         invMassA = 1.0f / mcA.GetMass();
         invInertiaA = 1.0f / mcA.GetInertia();
-        jointMass = mcA.GetMass() / 15;
+        jointMass = mcA.GetMass() / 8;
         lr = this.gameObject.AddComponent<LineRenderer>();
         lr.SetWidth(0.2f, 0.2f);
         prevCursorPos = Camera.main.ScreenToWorldPoint(Input.mousePosition);

@@ -46,9 +46,9 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   bo1: {fileID: 7786418397615626307}
   bo2: {fileID: 7786418398148345337}
-  frequency: 2
+  frequency: 2.5
   dampingRatio: 0.1
-  length: 3
+  length: 3.5
   onlyPull: 0
   offsetA: {x: 0, y: 0, z: 0}
   offsetB: {x: 0, y: 0, z: 0}
@@ -101,9 +101,9 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   bo1: {fileID: 7786418397159843181}
   bo2: {fileID: 7786418397102927319}
-  frequency: 2
+  frequency: 2.5
   dampingRatio: 0.1
-  length: 3
+  length: 3.5
   onlyPull: 0
   offsetA: {x: 0, y: 0, z: 0}
   offsetB: {x: 0, y: 0, z: 0}
@@ -156,9 +156,9 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   bo1: {fileID: 7786418398148345337}
   bo2: {fileID: 7786418397159843181}
-  frequency: 2
+  frequency: 2.5
   dampingRatio: 0.1
-  length: 3
+  length: 3.5
   onlyPull: 0
   offsetA: {x: 0, y: 0, z: 0}
   offsetB: {x: 0, y: 0, z: 0}
@@ -211,9 +211,9 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   bo1: {fileID: 7786418397107708912}
   bo2: {fileID: 7786418397691633698}
-  frequency: 2
+  frequency: 2.5
   dampingRatio: 0.1
-  length: 3
+  length: 3.5
   onlyPull: 0
   offsetA: {x: 0, y: 0, z: 0}
   offsetB: {x: 0, y: 0, z: 0}
@@ -334,9 +334,9 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   bo1: {fileID: 7786418398048380289}
   bo2: {fileID: 7786418397615626307}
-  frequency: 2
+  frequency: 2.5
   dampingRatio: 0.1
-  length: 3
+  length: 3.5
   onlyPull: 0
   offsetA: {x: 0, y: 0, z: 0}
   offsetB: {x: 0, y: 0, z: 0}
@@ -525,9 +525,9 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   bo1: {fileID: 7786418398048380289}
   bo2: {fileID: 7786418397691633698}
-  frequency: 2
+  frequency: 2.5
   dampingRatio: 0.1
-  length: 3
+  length: 3.5
   onlyPull: 0
   offsetA: {x: 0, y: 0, z: 0}
   offsetB: {x: 0, y: 0, z: 0}
@@ -705,9 +705,9 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   bo1: {fileID: 7786418398048380289}
   bo2: {fileID: 7786418397159843181}
-  frequency: 2
+  frequency: 2.5
   dampingRatio: 0.1
-  length: 3
+  length: 3.5
   onlyPull: 0
   offsetA: {x: 0, y: 0, z: 0}
   offsetB: {x: 0, y: 0, z: 0}
@@ -896,9 +896,9 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   bo1: {fileID: 7786418398048380289}
   bo2: {fileID: 7786418398148345337}
-  frequency: 2
+  frequency: 2.5
   dampingRatio: 0.1
-  length: 3
+  length: 3.5
   onlyPull: 0
   offsetA: {x: 0, y: 0, z: 0}
   offsetB: {x: 0, y: 0, z: 0}
@@ -951,9 +951,9 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   bo1: {fileID: 7786418398048380289}
   bo2: {fileID: 7786418397102927319}
-  frequency: 2
+  frequency: 2.5
   dampingRatio: 0.1
-  length: 3
+  length: 3.5
   onlyPull: 0
   offsetA: {x: 0, y: 0, z: 0}
   offsetB: {x: 0, y: 0, z: 0}
@@ -1074,9 +1074,9 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   bo1: {fileID: 7786418397102927319}
   bo2: {fileID: 7786418397107708912}
-  frequency: 2
+  frequency: 2.5
   dampingRatio: 0.1
-  length: 3
+  length: 3.5
   onlyPull: 0
   offsetA: {x: 0, y: 0, z: 0}
   offsetB: {x: 0, y: 0, z: 0}
@@ -1129,9 +1129,9 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   bo1: {fileID: 7786418398048380289}
   bo2: {fileID: 7786418397107708912}
-  frequency: 2
+  frequency: 2.5
   dampingRatio: 0.1
-  length: 3
+  length: 3.5
   onlyPull: 0
   offsetA: {x: 0, y: 0, z: 0}
   offsetB: {x: 0, y: 0, z: 0}
@@ -1184,9 +1184,9 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   bo1: {fileID: 7786418397691633698}
   bo2: {fileID: 7786418397615626307}
-  frequency: 2
+  frequency: 2.5
   dampingRatio: 0.1
-  length: 3
+  length: 3.5
   onlyPull: 0
   offsetA: {x: 0, y: 0, z: 0}
   offsetB: {x: 0, y: 0, z: 0}

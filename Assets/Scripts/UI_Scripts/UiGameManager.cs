@@ -409,6 +409,12 @@ public class UiGameManager : MonoBehaviour
                     if (bo != null)
                     {
 
+                       
+
+
+                        GameObject parent = null;
+                        if (bo.transform.parent != null)parent = bo.transform.parent.gameObject;
+
                         if (curseur)
                         {
                             jo = new GameObject();
@@ -421,12 +427,22 @@ public class UiGameManager : MonoBehaviour
 
                             physicsManager.AddGrabJoint(jo);
                         }
+                        else if(parent.GetComponent<SoftBody>() != null)
+                        {
+                            jo = new GameObject();
+                            jo.AddComponent<GrabJoint>();
+                            GrabJoint joint = jo.GetComponent<GrabJoint>();
+
+                            joint.bo1 = bo.gameObject;
+                            joint.frequency = 1.0f;
+                            joint.dampingRatio = 0.3f;
+
+                            physicsManager.AddGrabJoint(jo);
 
 
-                        GameObject parent = null;
-                        if (bo.transform.parent != null)parent = bo.transform.parent.gameObject;
-                        
 
+
+                        }
                         //If the parent object isn't a soft body, show the regular settings
                         if (parent == null || parent.GetComponent<SoftBody>() == null)
                         {
@@ -846,12 +862,12 @@ public class UiGameManager : MonoBehaviour
         float frequency = 1;
         switch (newMassSoft)
         {
-            case 1: individualmass = 3; frequency = 2;  break;
-            case 2: individualmass = 8; frequency = 2; break; 
-            case 3: individualmass = 14; frequency = 3; break;
-            case 4: individualmass = 20; frequency = 3; break;
-            case 5: individualmass = 26; frequency = 4; break;
-            default: individualmass = 2;break;
+            case 1: individualmass = 3; frequency = 2.5f;  break;
+            case 2: individualmass = 8; frequency = 3.0f; break; 
+            case 3: individualmass = 14; frequency = 3.5f; break;
+            case 4: individualmass = 20; frequency = 3.5f; break;
+            case 5: individualmass = 26; frequency = 4.5f; break;
+            default: individualmass = 2; frequency = 2.5f; break;
         }
         for (int i = 0; i < softBodyBO.Length; i++)
         {
@@ -892,7 +908,7 @@ public class UiGameManager : MonoBehaviour
         float softsize = 0;
         switch (newSize)
         {
-            case 1: length = 3.0f; radius = 1.0f; softsize = 1.2f; break;
+            case 1: length = 4.0f; radius = 1.0f; softsize = 1.2f; break;
             case 2: length = 6.0f; radius = 2.5f; softsize = 2.7f; break;
             case 3: length = 9.0f; radius = 3.5f; softsize = 3.7f; break;
         }
