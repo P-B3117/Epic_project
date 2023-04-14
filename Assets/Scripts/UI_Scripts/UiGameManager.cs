@@ -5,7 +5,7 @@ using UnityEngine.UI;
 using UnityEngine.Audio;
 using UnityEngine.SceneManagement;
 using TMPro;
-
+using Unity.VisualScripting;
 
 public class UiGameManager : MonoBehaviour
 {
@@ -408,6 +408,7 @@ public class UiGameManager : MonoBehaviour
 
                     if (bo != null)
                     {
+<<<<<<< Updated upstream
 
                        
 
@@ -415,6 +416,8 @@ public class UiGameManager : MonoBehaviour
                         GameObject parent = null;
                         if (bo.transform.parent != null)parent = bo.transform.parent.gameObject;
 
+=======
+>>>>>>> Stashed changes
                         if (curseur)
                         {
                             jo = new GameObject();
@@ -440,6 +443,12 @@ public class UiGameManager : MonoBehaviour
                             physicsManager.AddGrabJoint(jo);
 
 
+<<<<<<< Updated upstream
+=======
+                        GameObject parent = null;
+                        if (bo.transform.parent != null) parent = bo.transform.parent.gameObject;
+                        
+>>>>>>> Stashed changes
 
 
                         }
@@ -490,7 +499,21 @@ public class UiGameManager : MonoBehaviour
 
                         }
 
-                        
+                        if (rotation)
+                        {
+                            // ne marche pas live
+                            ResetMouseState();
+                            // code qui fait en sorte que les objets qui étaient dans la fenêtre disparaissent.
+                            physicsManager.RemoveAt(selectedIndex, bo, parent);
+
+                            //enleve la selection de l'objet presentement
+                            selectedIndex = -1;
+                            SELECTEDOBJECT = -1;
+                            InspectorContent.SetActive(false);
+                            SELECTEDOBJECTGAMEOBJECT = null;
+                        }
+
+
 
                     }
 
@@ -573,15 +596,15 @@ public class UiGameManager : MonoBehaviour
         // une fois qu'il se fait click, faire en sorte que le bouton reste "pesé" jusqu'à ce qu'il soit reclicked on
         if (rotation)
         {
-            Color normalColor = GameObject.Find("Canvas/ToolPanel/BoutonRotation").GetComponent<Button>().colors.normalColor;
-            GameObject.Find("Canvas/ToolPanel/BoutonRotation").GetComponent<Image>().color = normalColor;
+            Color normalColor = GameObject.Find("Canvas/ToolPanel/BoutonSingleDelete").GetComponent<Button>().colors.normalColor;
+            GameObject.Find("Canvas/ToolPanel/BoutonSingleDelete").GetComponent<Image>().color = normalColor;
         }
 
         else
         {
-            Color pressedColor = GameObject.Find("Canvas/ToolPanel/BoutonRotation").GetComponent<Button>().colors.pressedColor;
-            GameObject.Find("Canvas/ToolPanel/BoutonRotation").GetComponent<Image>().color = pressedColor;
-            // faire en sorte qu'on peut tourner des objets ici
+            Color pressedColor = GameObject.Find("Canvas/ToolPanel/BoutonSingleDelete").GetComponent<Button>().colors.pressedColor;
+            GameObject.Find("Canvas/ToolPanel/BoutonSingleDelete").GetComponent<Image>().color = pressedColor;
+            // faire en sorte qu'on peut tourner des objets ici => rendu single delete
 
         }
 

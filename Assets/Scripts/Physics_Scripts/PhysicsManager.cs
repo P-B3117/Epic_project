@@ -119,8 +119,41 @@ public class PhysicsManager : MonoBehaviour
 
 	}
 
-	//Simulate all the physics behaviours
-	private void PhysicCalculations()
+	// ne marche pas live
+    public void RemoveAt(int i, BasicPhysicObject bo, GameObject parent)
+	{
+
+        GameObject obj = objects[i];
+        if (!physicObjects[i].IsWall)
+        {
+            Destroy(obj);
+            physicObjects.RemoveAt(i);
+            meshColliders.RemoveAt(i);
+            objects.RemoveAt(i);
+
+        }
+        DistanceJoints[] softBodyDJ = parent.GetComponentsInChildren<DistanceJoints>();
+        
+		for (int j = 0; j < softBodyDJ.Length; j++)
+		{
+			int index = physicsJoints.IndexOf(softBodyDJ[j]);
+			Destroy(joints[index]);
+			Destroy(physicsJoints[index]);
+        }
+		for (int j = joints.Count-1; j>=0; j--)
+		{
+			if (joints[j] == null)
+			{
+                joints.RemoveAt(j);
+                physicsJoints.RemoveAt(j);
+            }
+			
+		}
+        parent.GetComponentsInChildren<DistanceJoints>();
+    }
+
+    //Simulate all the physics behaviours
+    private void PhysicCalculations()
 	{
 		//ApplyForces
 		for (int i = 0; i < objects.Count; i++)
