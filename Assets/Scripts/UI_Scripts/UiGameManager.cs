@@ -14,17 +14,26 @@ public class UiGameManager : MonoBehaviour
     public GameObject PausePanel;
     public GameObject PhysicsPanel;
     public GameObject SettingsPanel;
+    public GameObject ToolPanel;
+    public GameObject ScrollViewPanel;
+    public GameObject SettingPanel;
+    public GameObject InspectorPanel;
+    public GameObject GameviewPanel;
     public GameObject FullscreenToggle;
     public GameObject MusicSlider;
     public GameObject SoundEffectSlider;
     public GameObject GravityInputField;
     public GameObject AirDragInputField;
+    public GameObject BouncinessInputField;
+    public GameObject SFrictionInputField;
+    public GameObject DFrictionInputField;
     public GameObject TimeInputField;
     public AudioSource MusicSource;
-    public Text MusicVolumeText;
-    public Text SoundEffectVolumeText;
+    public TextMeshProUGUI MusicVolumeText;
+    public TextMeshProUGUI SoundEffectVolumeText;
     public PrefabsHolder prefabHolder;
     public PhysicsManager physicsManager;
+    public GameObject gearImage;
 
     // Start is called before the first frame update
 
@@ -69,6 +78,9 @@ public class UiGameManager : MonoBehaviour
         GravityInputField.GetComponent<TMP_InputField>().text = "9.8";
         AirDragInputField.GetComponent<TMP_InputField>().text = "1";
         TimeInputField.GetComponent<TMP_InputField>().text = "1";
+        BouncinessInputField.GetComponent<TMP_InputField>().text = "1";
+        SFrictionInputField.GetComponent<TMP_InputField>().text = "1";
+        DFrictionInputField.GetComponent<TMP_InputField>().text = "1";
 
         //Initialize the slider function variables
         MOUSESTATE = -1;
@@ -77,6 +89,8 @@ public class UiGameManager : MonoBehaviour
 
     void Update()
     {
+
+        gearImage.transform.Rotate(0, 0, 20*Time.deltaTime);
        
         //Universal inputs functionality
         if (Input.GetKeyDown(KeyCode.Escape))
@@ -529,9 +543,15 @@ public class UiGameManager : MonoBehaviour
         GravityInputField.GetComponent<TMP_InputField>().text = "9.8";
         AirDragInputField.GetComponent<TMP_InputField>().text = "1";
         TimeInputField.GetComponent<TMP_InputField>().text = "1";
+        BouncinessInputField.GetComponent<TMP_InputField>().text = "1";
+        SFrictionInputField.GetComponent<TMP_InputField>().text = "1";
+        DFrictionInputField.GetComponent<TMP_InputField>().text = "1";
         UniversalVariable.SetGravity(float.Parse("9,8"));
         UniversalVariable.SetTime(float.Parse("1"));
         UniversalVariable.SetAirDrag(float.Parse("1"));
+        UniversalVariable.SetBounciness(float.Parse("1"));
+        UniversalVariable.SetSFriction(float.Parse("1"));
+        UniversalVariable.SetDFriction(float.Parse("1"));
     }
 
     public void LoadMenuScene()
@@ -705,14 +725,17 @@ public class UiGameManager : MonoBehaviour
             twoX = !twoX;
         }
 
-        else if (!threeX)
+        else// if (!threeX)
         {
             Color pressedColor = GameObject.Find("Canvas/ToolPanel/BoutonFF2").GetComponent<Button>().colors.pressedColor;
             GameObject.Find("Canvas/ToolPanel/BoutonFF2").GetComponent<Image>().color = pressedColor;
+            Color normalColor = GameObject.Find("Canvas/ToolPanel/BoutonFF3").GetComponent<Button>().colors.normalColor;
+            GameObject.Find("Canvas/ToolPanel/BoutonFF3").GetComponent<Image>().color = normalColor;
             // make time frames/calculations go twice as fast/second
             ChangeTime("2");
             
             twoX = !twoX;
+            threeX = !threeX;
         }
         
     }
@@ -730,13 +753,16 @@ public class UiGameManager : MonoBehaviour
             threeX = !threeX;
         }
         
-        else if (!twoX)
+        else// if (!twoX)
         {
             Color pressedColor = GameObject.Find("Canvas/ToolPanel/BoutonFF3").GetComponent<Button>().colors.pressedColor;
             GameObject.Find("Canvas/ToolPanel/BoutonFF3").GetComponent<Image>().color = pressedColor;
+            Color normalColor = GameObject.Find("Canvas/ToolPanel/BoutonFF2").GetComponent<Button>().colors.normalColor;
+            GameObject.Find("Canvas/ToolPanel/BoutonFF2").GetComponent<Image>().color = normalColor;
             // make time frames/calculations go three times as fast/second
             ChangeTime("3");
             threeX = !threeX;
+            twoX = !twoX;
         }
         
     }
@@ -744,7 +770,12 @@ public class UiGameManager : MonoBehaviour
 
     public void ShowSettingsPanel()
     {
-        //GamePanel.SetActive(false);
+        GamePanel.SetActive(false);
+        ToolPanel.SetActive(true);
+        ScrollViewPanel.SetActive(true);
+        SettingPanel.SetActive(true);
+        InspectorPanel.SetActive(true);
+        GameviewPanel.SetActive(true);
         PausePanel.SetActive(false);
         PhysicsPanel.SetActive(false);
         SettingsPanel.SetActive(true);
@@ -752,7 +783,12 @@ public class UiGameManager : MonoBehaviour
 
     public void ShowPhysicsPanel()
     {
-        //GamePanel.SetActive(false);
+        GamePanel.SetActive(false);
+        ToolPanel.SetActive(true);
+        ScrollViewPanel.SetActive(true);
+        SettingPanel.SetActive(true);
+        InspectorPanel.SetActive(true);
+        GameviewPanel.SetActive(true);
         PausePanel.SetActive(false);
         SettingsPanel.SetActive(false);
         PhysicsPanel.SetActive(true);
@@ -760,8 +796,13 @@ public class UiGameManager : MonoBehaviour
 
     public void ShowPausePanel()
     {
-       
-        //GamePanel.SetActive(true);
+
+        GamePanel.SetActive(false);
+        ToolPanel.SetActive(true);
+        ScrollViewPanel.SetActive(true);
+        SettingPanel.SetActive(true);
+        InspectorPanel.SetActive(true);
+        GameviewPanel.SetActive(true);
         SettingsPanel.SetActive(false);
         PhysicsPanel.SetActive(false);
         PausePanel.SetActive(true);
@@ -769,11 +810,15 @@ public class UiGameManager : MonoBehaviour
 
     public void ShowGamePanel()
     {
-       
+        ToolPanel.SetActive(true);
+        ScrollViewPanel.SetActive(true);
+        SettingPanel.SetActive(true);
+        InspectorPanel.SetActive(true);
+        GameviewPanel.SetActive(true);
+        GamePanel.SetActive(true);
         SettingsPanel.SetActive(false);
         PausePanel.SetActive(false);
         PhysicsPanel.SetActive(false);
-        GamePanel.SetActive(true);
     }
 
     public void ChangeFullscreenState(bool check)
