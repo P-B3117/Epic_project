@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 using UnityEngine.Audio;
+using TMPro;
 
 public class UiManager : MonoBehaviour
 {
@@ -12,8 +13,8 @@ public class UiManager : MonoBehaviour
     public GameObject MusicSlider;
     public GameObject SoundEffectSlider;
     public AudioSource MusicSource;
-    public Text MusicVolumeText;
-    public Text SoundEffectVolumeText;
+    public TextMeshProUGUI MusicVolumeText;
+    public TextMeshProUGUI SoundEffectVolumeText;
     // Start is called before the first frame update
     void Start()
     {
