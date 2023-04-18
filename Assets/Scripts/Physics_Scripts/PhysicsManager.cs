@@ -152,7 +152,6 @@ public class PhysicsManager : MonoBehaviour
 		
 		joints.RemoveAll(s => s == null);
 		physicsJoints.RemoveAll(s => s == null);
-        parent.GetComponentsInChildren<DistanceJoints>();
     }
 
     //Simulate all the physics behaviours
