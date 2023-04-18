@@ -28,7 +28,7 @@ public class PhysicsManager : MonoBehaviour
 
 	public Vector2 gravity;
 
-	List<MeshColliderScript> meshColliders;
+	public List<MeshColliderScript> meshColliders;
 	List<BasicPhysicObject> physicObjects;
 	List<DistanceJoints> physicsJoints;
 	List<GrabJoint> physicsGrabJoints;
@@ -91,7 +91,7 @@ public class PhysicsManager : MonoBehaviour
 			
 			numberOfUpdateCounter--;
 		}
-
+		print(meshColliders.Count);
 	}
 
 	public void ResetList()
@@ -122,36 +122,42 @@ public class PhysicsManager : MonoBehaviour
 	}
 
 	// ne marche pas live
-    public void RemoveAt(int i, BasicPhysicObject bo, GameObject parent)
+    public void RemoveAt(BasicPhysicObject bo, GameObject parent)
 	{
 
-        GameObject obj = objects[i];
-		DistanceJoints[] softBodyDJ = new DistanceJoints[0];
-
-        if (parent != null)
+		if (parent != null && parent.GetComponent<SoftBody>() != null)
 		{
-			 softBodyDJ = parent.GetComponentsInChildren<DistanceJoints>();
+			Destroy(parent);
+		}
+		else 
+		{
+			GameObject go = bo.gameObject;
+			Destroy(go.GetComponent<MeshColliderScript>());
+			Destroy(go.GetComponent<BasicPhysicObject>());
+			Destroy(go);
 		}
 
-        if (!physicObjects[i].IsWall)
-        {
-            if (parent != null) Destroy(parent);
-			Destroy(obj);
-			physicObjects.RemoveAll(s => s == null);
-			meshColliders.RemoveAll(s => s == null);
-			objects.RemoveAll(s => s == null);
-        }
-                
-		for (int j = 0; j < softBodyDJ.Length; j++)
-		{
-			int index = physicsJoints.IndexOf(softBodyDJ[j]);
-			Destroy(joints[index]);
-            joints[index] = null;
-			physicsJoints[index] = null;
-        }
-		
-		joints.RemoveAll(s => s == null);
+		physicObjects.RemoveAll(s => s == null);
+		meshColliders.RemoveAll(s => s == null);
 		physicsJoints.RemoveAll(s => s == null);
+		objects.RemoveAll(s => s == null);
+		joints.RemoveAll(s => s == null);
+
+
+
+		for (int i = meshColliders.Count-1; i >= 0; i--) 
+		{
+			try
+			{
+				bool p = meshColliders[i].IsCircle();
+			}
+			catch 
+			{
+				meshColliders.RemoveAt(i);
+			}
+		}
+
+
     }
 
     //Simulate all the physics behaviours
@@ -435,7 +441,7 @@ public class PhysicsManager : MonoBehaviour
 			}
 		}
 
-		if (index < meshColliders.Count && index != -1)
+		if (index < meshColliders.Count && index >= 0)
 		{
 			
 			for (int i = 0; i < index; i++)
@@ -446,7 +452,10 @@ public class PhysicsManager : MonoBehaviour
 			
 			for (int i = index + 1; i < physicObjects.Count; i++)
 			{
-				meshColliders[i].SetBasicMaterial();
+				
+					meshColliders[i].SetBasicMaterial();
+			
+				
 
 			}
 			return physicObjects[index];

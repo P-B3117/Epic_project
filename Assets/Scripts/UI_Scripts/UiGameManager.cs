@@ -411,7 +411,7 @@ public class UiGameManager : MonoBehaviour
 
                         GameObject parent = null;
                         if (bo.transform.parent != null) parent = bo.transform.parent.gameObject;
-                        if (curseur && !parent.GetComponent<SoftBody>() == null)
+                        if (curseur && parent.GetComponent<SoftBody>() == null)
                         {
                             jo = new GameObject();
                             jo.AddComponent<GrabJoint>();
@@ -434,6 +434,19 @@ public class UiGameManager : MonoBehaviour
                             joint.dampingRatio = 0.3f;
 
                             physicsManager.AddGrabJoint(jo);
+                        }
+                        else if (rotation)
+                        {
+                            // ne marche pas live
+                            ResetMouseState();
+                            // code qui fait en sorte que les objets qui étaient dans la fenêtre disparaissent.
+                            physicsManager.RemoveAt( bo, parent);
+
+                            //enleve la selection de l'objet presentement
+                            selectedIndex = -1;
+                            SELECTEDOBJECT = -1;
+                            InspectorContent.SetActive(false);
+                            SELECTEDOBJECTGAMEOBJECT = null;
                         }
 
                         //If the parent object isn't a soft body, show the regular settings
@@ -483,19 +496,7 @@ public class UiGameManager : MonoBehaviour
 
                         }
 
-                        if (rotation)
-                        {
-                            // ne marche pas live
-                            ResetMouseState();
-                            // code qui fait en sorte que les objets qui étaient dans la fenêtre disparaissent.
-                            physicsManager.RemoveAt(selectedIndex, bo, parent);
-
-                            //enleve la selection de l'objet presentement
-                            selectedIndex = -1;
-                            SELECTEDOBJECT = -1;
-                            InspectorContent.SetActive(false);
-                            SELECTEDOBJECTGAMEOBJECT = null;
-                        }
+                        
 
 
 

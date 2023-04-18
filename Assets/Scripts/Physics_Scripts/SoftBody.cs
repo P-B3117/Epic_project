@@ -63,18 +63,10 @@ public class SoftBody : MonoBehaviour
        
         Vector3[] modelPoints = new Vector3[points.Count];
 
-        try
-        {
-            modelPoints[0] = points[0].transform.position;
-        } catch (MissingReferenceException e)
-        {
-            for (int i = points.Count-1; i >= 0; i--)
-            {
-                Destroy(points[i]);
-                points.RemoveAt(i);
-            }
-            return;
-        }
+        
+           
+        modelPoints[0] = points[0].transform.position;
+       
         
         List<GameObject> aroundPoints = new List<GameObject>(points);
         aroundPoints.RemoveAt(0);
