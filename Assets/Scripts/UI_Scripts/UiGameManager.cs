@@ -408,16 +408,9 @@ public class UiGameManager : MonoBehaviour
 
                     if (bo != null)
                     {
-<<<<<<< Updated upstream
-
-                       
-
 
                         GameObject parent = null;
-                        if (bo.transform.parent != null)parent = bo.transform.parent.gameObject;
-
-=======
->>>>>>> Stashed changes
+                        if (bo.transform.parent != null) parent = bo.transform.parent.gameObject;
                         if (curseur)
                         {
                             jo = new GameObject();
@@ -441,17 +434,8 @@ public class UiGameManager : MonoBehaviour
                             joint.dampingRatio = 0.3f;
 
                             physicsManager.AddGrabJoint(jo);
-
-
-<<<<<<< Updated upstream
-=======
-                        GameObject parent = null;
-                        if (bo.transform.parent != null) parent = bo.transform.parent.gameObject;
-                        
->>>>>>> Stashed changes
-
-
                         }
+
                         //If the parent object isn't a soft body, show the regular settings
                         if (parent == null || parent.GetComponent<SoftBody>() == null)
                         {

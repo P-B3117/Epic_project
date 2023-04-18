@@ -1,6 +1,8 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using static UnityEditor.Progress;
 
 
 /*
@@ -126,11 +128,10 @@ public class PhysicsManager : MonoBehaviour
         GameObject obj = objects[i];
         if (!physicObjects[i].IsWall)
         {
-            Destroy(obj);
-            physicObjects.RemoveAt(i);
-            meshColliders.RemoveAt(i);
-            objects.RemoveAt(i);
-
+            Destroy(parent);
+			physicObjects.RemoveAll(s => s == null);
+			meshColliders.RemoveAll(s => s == null);
+			objects.RemoveAll(s => s == null);
         }
         DistanceJoints[] softBodyDJ = parent.GetComponentsInChildren<DistanceJoints>();
         
@@ -138,17 +139,12 @@ public class PhysicsManager : MonoBehaviour
 		{
 			int index = physicsJoints.IndexOf(softBodyDJ[j]);
 			Destroy(joints[index]);
-			Destroy(physicsJoints[index]);
+            joints[index] = null;
+			physicsJoints[index] = null;
         }
-		for (int j = joints.Count-1; j>=0; j--)
-		{
-			if (joints[j] == null)
-			{
-                joints.RemoveAt(j);
-                physicsJoints.RemoveAt(j);
-            }
-			
-		}
+		
+		joints.RemoveAll(s => s == null);
+		physicsJoints.RemoveAll(s => s == null);
         parent.GetComponentsInChildren<DistanceJoints>();
     }
 
@@ -158,14 +154,10 @@ public class PhysicsManager : MonoBehaviour
 		//ApplyForces
 		for (int i = 0; i < objects.Count; i++)
 		{
-
 			physicObjects[i].UpdateState(stepLength);
 			meshColliders[i].UpdateColliderOrientation();
 			physicObjects[i].ApplyForceGravity();
-			
-
-
-        }
+		}
 
 
 
