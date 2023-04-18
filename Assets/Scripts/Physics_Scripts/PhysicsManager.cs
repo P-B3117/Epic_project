@@ -126,15 +126,22 @@ public class PhysicsManager : MonoBehaviour
 	{
 
         GameObject obj = objects[i];
+		DistanceJoints[] softBodyDJ = new DistanceJoints[0];
+
+        if (parent != null)
+		{
+			 softBodyDJ = parent.GetComponentsInChildren<DistanceJoints>();
+		}
+
         if (!physicObjects[i].IsWall)
         {
-            Destroy(parent);
+            if (parent != null) Destroy(parent);
+			Destroy(obj);
 			physicObjects.RemoveAll(s => s == null);
 			meshColliders.RemoveAll(s => s == null);
 			objects.RemoveAll(s => s == null);
         }
-        DistanceJoints[] softBodyDJ = parent.GetComponentsInChildren<DistanceJoints>();
-        
+                
 		for (int j = 0; j < softBodyDJ.Length; j++)
 		{
 			int index = physicsJoints.IndexOf(softBodyDJ[j]);
@@ -154,6 +161,26 @@ public class PhysicsManager : MonoBehaviour
 		//ApplyForces
 		for (int i = 0; i < objects.Count; i++)
 		{
+			if (objects[i] == null)
+			{
+				objects.RemoveAt(i);
+                i--;
+				continue;
+			}
+			if (physicObjects[i] == null)
+			{
+				physicObjects.RemoveAt(i);
+				i--;
+				continue;
+			}
+			if (meshColliders[i] == null)
+			{
+				meshColliders.RemoveAt(i);
+				i--;
+				continue;
+			}
+
+						
 			physicObjects[i].UpdateState(stepLength);
 			meshColliders[i].UpdateColliderOrientation();
 			physicObjects[i].ApplyForceGravity();
@@ -458,11 +485,23 @@ public class PhysicsManager : MonoBehaviour
 	{
 		for (int i = 0; i < physicsJoints.Count; i++)
 		{
+			if (physicsJoints[i] == null)
+			{
+				physicsJoints.RemoveAt(i);
+				i--;
+				continue;
+			}
 			physicsJoints[i].UpdateJointState(stepLength);
 		}
 		for (int i = 0; i < physicsGrabJoints.Count; i++)
 		{
-			physicsGrabJoints[i].UpdateJointState(stepLength);
+            if (physicsGrabJoints[i] == null)
+            {
+                physicsGrabJoints.RemoveAt(i);
+                i--;
+                continue;
+            }
+            physicsGrabJoints[i].UpdateJointState(stepLength);
 		}
 	}
 

@@ -47,6 +47,10 @@ public class GrabJoint : MonoBehaviour
     {
         ComputeBetaAndGamma(timeStep);
         //get positions 
+        if (bo1 == null)
+        {
+            return;
+        }
         cursorPosition = Camera.main.ScreenToWorldPoint(Input.mousePosition);
         Transform bodyA = bo1.transform;
         anchorA = bodyA.position;

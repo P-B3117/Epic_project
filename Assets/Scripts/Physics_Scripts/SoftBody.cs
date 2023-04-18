@@ -68,13 +68,10 @@ public class SoftBody : MonoBehaviour
             modelPoints[0] = points[0].transform.position;
         } catch (MissingReferenceException e)
         {
-            Debug.Log(points.Count);
             for (int i = points.Count-1; i >= 0; i--)
             {
-                Debug.Log(i);
                 Destroy(points[i]);
                 points.RemoveAt(i);
-                
             }
             return;
         }

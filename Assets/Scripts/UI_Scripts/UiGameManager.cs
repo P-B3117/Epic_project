@@ -411,7 +411,7 @@ public class UiGameManager : MonoBehaviour
 
                         GameObject parent = null;
                         if (bo.transform.parent != null) parent = bo.transform.parent.gameObject;
-                        if (curseur)
+                        if (curseur && !parent.GetComponent<SoftBody>() == null)
                         {
                             jo = new GameObject();
                             jo.AddComponent<GrabJoint>();
@@ -423,7 +423,7 @@ public class UiGameManager : MonoBehaviour
 
                             physicsManager.AddGrabJoint(jo);
                         }
-                        else if(parent.GetComponent<SoftBody>() != null)
+                        else if(curseur && parent.GetComponent<SoftBody>() != null)
                         {
                             jo = new GameObject();
                             jo.AddComponent<GrabJoint>();
@@ -553,24 +553,25 @@ public class UiGameManager : MonoBehaviour
     {
         ResetMouseState();
 
-        if (curseur)
+        if (curseur && !rotation)
         {
             Color normalColor = GameObject.Find("Canvas/ToolPanel/BoutonCurseur").GetComponent<Button>().colors.normalColor;
             GameObject.Find("Canvas/ToolPanel/BoutonCurseur").GetComponent<Image>().color = normalColor;
+            curseur = !curseur;
         }
 
-        else
+        else if (!rotation)
         {
             Color pressedColor = GameObject.Find("Canvas/ToolPanel/BoutonCurseur").GetComponent<Button>().colors.pressedColor;
             GameObject boutonCurseur = GameObject.Find("Canvas/ToolPanel/BoutonCurseur");
             boutonCurseur.GetComponent<Image>().color = pressedColor;
-            
+
             // code ici qui fait en sorte qu'on peut déplacer des objets
-            
+            curseur = !curseur;
         }
         // une fois qu'il se fait click, faire en sorte que le bouton reste "pesé" jusqu'à ce qu'il soit reclicked
 
-        curseur = !curseur;
+        
     }
 
     // bouton rotation (2)
@@ -578,21 +579,22 @@ public class UiGameManager : MonoBehaviour
     {
         ResetMouseState();
         // une fois qu'il se fait click, faire en sorte que le bouton reste "pesé" jusqu'à ce qu'il soit reclicked on
-        if (rotation)
+        if (rotation && !curseur)
         {
             Color normalColor = GameObject.Find("Canvas/ToolPanel/BoutonSingleDelete").GetComponent<Button>().colors.normalColor;
             GameObject.Find("Canvas/ToolPanel/BoutonSingleDelete").GetComponent<Image>().color = normalColor;
+            rotation = !rotation;
         }
 
-        else
+        else if (!curseur)
         {
             Color pressedColor = GameObject.Find("Canvas/ToolPanel/BoutonSingleDelete").GetComponent<Button>().colors.pressedColor;
             GameObject.Find("Canvas/ToolPanel/BoutonSingleDelete").GetComponent<Image>().color = pressedColor;
+            rotation = !rotation;
             // faire en sorte qu'on peut tourner des objets ici => rendu single delete
-
         }
 
-        rotation = !rotation;
+        
     }
 
     private float gravityBefore, airDragBefore;
@@ -659,7 +661,6 @@ public class UiGameManager : MonoBehaviour
     public void SetMouseState2() { ResetMouseState(); MOUSESTATE = 2; currentShadowObject = prefabHolder.GetBigCircle(); currentShadowObject.transform.SetParent(GamePanel.transform); }
     public void SetMouseState3() { ResetMouseState(); MOUSESTATE = 3; currentShadowObject = prefabHolder.GetMiddleTriangle(); currentShadowObject.transform.SetParent(GamePanel.transform); }
     public void SetMouseState4() { ResetMouseState(); MOUSESTATE = 4; currentShadowObject = prefabHolder.GetBigSquare(); currentShadowObject.transform.SetParent(GamePanel.transform); }
-
     public void SetMouseState5() 
     { 
         ResetMouseState(); 
@@ -667,7 +668,6 @@ public class UiGameManager : MonoBehaviour
         currentShadowObject = prefabHolder.GetMeshCreatorPoint(); 
         currentShadowObject.transform.SetParent(GamePanel.transform);  
     }
-
     public void SetMouseState6()
     {
         ResetMouseState();
@@ -675,8 +675,6 @@ public class UiGameManager : MonoBehaviour
         currentShadowObject = prefabHolder.GetSoftBody1();
 		currentShadowObject.transform.SetParent(GamePanel.transform);
 	}
-
-
     // bouton pause (5)
     public void PauseScene()
     {
