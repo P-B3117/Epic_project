@@ -15,6 +15,14 @@ public class UiManager : MonoBehaviour
     public AudioSource MusicSource;
     public TextMeshProUGUI MusicVolumeText;
     public TextMeshProUGUI SoundEffectVolumeText;
+
+    private Vector3 slidedPosition;
+    private Vector3 retractedPosition;
+    private bool menuSlided;
+    private bool menuRetracted;
+    private bool menuHasToSlide = false;
+    private bool menuHasToRetract = false;
+    private float slideSpeed = 10;
     // Start is called before the first frame update
     void Start()
     {
@@ -24,6 +32,30 @@ public class UiManager : MonoBehaviour
         FullscreenToggle.GetComponent<Toggle>().isOn = true;
         MusicSlider.GetComponent<Slider>().value = GameConstants.MusicVolume;
         SoundEffectSlider.GetComponent<Slider>().value = GameConstants.SoundEffectVolume;
+        menuSlided = false;
+        slidedPosition = new Vector3(256, 540, 0);
+        retractedPosition = new Vector3(-164, 540, 0);
+    }
+    public void Update()
+    {
+        Debug.Log(MenuPanel.transform.position.x);
+        if (!menuSlided && menuHasToSlide) MenuPanel.transform.position = Vector3.MoveTowards(MenuPanel.transform.position, slidedPosition, slideSpeed);
+        if (MenuPanel.transform.position == slidedPosition) { menuSlided = true; menuHasToSlide = false; }
+        else menuSlided = false;
+
+        if (!menuRetracted && menuHasToRetract) MenuPanel.transform.position = Vector3.MoveTowards(MenuPanel.transform.position, retractedPosition, slideSpeed);
+        if (MenuPanel.transform.position == retractedPosition) { menuRetracted = true; menuHasToRetract = false; }
+        else menuRetracted = false;
+    }
+
+    public void SlideMenu()
+    {//256
+        if (MenuPanel.transform.position.x >= -164 && MenuPanel.transform.position.x < 256) { menuHasToSlide = true; menuHasToRetract = false; }
+    }
+
+    public void RetractMenu()
+    {//-164
+        if (MenuPanel.transform.position.x > -164 && MenuPanel.transform.position.x <= 256) { menuHasToRetract = true; menuHasToSlide = false; }
     }
 
     public void ShowSettingsPanel()
