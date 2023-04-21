@@ -91,7 +91,6 @@ public class PhysicsManager : MonoBehaviour
 			
 			numberOfUpdateCounter--;
 		}
-		print(meshColliders.Count);
 	}
 
 	public void ResetList()
@@ -452,11 +451,7 @@ public class PhysicsManager : MonoBehaviour
 			
 			for (int i = index + 1; i < physicObjects.Count; i++)
 			{
-				
-					meshColliders[i].SetBasicMaterial();
-			
-				
-
+				meshColliders[i].SetBasicMaterial();
 			}
 			return physicObjects[index];
 		}

@@ -6,6 +6,7 @@ using UnityEngine.Audio;
 using UnityEngine.SceneManagement;
 using TMPro;
 using Unity.VisualScripting;
+using System.Runtime.CompilerServices;
 
 public class UiGameManager : MonoBehaviour
 {
@@ -59,6 +60,10 @@ public class UiGameManager : MonoBehaviour
     public TextMeshProUGUI SoftnessText;
     public TextMeshProUGUI SizeText;
     public GameObject InspectorSoftContent;
+    private bool draggable = false;
+    private int selectedIndex;
+    private BasicPhysicObject bo;
+    private GameObject parent;
     void Start()
     {
         ShowGamePanel();
@@ -177,7 +182,6 @@ public class UiGameManager : MonoBehaviour
 
 
             }
-
 
             bool noLineIntersect = true;
             //Look if line intersect 
@@ -344,9 +348,6 @@ public class UiGameManager : MonoBehaviour
         else if (MOUSESTATE == 6)
         {
             Vector3 worldPoint = Camera.main.ScreenToWorldPoint(Input.mousePosition);
-
-
-
             //The worldPoint boundaries are : (-28.25, 20)      - (28.25, 20)
             //                                (-28.25, -20)   - (28.25, -20)
             //Check boundaries
@@ -384,6 +385,7 @@ public class UiGameManager : MonoBehaviour
 
 
         }
+
         //Mouse functionality for object selection
         else
         {
@@ -393,23 +395,26 @@ public class UiGameManager : MonoBehaviour
                 worldPoint = new Vector3(worldPoint.x, worldPoint.y, 0.0f);
 
                 //Check boundaries when click
-                if (worldPoint.x > -28.25f && worldPoint.x < 28.25 &&
-                    worldPoint.y > -20 && worldPoint.y < 20)
+                if (worldPoint.x > -28.25f && worldPoint.x < 28.25 && worldPoint.y > -20 && worldPoint.y < 20)
                 {
                     //Check if mouse click was in a specific object
                     //return the index of the object if there is one
                     //return -1 of there is no object
-                    int selectedIndex = (physicsManager.FindClickIndex(worldPoint));
+                    selectedIndex = (physicsManager.FindClickIndex(worldPoint));
                     SELECTEDOBJECT = selectedIndex;
-                    if (selectedIndex == -1) { SetOffInspectorContent(); }
+                    if (selectedIndex == -1) 
+                    { 
+                        SetOffInspectorContent();
+                        draggable = false;
+                    }
 
 
-                    BasicPhysicObject bo = physicsManager.SelectSpecificObject(selectedIndex, prefabHolder, SELECTEDOBJECTGAMEOBJECT);
+                    bo = physicsManager.SelectSpecificObject(selectedIndex, prefabHolder, SELECTEDOBJECTGAMEOBJECT);
 
                     if (bo != null)
                     {
 
-                        GameObject parent = null;
+                        parent = null;
                         if (bo.transform.parent != null) parent = bo.transform.parent.gameObject;
                         if (curseur && parent.GetComponent<SoftBody>() == null)
                         {
@@ -469,8 +474,8 @@ public class UiGameManager : MonoBehaviour
                             DynamicFrictionSlider.value = bo.getDynamicFriction();
 
 
-
-
+                            draggable = true;
+                            
                         }
                         //If the parent object is a softbody
                         else if(parent.GetComponent<SoftBody>() != null)
@@ -493,28 +498,45 @@ public class UiGameManager : MonoBehaviour
                             SoftnessSlider.value = softBodyDJ[0].getFakeSoftness();
                             SizeSlider.value = softBodyDJ[0].getFakeSize();
                             SoftisStaticToggle.isOn = softBodyBO[0].getIsStatic();
+                            draggable = true;
 
                         }
 
-                        
-
-
-
                     }
-
-
+                    
                 }
-
-
-
+                
             }
+
             else if (Input.GetMouseButtonUp(0))
             {
                 physicsManager.ResetGrabJoint();
             }
         }
+        Vector3 mousePosition = Camera.main.ScreenToWorldPoint(Input.mousePosition);
+        bo = physicsManager.SelectSpecificObject(selectedIndex, prefabHolder, SELECTEDOBJECTGAMEOBJECT);
+        parent = null;
+        if (bo.transform.parent != null) parent = bo.transform.parent.gameObject;
+        if (draggable && pause && mousePosition.x > -28.25f && mousePosition.x < 28.25 && mousePosition.y > -20 && mousePosition.y < 20)
+        {
+            mousePosition = Camera.main.ScreenToWorldPoint(Input.mousePosition);
+            bo.gameObject.transform.position = new Vector3(mousePosition.x, mousePosition.y, 0);
+            //if (parent.GetComponent<SoftBody>() != null)
+            //{
 
-       
+            //}
+            //else
+            //{
+                
+            //}
+            
+        }
+        if (Input.GetMouseButton(1))
+        {
+            draggable = false;
+        }
+
+
     }
 
     public void ChangeTime(string time)
@@ -547,7 +569,7 @@ public class UiGameManager : MonoBehaviour
         SceneManager.LoadScene(1);
     }
 
-    private bool curseur = false, rotation = false, forces = false, twoX = false, threeX = false;
+    private bool curseur = false, rotation = false, forces = false, twoX = false, threeX = false, pause = false;
 
     // bouton curseur (1)
     public void DeplacerObjets()
@@ -685,6 +707,7 @@ public class UiGameManager : MonoBehaviour
         Color normalColor = GameObject.Find("Canvas/ToolPanel/BoutonFF2").GetComponent<Button>().colors.normalColor;
         GameObject.Find("Canvas/ToolPanel/BoutonFF2").GetComponent<Image>().color = normalColor;
         GameObject.Find("Canvas/ToolPanel/BoutonFF3").GetComponent<Image>().color = normalColor;
+        pause = true;
     }
     
     // bouton play (6)
@@ -696,6 +719,7 @@ public class UiGameManager : MonoBehaviour
         Color normalColor = GameObject.Find("Canvas/ToolPanel/BoutonFF2").GetComponent<Button>().colors.normalColor;
         GameObject.Find("Canvas/ToolPanel/BoutonFF2").GetComponent<Image>().color = normalColor;
         GameObject.Find("Canvas/ToolPanel/BoutonFF3").GetComponent<Image>().color = normalColor;
+        if (pause) pause = false;
     }
 
     // bouton 2x (7)
@@ -703,6 +727,7 @@ public class UiGameManager : MonoBehaviour
     {
         ResetMouseState();
         // une fois qu'il se fait click, faire en sorte que le bouton reste "pesé" jusqu'à ce qu'il soit reclicked on
+        if (pause) pause = false;
         if (twoX && !threeX)
         {
             Color normalColor = GameObject.Find("Canvas/ToolPanel/BoutonFF2").GetComponent<Button>().colors.normalColor;
@@ -727,6 +752,7 @@ public class UiGameManager : MonoBehaviour
     public void ThreeXFaster()
     {
         ResetMouseState();
+        if (pause) pause = false;
         // une fois qu'il se fait click, faire en sorte que le bouton reste "pesé" jusqu'à ce qu'il soit reclicked on
         if (threeX && !twoX)
         {
