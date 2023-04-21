@@ -126,35 +126,71 @@ public class PhysicsManager : MonoBehaviour
 
 		if (parent != null && parent.GetComponent<SoftBody>() != null)
 		{
+			BasicPhysicObject[] bos = parent.GetComponentsInChildren<BasicPhysicObject>();
+			MeshColliderScript[] mcs = parent.GetComponentsInChildren<MeshColliderScript>();
+			for (int i = meshColliders.Count - 1; i >= 0; i--) 
+			{
+				for (int j = 0; j < bos.Length; j++) 
+				{
+					if (mcs[j] == meshColliders[i]) 
+					{
+						meshColliders.RemoveAt(i);
+						physicObjects.RemoveAt(i);
+						objects.RemoveAt(i);
+						break;
+					}
+				}
+			}
+			DistanceJoints[] dos = parent.GetComponentsInChildren<DistanceJoints>();
+			for (int i = physicsJoints.Count - 1; i >= 0; i--) 
+			{
+				for (int j = 0; j < dos.Length; j++) 
+				{
+					if (dos[j] == physicsJoints[i]) 
+					{
+						physicsJoints.RemoveAt(i);
+						joints.RemoveAt(i);
+						break;
+					}
+				}
+			}
+
+
+
+
 			Destroy(parent);
+
+
+
+
 		}
 		else 
 		{
 			GameObject go = bo.gameObject;
-			Destroy(go.GetComponent<MeshColliderScript>());
-			Destroy(go.GetComponent<BasicPhysicObject>());
-			Destroy(go);
+			MeshColliderScript mcs = go.GetComponent<MeshColliderScript>();
+			
+			int index = -1;
+			for (int i = 0; i < meshColliders.Count; i++) 
+			{
+				if (mcs == meshColliders[i]) 
+				{
+					index = i;
+					break;
+				}
+			}
+			if (index != -1) 
+			{
+				meshColliders.RemoveAt(index);
+				physicObjects.RemoveAt(index);
+				objects.RemoveAt(index);
+				Destroy(go);
+				
+			}
+
 		}
 
-		physicObjects.RemoveAll(s => s == null);
-		meshColliders.RemoveAll(s => s == null);
-		physicsJoints.RemoveAll(s => s == null);
-		objects.RemoveAll(s => s == null);
-		joints.RemoveAll(s => s == null);
+		
 
-
-
-		for (int i = meshColliders.Count-1; i >= 0; i--) 
-		{
-			try
-			{
-				bool p = meshColliders[i].IsCircle();
-			}
-			catch 
-			{
-				meshColliders.RemoveAt(i);
-			}
-		}
 
 
     }

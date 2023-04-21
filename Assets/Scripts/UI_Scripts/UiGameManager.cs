@@ -414,9 +414,9 @@ public class UiGameManager : MonoBehaviour
                     if (bo != null)
                     {
 
-                        parent = null;
-                        if (bo.transform.parent != null) parent = bo.transform.parent.gameObject;
-                        if (curseur && parent.GetComponent<SoftBody>() == null)
+                        GameObject parent = null;
+                        if (bo.transform.parent != null) { parent = bo.transform.parent.gameObject};
+                        if (curseur && parent != null && parent.GetComponent<SoftBody>() == null)
                         {
                             jo = new GameObject();
                             jo.AddComponent<GrabJoint>();
@@ -444,7 +444,7 @@ public class UiGameManager : MonoBehaviour
                         {
                             // ne marche pas live
                             ResetMouseState();
-                            // code qui fait en sorte que les objets qui étaient dans la fenêtre disparaissent.
+                            // code qui fait en sorte que les objets qui ï¿½taient dans la fenï¿½tre disparaissent.
                             physicsManager.RemoveAt( bo, parent);
 
                             //enleve la selection de l'objet presentement
@@ -589,10 +589,10 @@ public class UiGameManager : MonoBehaviour
             GameObject boutonCurseur = GameObject.Find("Canvas/ToolPanel/BoutonCurseur");
             boutonCurseur.GetComponent<Image>().color = pressedColor;
 
-            // code ici qui fait en sorte qu'on peut déplacer des objets
+            // code ici qui fait en sorte qu'on peut dï¿½placer des objets
             curseur = !curseur;
         }
-        // une fois qu'il se fait click, faire en sorte que le bouton reste "pesé" jusqu'à ce qu'il soit reclicked
+        // une fois qu'il se fait click, faire en sorte que le bouton reste "pesï¿½" jusqu'ï¿½ ce qu'il soit reclicked
 
         
     }
@@ -601,7 +601,7 @@ public class UiGameManager : MonoBehaviour
     public void TournerObjets()
     {
         ResetMouseState();
-        // une fois qu'il se fait click, faire en sorte que le bouton reste "pesé" jusqu'à ce qu'il soit reclicked on
+        // une fois qu'il se fait click, faire en sorte que le bouton reste "pesï¿½" jusqu'ï¿½ ce qu'il soit reclicked on
         if (rotation && !curseur)
         {
             Color normalColor = GameObject.Find("Canvas/ToolPanel/BoutonSingleDelete").GetComponent<Button>().colors.normalColor;
@@ -625,7 +625,7 @@ public class UiGameManager : MonoBehaviour
     public void AppliquerForcesDePhysique()
     {
         ResetMouseState();
-        // code qui fait en sorte que les forces de physique seront appliquées sur les objets
+        // code qui fait en sorte que les forces de physique seront appliquï¿½es sur les objets
         if (forces)
         {
             Color normalColor = GameObject.Find("Canvas/ToolPanel/BoutonF").GetComponent<Button>().colors.normalColor;
@@ -638,7 +638,7 @@ public class UiGameManager : MonoBehaviour
         {
             Color pressedColor = GameObject.Find("Canvas/ToolPanel/BoutonF").GetComponent<Button>().colors.pressedColor;
             GameObject.Find("Canvas/ToolPanel/BoutonF").GetComponent<Image>().color = pressedColor;
-            // une fois qu'il se fait click, faire en sorte que le bouton reste "pesé" jusqu'à ce qu'il soit reclicked on
+            // une fois qu'il se fait click, faire en sorte que le bouton reste "pesï¿½" jusqu'ï¿½ ce qu'il soit reclicked on
             gravityBefore = UniversalVariable.GetGravity();
             airDragBefore = UniversalVariable.GetAirDrag();
             UniversalVariable.SetGravity(0);
@@ -651,7 +651,7 @@ public class UiGameManager : MonoBehaviour
     public void ResetFenetre()
     {
         ResetMouseState();
-        // code qui fait en sorte que les objets qui étaient dans la fenêtre disparaissent.
+        // code qui fait en sorte que les objets qui ï¿½taient dans la fenï¿½tre disparaissent.
         SoftBody[] softBodies = FindObjectsOfType<SoftBody>();
         for (int i = softBodies.Length-1; i >= 0; i--) 
         {
@@ -726,7 +726,7 @@ public class UiGameManager : MonoBehaviour
     public void TwoXFaster()
     {
         ResetMouseState();
-        // une fois qu'il se fait click, faire en sorte que le bouton reste "pesé" jusqu'à ce qu'il soit reclicked on
+        // une fois qu'il se fait click, faire en sorte que le bouton reste "pesï¿½" jusqu'ï¿½ ce qu'il soit reclicked on
         if (pause) pause = false;
         if (twoX && !threeX)
         {
@@ -753,7 +753,7 @@ public class UiGameManager : MonoBehaviour
     {
         ResetMouseState();
         if (pause) pause = false;
-        // une fois qu'il se fait click, faire en sorte que le bouton reste "pesé" jusqu'à ce qu'il soit reclicked on
+        // une fois qu'il se fait click, faire en sorte que le bouton reste "pesï¿½" jusqu'ï¿½ ce qu'il soit reclicked on
         if (threeX && !twoX)
         {
             Color normalColor = GameObject.Find("Canvas/ToolPanel/BoutonFF3").GetComponent<Button>().colors.normalColor;
