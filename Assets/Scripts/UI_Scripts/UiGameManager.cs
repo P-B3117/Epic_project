@@ -410,8 +410,8 @@ public class UiGameManager : MonoBehaviour
                     {
 
                         GameObject parent = null;
-                        if (bo.transform.parent != null) parent = bo.transform.parent.gameObject;
-                        if (curseur && parent.GetComponent<SoftBody>() == null)
+                        if (bo.transform.parent != null) { parent = bo.transform.parent.gameObject};
+                        if (curseur && parent != null && parent.GetComponent<SoftBody>() == null)
                         {
                             jo = new GameObject();
                             jo.AddComponent<GrabJoint>();
