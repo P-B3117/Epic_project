@@ -74,6 +74,12 @@ public class UiGameManager : MonoBehaviour
     public TextMeshProUGUI MassSoftText;
     public TextMeshProUGUI SoftnessText;
     public TextMeshProUGUI SizeText;
+    public GameObject SelectedJointSlider;
+    public GameObject DistanceSlider;
+    public GameObject DampingSlider;
+    public GameObject FrequencySlider;
+    public GameObject SelectAllToggle;
+    public GameObject DeleteButton;
     private bool draggable = false;
     private int selectedIndex;
     private BasicPhysicObject bo;
