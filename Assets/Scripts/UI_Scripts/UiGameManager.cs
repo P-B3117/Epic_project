@@ -67,7 +67,7 @@ public class UiGameManager : MonoBehaviour
     private int selectedIndex;
     private BasicPhysicObject bo;
     private GameObject parent;
-    private bool NeverDone = true;
+    private int counter = 0;
     void Start()
     {
         ShowGamePanel();
@@ -351,11 +351,21 @@ public class UiGameManager : MonoBehaviour
         }
         else if (MOUSESTATE == 6)
         {
-            
+
+
             Vector3 worldPoint = Camera.main.ScreenToWorldPoint(Input.mousePosition);
             worldPoint = new Vector3(worldPoint.x, worldPoint.y, 0.0f);
             currentShadowObject.transform.position = worldPoint;
-            if (JointCreatorPoints.Count == 2 && NeverDone == true)
+            //update the line thing 
+            if (JointCreatorPoints.Count == 1)
+            {
+                JointCreatorPoints[0].transform.position = JointReference[0].transform.position;
+                Vector3[] position = new Vector3[] { JointCreatorPoints[0].transform.position, currentShadowObject.transform.position };
+                JointCreatorLineRenderer.SetPositions(position);
+            }
+         
+         
+            if ( counter ==2)
             {
                 //create joint here 
                 jo = new GameObject();
@@ -368,40 +378,40 @@ public class UiGameManager : MonoBehaviour
                 joint.dampingRatio = 0.5f;
                 joint.point1 = JointCreatorPoints[0];
                 joint.point2 = JointCreatorPoints[1];
-                joint.length = (JointReference[1].transform.position - JointReference[0].transform.position).magnitude*2;
+                joint.length = (JointReference[1].transform.position - JointReference[0].transform.position).magnitude;
                 physicsManager.AddDistanceJoints(jo);
-             
-                NeverDone = false;
+
+                JointReference.Remove(JointReference[1]);
+                JointReference.Remove(JointReference[0]);
                 JointCreatorLineRenderer.SetPosition(0, Vector3.zero);
                 JointCreatorLineRenderer.SetPosition(1, Vector3.zero);
+                counter = 0;
+                ResetMouseState();
             }
-
-            if (JointCreatorPoints.Count == 1 )
+            else if (Input.GetMouseButtonDown(0) && JointCreatorPoints.Count < 2)
             {
-                JointCreatorPoints[0].transform.position = JointReference[0].transform.position;
-                Vector3[] position = new Vector3[] { JointCreatorPoints[0].transform.position, currentShadowObject.transform.position };
-                JointCreatorLineRenderer.SetPositions(position);
-            }
-           
-                if (Input.GetMouseButtonDown(0) && JointCreatorPoints.Count < 2)
+                
+                //Check boundaries when click
+                if (worldPoint.x > -28.25f && worldPoint.x < 28.25 && worldPoint.y > -20 && worldPoint.y < 20)
                 {
+
+                    //Check if mouse click was in a specific object
+                    //return the index of the object if there is one
+                    //return -1 of there is no object
+                    selectedIndex = (physicsManager.FindClickIndex(worldPoint));
+
                     
-                    //Check boundaries when click
-                    if (worldPoint.x > -28.25f && worldPoint.x < 28.25 && worldPoint.y > -20 && worldPoint.y < 20)
+                    SELECTEDOBJECT = selectedIndex;
+                    if (selectedIndex == -1) SetOffInspectorContent();
+
+                    bo = physicsManager.SelectSpecificObject(selectedIndex, prefabHolder, SELECTEDOBJECTGAMEOBJECT);
+                    
+                    if (bo != null)
                     {
+                        bool cond = true;
+                        if (counter == 1 && JointReference[0] == bo.gameObject) cond = false;
 
-                        //Check if mouse click was in a specific object
-                        //return the index of the object if there is one
-                        //return -1 of there is no object
-                        selectedIndex = (physicsManager.FindClickIndex(worldPoint));
-
-                        Debug.Log(selectedIndex);
-                        SELECTEDOBJECT = selectedIndex;
-                        if (selectedIndex == -1) SetOffInspectorContent();
-                      
-                       bo = physicsManager.SelectSpecificObject(selectedIndex, prefabHolder, SELECTEDOBJECTGAMEOBJECT);
-
-                        if (bo != null)
+                        if (cond == true)
                         {
                             currentShadowObject.transform.position = bo.transform.position;
                             JointReference.Add(bo.gameObject);
@@ -410,10 +420,14 @@ public class UiGameManager : MonoBehaviour
                             JointCreatorPoints.Add(newGO);
                             //Update the line renderer
                             JointCreatorLineRenderer.positionCount++;
+                            counter++;
+                            cond = true;
                         }
+
                     }
+
                 }
-            
+            }
         }
         //Mouse functionality for the softbody
         //Allows user to add softbodies to the scene
@@ -518,7 +532,7 @@ public class UiGameManager : MonoBehaviour
                         SetOffInspectorContent();
                        // draggable = false;
                     }
-                    Debug.Log(selectedIndex);
+                   
 
                     bo = physicsManager.SelectSpecificObject(selectedIndex, prefabHolder, SELECTEDOBJECTGAMEOBJECT);
 
@@ -785,12 +799,18 @@ public class UiGameManager : MonoBehaviour
         {
             Destroy(meshCreatorPoints[i]);
         }
+        for (int i = JointCreatorPoints.Count - 1; i >= 0; i--)
+        {
+            Destroy(JointCreatorPoints[i]);
+        }
+        
         meshCreatorPoints = new List<GameObject>();
-
+        JointCreatorPoints = new List<GameObject>();
         meshCreatorLineRenderer.positionCount = 1;
-
+        JointCreatorLineRenderer.positionCount = 1; 
         
     }
+    
     public void SetMouseState0() { ResetMouseState(); MOUSESTATE = 0; currentShadowObject = prefabHolder.GetLittleCircle();  currentShadowObject.transform.SetParent(GamePanel.transform); }
     public void SetMouseState1() { ResetMouseState(); MOUSESTATE = 1; currentShadowObject = prefabHolder.GetMiddleCircle(); currentShadowObject.transform.SetParent(GamePanel.transform); }
     public void SetMouseState2() { ResetMouseState(); MOUSESTATE = 2; currentShadowObject = prefabHolder.GetBigCircle(); currentShadowObject.transform.SetParent(GamePanel.transform); }
