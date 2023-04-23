@@ -811,11 +811,11 @@ public class UiGameManager : MonoBehaviour
         SELECTEDOBJECTGAMEOBJECT = null;
     }
 
-    public void ResetMouseState() { 
-        MOUSESTATE = -1; 
-        Destroy(currentShadowObject); 
+    public void ResetMouseState() {
+        MOUSESTATE = -1;
+        Destroy(currentShadowObject);
         currentShadowObject = null;
-        for (int i = meshCreatorPoints.Count-1; i >= 0; i--) 
+        for (int i = meshCreatorPoints.Count - 1; i >= 0; i--)
         {
             Destroy(meshCreatorPoints[i]);
         }
@@ -823,12 +823,17 @@ public class UiGameManager : MonoBehaviour
         {
             Destroy(JointCreatorPoints[i]);
         }
-        
+        for (int i = JointReference.Count - 1; i >= 0; i--)
+        {
+            JointReference.RemoveAt(i);
+        }
         meshCreatorPoints = new List<GameObject>();
         JointCreatorPoints = new List<GameObject>();
+        JointReference = new List<GameObject>();
         meshCreatorLineRenderer.positionCount = 1;
-        JointCreatorLineRenderer.positionCount = 1; 
-        
+        JointCreatorLineRenderer.positionCount = 1;
+        counter = 0;
+
     }
     
     public void SetMouseState0() { ResetMouseState(); MOUSESTATE = 0; currentShadowObject = prefabHolder.GetLittleCircle();  currentShadowObject.transform.SetParent(GamePanel.transform); }
