@@ -3,7 +3,41 @@ guid: 1f8154ade71f046468fdc660c3ef7c0f
 MonoImporter:
   externalObjects: {}
   serializedVersion: 2
-  defaultReferences: []
+  defaultReferences:
+  - GamePanel: {instanceID: 0}
+  - PausePanel: {instanceID: 0}
+  - PhysicsPanel: {instanceID: 0}
+  - SettingsPanel: {instanceID: 0}
+  - FullscreenToggle: {instanceID: 0}
+  - MusicSlider: {instanceID: 0}
+  - SoundEffectSlider: {instanceID: 0}
+  - GravityInputField: {instanceID: 0}
+  - AirDragInputField: {instanceID: 0}
+  - TimeInputField: {instanceID: 0}
+  - MusicSource: {instanceID: 0}
+  - MusicVolumeText: {instanceID: 0}
+  - SoundEffectVolumeText: {instanceID: 0}
+  - prefabHolder: {instanceID: 0}
+  - physicsManager: {instanceID: 0}
+  - meshCreatorLineRenderer: {instanceID: 0}
+  - InspectorContent: {instanceID: 0}
+  - MassSlider: {instanceID: 0}
+  - BoucinessSlider: {instanceID: 0}
+  - DynamicFrictionSlider: {instanceID: 0}
+  - StaticFrictionSlider: {instanceID: 0}
+  - IsStaticToggle: {instanceID: 0}
+  - MassText: {instanceID: 0}
+  - BoucinessText: {instanceID: 0}
+  - DynamicFrictionText: {instanceID: 0}
+  - StaticFrictionText: {instanceID: 0}
+  - MassSoftSlider: {instanceID: 0}
+  - SoftnessSlider: {instanceID: 0}
+  - SizeSlider: {instanceID: 0}
+  - SoftisStaticToggle: {instanceID: 0}
+  - MassSoftText: {instanceID: 0}
+  - SoftnessText: {instanceID: 0}
+  - SizeText: {instanceID: 0}
+  - InspectorSoftContent: {instanceID: 0}
   executionOrder: 0
   icon: {instanceID: 0}
   userData: 

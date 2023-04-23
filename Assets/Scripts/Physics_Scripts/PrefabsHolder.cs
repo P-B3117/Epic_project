@@ -16,7 +16,8 @@ public class PrefabsHolder : MonoBehaviour
 	private GameObject bigSquare;
 	[SerializeField]
 	private GameObject softBody1;
-
+	[SerializeField]
+	private GameObject softBody2;
 	[SerializeField]
 	private GameObject meshCreatorPoint;
 
@@ -44,7 +45,7 @@ public class PrefabsHolder : MonoBehaviour
 	public GameObject GetBigSquare() { return GetPrefab(bigSquare); }
 
 	public GameObject GetSoftBody1() { return GetSoftBody(softBody1); }
-
+	public GameObject GetSoftBody2() { return GetSoftBody(softBody2); }
 	public GameObject GetMeshCreatorPoint() { return Instantiate(meshCreatorPoint); }
 
 	public GameObject GetWaterAddSprite() { return Instantiate(waterAddSprite); }

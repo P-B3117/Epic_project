@@ -1,6 +1,8 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using static UnityEditor.Progress;
 
 
 /*
@@ -26,7 +28,7 @@ public class PhysicsManager : MonoBehaviour
 
 	public Vector2 gravity;
 
-	List<MeshColliderScript> meshColliders;
+	public List<MeshColliderScript> meshColliders;
 	List<BasicPhysicObject> physicObjects;
 	List<DistanceJoints> physicsJoints;
 	List<GrabJoint> physicsGrabJoints;
@@ -89,7 +91,6 @@ public class PhysicsManager : MonoBehaviour
 			
 			numberOfUpdateCounter--;
 		}
-
 	}
 
 	public void ResetList()
@@ -119,20 +120,111 @@ public class PhysicsManager : MonoBehaviour
 
 	}
 
-	//Simulate all the physics behaviours
-	private void PhysicCalculations()
+	// ne marche pas live
+    public void RemoveAt(BasicPhysicObject bo, GameObject parent)
+	{
+
+		if (parent != null && parent.GetComponent<SoftBody>() != null)
+		{
+			BasicPhysicObject[] bos = parent.GetComponentsInChildren<BasicPhysicObject>();
+			MeshColliderScript[] mcs = parent.GetComponentsInChildren<MeshColliderScript>();
+			for (int i = meshColliders.Count - 1; i >= 0; i--) 
+			{
+				for (int j = 0; j < bos.Length; j++) 
+				{
+					if (mcs[j] == meshColliders[i]) 
+					{
+						meshColliders.RemoveAt(i);
+						physicObjects.RemoveAt(i);
+						objects.RemoveAt(i);
+						break;
+					}
+				}
+			}
+			DistanceJoints[] dos = parent.GetComponentsInChildren<DistanceJoints>();
+			for (int i = physicsJoints.Count - 1; i >= 0; i--) 
+			{
+				for (int j = 0; j < dos.Length; j++) 
+				{
+					if (dos[j] == physicsJoints[i]) 
+					{
+						physicsJoints.RemoveAt(i);
+						joints.RemoveAt(i);
+						break;
+					}
+				}
+			}
+
+
+
+
+			Destroy(parent);
+
+
+
+
+		}
+		else 
+		{
+			GameObject go = bo.gameObject;
+			MeshColliderScript mcs = go.GetComponent<MeshColliderScript>();
+			
+			int index = -1;
+			for (int i = 0; i < meshColliders.Count; i++) 
+			{
+				if (mcs == meshColliders[i]) 
+				{
+					index = i;
+					break;
+				}
+			}
+			if (index != -1) 
+			{
+				meshColliders.RemoveAt(index);
+				physicObjects.RemoveAt(index);
+				objects.RemoveAt(index);
+				Destroy(go);
+				
+			}
+
+		}
+
+		
+
+
+
+    }
+
+    //Simulate all the physics behaviours
+    private void PhysicCalculations()
 	{
 		//ApplyForces
 		for (int i = 0; i < objects.Count; i++)
 		{
+			if (objects[i] == null)
+			{
+				objects.RemoveAt(i);
+                i--;
+				continue;
+			}
+			if (physicObjects[i] == null)
+			{
+				physicObjects.RemoveAt(i);
+				i--;
+				continue;
+			}
+			if (meshColliders[i] == null)
+			{
+				meshColliders.RemoveAt(i);
+				i--;
+				continue;
+			}
 
+						
 			physicObjects[i].UpdateState(stepLength);
 			meshColliders[i].UpdateColliderOrientation();
 			physicObjects[i].ApplyForceGravity();
-			
-
-
-        }
+		}
 
 
 
@@ -384,7 +476,7 @@ public class PhysicsManager : MonoBehaviour
 			}
 		}
 
-		if (index < meshColliders.Count && index != -1)
+		if (index < meshColliders.Count && index >= 0)
 		{
 			
 			for (int i = 0; i < index; i++)
@@ -396,7 +488,6 @@ public class PhysicsManager : MonoBehaviour
 			for (int i = index + 1; i < physicObjects.Count; i++)
 			{
 				meshColliders[i].SetBasicMaterial();
-
 			}
 			return physicObjects[index];
 		}
@@ -420,6 +511,13 @@ public class PhysicsManager : MonoBehaviour
 		gb.Initialize();
 		physicsGrabJoints.Add(gb);
 	}
+	public void AddDistanceJoints(GameObject jo)
+	{
+		DistanceJoints gb = jo.GetComponent<DistanceJoints>();
+		gb.Initialize();
+		physicsJoints.Add(gb);
+		
+	}
 	public void ResetGrabJoint()
 	{
 		for (int i = physicsGrabJoints.Count - 1; i >= 0; i--)
@@ -433,11 +531,23 @@ public class PhysicsManager : MonoBehaviour
 	{
 		for (int i = 0; i < physicsJoints.Count; i++)
 		{
+			if (physicsJoints[i] == null)
+			{
+				physicsJoints.RemoveAt(i);
+				i--;
+				continue;
+			}
 			physicsJoints[i].UpdateJointState(stepLength);
 		}
 		for (int i = 0; i < physicsGrabJoints.Count; i++)
 		{
-			physicsGrabJoints[i].UpdateJointState(stepLength);
+            if (physicsGrabJoints[i] == null)
+            {
+                physicsGrabJoints.RemoveAt(i);
+                i--;
+                continue;
+            }
+            physicsGrabJoints[i].UpdateJointState(stepLength);
 		}
 	}
 

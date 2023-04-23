@@ -37,7 +37,7 @@ public class SoftBody : MonoBehaviour
             if (newTriangles[(i * 3 + 2)] == 0) { newTriangles[(i * 3 + 2)] = points.Count - 1; }
 
         }
-
+       
         mesh.triangles = newTriangles;
 
 
@@ -63,7 +63,11 @@ public class SoftBody : MonoBehaviour
        
         Vector3[] modelPoints = new Vector3[points.Count];
 
+        
+           
         modelPoints[0] = points[0].transform.position;
+       
+        
         List<GameObject> aroundPoints = new List<GameObject>(points);
         aroundPoints.RemoveAt(0);
         for (int i = 0; i < aroundPoints.Count; i++)
@@ -97,9 +101,20 @@ public class SoftBody : MonoBehaviour
         mesh.triangles = newTriangles;
     }
 
-	public void Update()
+    public void OnDestroy()
+    {
+        for (int i = points.Count-1; i >= 0 ; i--)
+        {
+            Destroy(points[i]);
+            points.RemoveAt(i);
+        }
+    }
+    public void Update()
 	{
-		UpdateSoftBody();
+        if (points.Count > 0)
+        {
+            UpdateSoftBody();
+        }
 	}
 
     public void SetBasicMaterial() 
