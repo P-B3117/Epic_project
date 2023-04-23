@@ -35,6 +35,7 @@ public class UiGameManager : MonoBehaviour
     public PrefabsHolder prefabHolder;
     public PhysicsManager physicsManager;
     public GameObject gearImage;
+    public GameObject jmButton;
 
     // Start is called before the first frame update
 
@@ -55,6 +56,8 @@ public class UiGameManager : MonoBehaviour
     private int SELECTEDOBJECT = -1;
     private GameObject SELECTEDOBJECTGAMEOBJECT = null;
     public GameObject InspectorContent;
+    public GameObject InspectorSoftContent;
+    public GameObject InspectorJointContent;
     public Slider MassSlider;
     public Slider BoucinessSlider;
     public Slider DynamicFrictionSlider;
@@ -71,12 +74,16 @@ public class UiGameManager : MonoBehaviour
     public TextMeshProUGUI MassSoftText;
     public TextMeshProUGUI SoftnessText;
     public TextMeshProUGUI SizeText;
-    public GameObject InspectorSoftContent;
     private bool draggable = false;
     private int selectedIndex;
     private BasicPhysicObject bo;
     private GameObject parent;
     private int counter = 0;
+    bool jmState = false;
+    bool cursorState = false;
+
+
+
     void Start()
     {
         ShowGamePanel();
@@ -721,6 +728,10 @@ public class UiGameManager : MonoBehaviour
     public void DeplacerObjets()
     {
         ResetMouseState();
+        if (cursorState == false) cursorState = true;
+        else cursorState = false;
+
+        if (jmState == true) { JointManager(); }
 
         if (curseur && !rotation)
         {
@@ -747,6 +758,8 @@ public class UiGameManager : MonoBehaviour
     public void TournerObjets()
     {
         ResetMouseState();
+
+        if (jmState == true) { JointManager(); }
         // une fois qu'il se fait click, faire en sorte que le bouton reste "pes�" jusqu'� ce qu'il soit reclicked on
         if (rotation && !curseur)
         {
@@ -950,6 +963,31 @@ public class UiGameManager : MonoBehaviour
         
     }
 
+    // bouton Joint Manager
+    public void JointManager()
+    {
+        ResetMouseState();
+        if (cursorState == true) { DeplacerObjets(); }
+
+        if (!jmState)
+        {
+            SetOnInspectorJointContent();
+            jmButton.GetComponent<Image>().color = jmButton.GetComponent<Button>().colors.pressedColor;
+            jmState = true;
+        }
+
+        else
+        {
+            SetOffInspectorJointContent();
+            jmButton.GetComponent<Image>().color = jmButton.GetComponent<Button>().colors.normalColor;
+            jmState = false;
+        }
+
+    }
+
+    public void SetOnInspectorJointContent() { InspectorJointContent.SetActive(true); }
+
+    public void SetOffInspectorJointContent() { InspectorJointContent.SetActive(false); }
 
     public void ShowSettingsPanel()
     {

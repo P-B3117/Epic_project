@@ -43,7 +43,6 @@ public class UiManager : MonoBehaviour
     }
     public void Update()
     {
-        Debug.Log(MenuPanel.transform.position.x);
         if (!menuSlided && menuHasToSlide) { MenuPanel.transform.position = Vector3.MoveTowards(MenuPanel.transform.position, slidedPosition, slideSpeed); Title.transform.position = Vector3.MoveTowards(Title.transform.position, titleSlidedPosition, slideSpeed); }
             if (MenuPanel.transform.position == slidedPosition) { menuSlided = true; menuHasToSlide = false; }
         else menuSlided = false;
