@@ -8,9 +8,9 @@ using UnityEngine;
 public class DistanceJoints : MonoBehaviour
 {
     [SerializeField]
-    GameObject bo1;
+   public GameObject bo1;
     [SerializeField]
-    GameObject bo2;
+   public GameObject bo2;
     [SerializeField]
     public float frequency;
     public float dampingRatio;
@@ -29,7 +29,8 @@ public class DistanceJoints : MonoBehaviour
    public float fakeSoftness;
    public  float fakeSize;
 
-
+    public GameObject point1;
+    public GameObject point2;
     private Vector3 d;
 
     private float m;
@@ -74,7 +75,6 @@ public class DistanceJoints : MonoBehaviour
     }
     public void UpdateJointState(float timeStep)
     {
-      
         dampingRatio = Mathf.Clamp(dampingRatio, 0.0f, 1.0f);
         //get positions 
         Transform bodyA = bo1.transform;
@@ -87,6 +87,8 @@ public class DistanceJoints : MonoBehaviour
         Vector3 pa = ra + anchorA;
         Vector3 pb = rb + anchorB;
 
+        if (point1 != null) point1.transform.position = anchorA;
+        if (point2 != null) point2.transform.position = anchorB;
         Vector3 d = pa - pb;
 
         // Compute the current length 

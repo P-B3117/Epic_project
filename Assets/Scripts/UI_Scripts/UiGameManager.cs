@@ -34,8 +34,11 @@ public class UiGameManager : MonoBehaviour
     //Slider functions variables
     private int MOUSESTATE;
     List<GameObject> meshCreatorPoints;
+    List<GameObject> JointCreatorPoints;
+    List<GameObject> JointReference;
     [Header("Reference for the slider")]
     public LineRenderer meshCreatorLineRenderer;
+    public LineRenderer JointCreatorLineRenderer;
     GameObject currentShadowObject;
     GameObject jo;
     //Inspector variables
@@ -64,6 +67,7 @@ public class UiGameManager : MonoBehaviour
     private int selectedIndex;
     private BasicPhysicObject bo;
     private GameObject parent;
+    private bool NeverDone = true;
     void Start()
     {
         ShowGamePanel();
@@ -78,6 +82,8 @@ public class UiGameManager : MonoBehaviour
         //Initialize the slider function variables
         MOUSESTATE = -1;
         meshCreatorPoints = new List<GameObject>();
+        JointCreatorPoints = new List<GameObject>();
+        JointReference = new List<GameObject>();
     }
 
     void Update()
@@ -93,7 +99,7 @@ public class UiGameManager : MonoBehaviour
             ResetMouseState();
         }
 
-       
+
 
 
 
@@ -286,7 +292,7 @@ public class UiGameManager : MonoBehaviour
                             modelPoints.Add(meshCreatorPoints[i].transform.position - moy);
                         }
                     }
-                    
+
 
 
                     GameObject empty = new GameObject();
@@ -343,9 +349,75 @@ public class UiGameManager : MonoBehaviour
 
 
         }
+        else if (MOUSESTATE == 6)
+        {
+            
+            Vector3 worldPoint = Camera.main.ScreenToWorldPoint(Input.mousePosition);
+            worldPoint = new Vector3(worldPoint.x, worldPoint.y, 0.0f);
+            currentShadowObject.transform.position = worldPoint;
+            if (JointCreatorPoints.Count == 2 && NeverDone == true)
+            {
+                //create joint here 
+                jo = new GameObject();
+                jo.AddComponent<DistanceJoints>();
+                DistanceJoints joint = jo.GetComponent<DistanceJoints>();
+
+                joint.bo1 = JointReference[0];
+                joint.bo2 = JointReference[1];
+                joint.frequency = 1.0f;
+                joint.dampingRatio = 0.5f;
+                joint.point1 = JointCreatorPoints[0];
+                joint.point2 = JointCreatorPoints[1];
+                joint.length = (JointReference[1].transform.position - JointReference[0].transform.position).magnitude*2;
+                physicsManager.AddDistanceJoints(jo);
+             
+                NeverDone = false;
+                JointCreatorLineRenderer.SetPosition(0, Vector3.zero);
+                JointCreatorLineRenderer.SetPosition(1, Vector3.zero);
+            }
+
+            if (JointCreatorPoints.Count == 1 )
+            {
+                JointCreatorPoints[0].transform.position = JointReference[0].transform.position;
+                Vector3[] position = new Vector3[] { JointCreatorPoints[0].transform.position, currentShadowObject.transform.position };
+                JointCreatorLineRenderer.SetPositions(position);
+            }
+           
+                if (Input.GetMouseButtonDown(0) && JointCreatorPoints.Count < 2)
+                {
+                    
+                    //Check boundaries when click
+                    if (worldPoint.x > -28.25f && worldPoint.x < 28.25 && worldPoint.y > -20 && worldPoint.y < 20)
+                    {
+
+                        //Check if mouse click was in a specific object
+                        //return the index of the object if there is one
+                        //return -1 of there is no object
+                        selectedIndex = (physicsManager.FindClickIndex(worldPoint));
+
+                        Debug.Log(selectedIndex);
+                        SELECTEDOBJECT = selectedIndex;
+                        if (selectedIndex == -1) SetOffInspectorContent();
+                      
+                       bo = physicsManager.SelectSpecificObject(selectedIndex, prefabHolder, SELECTEDOBJECTGAMEOBJECT);
+
+                        if (bo != null)
+                        {
+                            currentShadowObject.transform.position = bo.transform.position;
+                            JointReference.Add(bo.gameObject);
+                            //Instantiate the mesh creator point
+                            GameObject newGO = Instantiate(currentShadowObject);
+                            JointCreatorPoints.Add(newGO);
+                            //Update the line renderer
+                            JointCreatorLineRenderer.positionCount++;
+                        }
+                    }
+                }
+            
+        }
         //Mouse functionality for the softbody
         //Allows user to add softbodies to the scene
-        else if (MOUSESTATE == 6)
+        else if (MOUSESTATE == 7)
         {
             Vector3 worldPoint = Camera.main.ScreenToWorldPoint(Input.mousePosition);
             //The worldPoint boundaries are : (-28.25, 20)      - (28.25, 20)
@@ -361,18 +433,18 @@ public class UiGameManager : MonoBehaviour
                 currentShadowObject.GetComponent<MeshRenderer>().material.color = new Color(1.0f, 1.0f, 0.0f, 0.5f);
                 if (Input.GetMouseButtonDown(0))
                 {
-                   
+
                     currentShadowObject.transform.position = Vector3.zero;
                     GameObject newGO = Instantiate(currentShadowObject);
                     newGO.GetComponent<SoftBody>().SetBasicMaterial();
                     BasicPhysicObject[] bos = newGO.GetComponentsInChildren<BasicPhysicObject>();
-                    for (int i = 0; i < bos.Length; i++) 
+                    for (int i = 0; i < bos.Length; i++)
                     {
                         bos[i].transform.position += new Vector3(worldPoint.x, worldPoint.y, 0.0f);
                     }
-                    
-                    
-                    
+
+
+
                     physicsManager.AddSoftBody(newGO);
                 }
             }
@@ -385,7 +457,46 @@ public class UiGameManager : MonoBehaviour
 
 
         }
+        else if (MOUSESTATE == 8)
+        {
+            Vector3 worldPoint = Camera.main.ScreenToWorldPoint(Input.mousePosition);
+            //The worldPoint boundaries are : (-28.25, 20)      - (28.25, 20)
+            //                                (-28.25, -20)   - (28.25, -20)
+            //Check boundaries
 
+
+            currentShadowObject.transform.position = new Vector3(worldPoint.x / 2, worldPoint.y / 2, 0.0f); //I have literally no clue why i have to do this??? But it works !
+            if (worldPoint.x > -28.25f && worldPoint.x < 28.25 &&
+                worldPoint.y > -20 && worldPoint.y < 20)
+            {
+                //If the mouse is in boundaries, change color to good color and if moused clicked add softbody to scene
+                currentShadowObject.GetComponent<MeshRenderer>().material.color = new Color(1.0f, 1.0f, 0.0f, 0.5f);
+                if (Input.GetMouseButtonDown(0))
+                {
+
+                    currentShadowObject.transform.position = Vector3.zero;
+                    GameObject newGO = Instantiate(currentShadowObject);
+                    newGO.GetComponent<SoftBody>().SetBasicMaterial();
+                    BasicPhysicObject[] bos = newGO.GetComponentsInChildren<BasicPhysicObject>();
+                    for (int i = 0; i < bos.Length; i++)
+                    {
+                        bos[i].transform.position += new Vector3(worldPoint.x, worldPoint.y, 0.0f);
+                    }
+
+
+
+                    physicsManager.AddSoftBody(newGO);
+                }
+            }
+            //If mouse is out of the boundaries, change color to red
+            else
+            {
+                currentShadowObject.GetComponent<MeshRenderer>().material.color = new Color(1.0f, 0.0f, 0.0f, 0.5f);
+
+            }
+
+
+        }
         //Mouse functionality for object selection
         else
         {
@@ -402,12 +513,12 @@ public class UiGameManager : MonoBehaviour
                     //return -1 of there is no object
                     selectedIndex = (physicsManager.FindClickIndex(worldPoint));
                     SELECTEDOBJECT = selectedIndex;
-                    if (selectedIndex == -1) 
-                    { 
+                    if (selectedIndex == -1)
+                    {
                         SetOffInspectorContent();
-                        draggable = false;
+                       // draggable = false;
                     }
-
+                    Debug.Log(selectedIndex);
 
                     bo = physicsManager.SelectSpecificObject(selectedIndex, prefabHolder, SELECTEDOBJECTGAMEOBJECT);
 
@@ -415,44 +526,22 @@ public class UiGameManager : MonoBehaviour
                     {
 
                         GameObject parent = null;
-                        if (bo.transform.parent != null) { parent = bo.transform.parent.gameObject; };
-                        if (curseur && parent != null && parent.GetComponent<SoftBody>() == null)
-                        {
-                            jo = new GameObject();
-                            jo.AddComponent<GrabJoint>();
-                            GrabJoint joint = jo.GetComponent<GrabJoint>();
-
-                            joint.bo1 = bo.gameObject;
-                            joint.frequency = 0.5f;
-                            joint.dampingRatio = 0.5f;
-
-                            physicsManager.AddGrabJoint(jo);
-                        }
-                        else if(curseur && parent.GetComponent<SoftBody>() != null)
-                        {
-                            jo = new GameObject();
-                            jo.AddComponent<GrabJoint>();
-                            GrabJoint joint = jo.GetComponent<GrabJoint>();
-
-                            joint.bo1 = bo.gameObject;
-                            joint.frequency = 1.0f;
-                            joint.dampingRatio = 0.3f;
-
-                            physicsManager.AddGrabJoint(jo);
-                        }
-                        else if (rotation)
-                        {
-                            // ne marche pas live
-                            ResetMouseState();
-                            // code qui fait en sorte que les objets qui �taient dans la fen�tre disparaissent.
-                            physicsManager.RemoveAt( bo, parent);
-
-                            //enleve la selection de l'objet presentement
-                            selectedIndex = -1;
-                            SELECTEDOBJECT = -1;
-                            InspectorContent.SetActive(false);
-                            SELECTEDOBJECTGAMEOBJECT = null;
-                        }
+                       
+                        if (bo.transform.parent != null) parent = bo.transform.parent.gameObject;
+                       
+                        //           else if (rotation)
+                        //           {
+                        // ne marche pas live
+                        //             ResetMouseState();
+                        // code qui fait en sorte que les objets qui �taient dans la fen�tre disparaissent.
+                        //             physicsManager.RemoveAt(bo, parent);
+                        // 
+                        //             //enleve la selection de l'objet presentement
+                        //             selectedIndex = -1;
+                        //            SELECTEDOBJECT = -1;
+                        //            InspectorContent.SetActive(false);
+                        //            SELECTEDOBJECTGAMEOBJECT = null;
+                        //        }
 
                         //If the parent object isn't a soft body, show the regular settings
                         if (parent == null || parent.GetComponent<SoftBody>() == null)
@@ -475,10 +564,21 @@ public class UiGameManager : MonoBehaviour
 
 
                             draggable = true;
-                            
+                            if (curseur)
+                            {
+                                jo = new GameObject();
+                                jo.AddComponent<GrabJoint>();
+                                GrabJoint joint = jo.GetComponent<GrabJoint>();
+
+                                joint.bo1 = bo.gameObject;
+                                joint.frequency = 1.0f;
+                                joint.dampingRatio = 0.7f;
+                                joint.jointMass = bo.GetCollider().GetMass() / 20;
+                                physicsManager.AddGrabJoint(jo);
+                            }
                         }
                         //If the parent object is a softbody
-                        else if(parent.GetComponent<SoftBody>() != null)
+                        else if (parent.GetComponent<SoftBody>() != null)
                         {
                             SetOffInspectorContent();
                             SetOnInspectorSoftContent();
@@ -499,13 +599,25 @@ public class UiGameManager : MonoBehaviour
                             SizeSlider.value = softBodyDJ[0].getFakeSize();
                             SoftisStaticToggle.isOn = softBodyBO[0].getIsStatic();
                             draggable = true;
+                            if (curseur && parent.GetComponent<SoftBody>() != null)
+                            {
+                                jo = new GameObject();
+                                jo.AddComponent<GrabJoint>();
+                                GrabJoint joint = jo.GetComponent<GrabJoint>();
 
+                                joint.bo1 = softBodyBO[0].gameObject;
+                                joint.frequency = 1.0f;
+                                joint.dampingRatio = 0.7f;
+                                joint.jointMass = bo.GetCollider().GetMass()/15;
+
+                                physicsManager.AddGrabJoint(jo);
+                            }
                         }
 
                     }
-                    
+
                 }
-                
+
             }
 
             else if (Input.GetMouseButtonUp(0))
@@ -513,14 +625,14 @@ public class UiGameManager : MonoBehaviour
                 physicsManager.ResetGrabJoint();
             }
         }
-        Vector3 mousePosition = Camera.main.ScreenToWorldPoint(Input.mousePosition);
-        bo = physicsManager.SelectSpecificObject(selectedIndex, prefabHolder, SELECTEDOBJECTGAMEOBJECT);
-        parent = null;
-        if (bo.transform.parent != null) parent = bo.transform.parent.gameObject;
-        if (draggable && pause && mousePosition.x > -28.25f && mousePosition.x < 28.25 && mousePosition.y > -20 && mousePosition.y < 20)
-        {
-            mousePosition = Camera.main.ScreenToWorldPoint(Input.mousePosition);
-            bo.gameObject.transform.position = new Vector3(mousePosition.x, mousePosition.y, 0);
+     //   Vector3 mousePosition = Camera.main.ScreenToWorldPoint(Input.mousePosition);
+   //     bo = physicsManager.SelectSpecificObject(selectedIndex, prefabHolder, SELECTEDOBJECTGAMEOBJECT);
+     //   parent = null;
+     //   if (bo.transform.parent != null) parent = bo.transform.parent.gameObject;
+      //  if (draggable && pause && mousePosition.x > -28.25f && mousePosition.x < 28.25 && mousePosition.y > -20 && mousePosition.y < 20)
+        //{
+        //    mousePosition = Camera.main.ScreenToWorldPoint(Input.mousePosition);
+        //    bo.gameObject.transform.position = new Vector3(mousePosition.x, mousePosition.y, 0);
             //if (parent.GetComponent<SoftBody>() != null)
             //{
 
@@ -530,11 +642,11 @@ public class UiGameManager : MonoBehaviour
                 
             //}
             
-        }
-        if (Input.GetMouseButton(1))
-        {
-            draggable = false;
-        }
+       // }
+      //  if (Input.GetMouseButton(1))
+      //  {
+       //     draggable = false;
+      //  }
 
 
     }
@@ -695,9 +807,23 @@ public class UiGameManager : MonoBehaviour
     {
         ResetMouseState();
         MOUSESTATE = 6;
+        currentShadowObject = prefabHolder.GetMeshCreatorPoint();
+        currentShadowObject.transform.SetParent(GamePanel.transform);
+    }
+    public void SetMouseState7()
+    {
+        ResetMouseState();
+        MOUSESTATE = 7;
         currentShadowObject = prefabHolder.GetSoftBody1();
 		currentShadowObject.transform.SetParent(GamePanel.transform);
 	}
+    public void SetMouseState8()
+    {
+        ResetMouseState();
+        MOUSESTATE = 8;
+        currentShadowObject = prefabHolder.GetSoftBody2();
+        currentShadowObject.transform.SetParent(GamePanel.transform);
+    }
     // bouton pause (5)
     public void PauseScene()
     {
@@ -894,12 +1020,12 @@ public class UiGameManager : MonoBehaviour
         float frequency = 1;
         switch (newMassSoft)
         {
-            case 1: individualmass = 3; frequency = 2.5f;  break;
+            case 1: individualmass = 4; frequency = 2.0f;  break;
             case 2: individualmass = 8; frequency = 3.0f; break; 
             case 3: individualmass = 14; frequency = 3.5f; break;
             case 4: individualmass = 20; frequency = 3.5f; break;
             case 5: individualmass = 26; frequency = 4.5f; break;
-            default: individualmass = 2; frequency = 2.5f; break;
+            default: individualmass = 4; frequency = 2.5f; break;
         }
         for (int i = 0; i < softBodyBO.Length; i++)
         {

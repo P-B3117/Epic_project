@@ -37,7 +37,7 @@ public class SoftBody : MonoBehaviour
             if (newTriangles[(i * 3 + 2)] == 0) { newTriangles[(i * 3 + 2)] = points.Count - 1; }
 
         }
-
+       
         mesh.triangles = newTriangles;
 
 

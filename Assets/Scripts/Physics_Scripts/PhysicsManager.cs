@@ -511,6 +511,13 @@ public class PhysicsManager : MonoBehaviour
 		gb.Initialize();
 		physicsGrabJoints.Add(gb);
 	}
+	public void AddDistanceJoints(GameObject jo)
+	{
+		DistanceJoints gb = jo.GetComponent<DistanceJoints>();
+		gb.Initialize();
+		physicsJoints.Add(gb);
+		
+	}
 	public void ResetGrabJoint()
 	{
 		for (int i = physicsGrabJoints.Count - 1; i >= 0; i--)

@@ -10,6 +10,7 @@ public class GrabJoint : MonoBehaviour
     [SerializeField]
     public float frequency;
     public float dampingRatio;
+    public float jointMass;
     //private Vector3 localAnchorA;
     //private Vector3 localAnchorB;
     private Transform bodyA;
@@ -23,7 +24,7 @@ public class GrabJoint : MonoBehaviour
     private Vector3 initialAxis;
     private BasicPhysicObject bpA;
     private MeshColliderScript mcA;
-    private float jointMass;
+    
     private float invMassA;
     private float invInertiaA;
 
@@ -37,8 +38,12 @@ public class GrabJoint : MonoBehaviour
         bpA = bo1.GetComponent<BasicPhysicObject>();
         mcA = bo1.GetComponent<MeshColliderScript>();
         invMassA = 1.0f / mcA.GetMass();
+        GameObject parent = null;
+        if (bo1.transform.parent != null) parent = bo1.transform.parent.gameObject;
+        
+        if(parent != null && parent.GetComponent<SoftBody>() != null) invMassA = invMassA*6;
         invInertiaA = 1.0f / mcA.GetInertia();
-        jointMass = mcA.GetMass() / 8;
+       
         lr = this.gameObject.AddComponent<LineRenderer>();
         lr.SetWidth(0.2f, 0.2f);
         prevCursorPos = Camera.main.ScreenToWorldPoint(Input.mousePosition);
@@ -68,8 +73,8 @@ public class GrabJoint : MonoBehaviour
         k11 += gamma;
         k22 += gamma;
 
-        Vector2 m1 = new Vector3(k11, -k21);
-        Vector2 m2 = new Vector3(-k12, k22);
+        Vector2 m1 = new Vector3(k11,k21);
+        Vector2 m2 = new Vector3(k12, k22);
         //inverse
         float det = 1 / (k11 * k22 - k12 * k21);
         m1 = m1 * det;
@@ -82,7 +87,7 @@ public class GrabJoint : MonoBehaviour
         Vector3 v1 = bpA.getVelocity();
         float w1 = bpA.getAngularVelocity();
 
-        Vector2 jv = v1 + Quaternion.AngleAxis(w1, Vector3.forward) * d;
+        Vector2 jv = v1 + d;
         Vector2 lambda = new Vector2(-(jv.x + gamma + bias.x), -(jv.y + gamma + bias.y));
 
         Vector2 impulse0 = new Vector2(lambda.x * m1.x + lambda.y * m2.x, lambda.x * m1.y + lambda.y * m2.y);
