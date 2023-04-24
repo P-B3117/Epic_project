@@ -90,13 +90,7 @@ public class UiGameManager : MonoBehaviour
     private BasicPhysicObject bo;
     private GameObject parent;
     private int counter = 0;
-<<<<<<< Updated upstream
-    bool jmState = false;
-    bool cursorState = false;
     DistanceJoints joint;
-=======
-
->>>>>>> Stashed changes
 
 
     void Start()
@@ -776,7 +770,6 @@ public class UiGameManager : MonoBehaviour
     // bouton SingleDelete (2)
     public void SingleDelete()
     {
-        Debug.Log("gnagnagna");
         ResetMouseState();
 
         if (jmState) { JointManager(); }
@@ -788,7 +781,6 @@ public class UiGameManager : MonoBehaviour
             Color normalColor = GameObject.Find("Canvas/ToolPanel/BoutonSingleDelete").GetComponent<Button>().colors.normalColor;
             GameObject.Find("Canvas/ToolPanel/BoutonSingleDelete").GetComponent<Image>().color = normalColor;
             singleDelete = !singleDelete;
-            Debug.Log("unclicked singleDelete");
         }
 
         else if (!curseur)
@@ -796,7 +788,6 @@ public class UiGameManager : MonoBehaviour
             Color pressedColor = GameObject.Find("Canvas/ToolPanel/BoutonSingleDelete").GetComponent<Button>().colors.pressedColor;
             GameObject.Find("Canvas/ToolPanel/BoutonSingleDelete").GetComponent<Image>().color = pressedColor;
             singleDelete = !singleDelete;
-            Debug.Log("clicked singleDelete");
             // faire en sorte qu'on peut tourner des objets ici => rendu single delete
         }
 
@@ -1232,7 +1223,6 @@ public class UiGameManager : MonoBehaviour
         }
 
     }
-<<<<<<< Updated upstream
 
     public void InspectorSelectedJoint(System.Single NewJoint) 
     {
@@ -1244,6 +1234,3 @@ public class UiGameManager : MonoBehaviour
         
     }
 }
-=======
-}
->>>>>>> Stashed changes
