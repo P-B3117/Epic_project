@@ -28,9 +28,6 @@ public class DistanceJoints : MonoBehaviour
     public float fakemass;
    public float fakeSoftness;
    public  float fakeSize;
-
-    public GameObject point1;
-    public GameObject point2;
     private Vector3 d;
 
     private float m;
@@ -51,8 +48,8 @@ public class DistanceJoints : MonoBehaviour
     private float invInertiaB;
     private float invInertiaSum;
     private float invMassSum;
-    private LineRenderer lr;
-  
+    public LineRenderer lr;
+    
     public void Initialize() 
     {
         // Get references to the BasicPhysicObject and MeshColliderScript components for both bodies
@@ -66,12 +63,12 @@ public class DistanceJoints : MonoBehaviour
         invInertiaB = 1.0f / mcB.GetInertia();
         invInertiaSum = invInertiaA + invInertiaB;
         invMassSum = invMassA + invMassB;
-
-        fakemass = 1;
+      
+            fakemass = 1;
         fakeSoftness = 0.0f;
         fakeSize = 1;
         lr = this.gameObject.AddComponent<LineRenderer>();
-        lr.SetWidth(0.2f, 0.2f);
+        lr.SetWidth(0.3f, 0.3f);
     }
     public void UpdateJointState(float timeStep)
     {
@@ -85,10 +82,8 @@ public class DistanceJoints : MonoBehaviour
         Vector3 rb = (bodyB.rotation) * offsetB;
         // Compute the vector between the two anchor points
         Vector3 pa = ra + anchorA;
-        Vector3 pb = rb + anchorB;
-
-        if (point1 != null) point1.transform.position = anchorA;
-        if (point2 != null) point2.transform.position = anchorB;
+        Vector3 pb = rb + anchorB;   
+        
         Vector3 d = pa - pb;
 
         // Compute the current length 

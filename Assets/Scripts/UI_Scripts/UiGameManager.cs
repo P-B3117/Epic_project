@@ -36,7 +36,7 @@ public class UiGameManager : MonoBehaviour
     public PhysicsManager physicsManager;
     public GameObject gearImage;
     public GameObject jmButton;
-
+    private float jointIndex;
     // Start is called before the first frame update
 
 
@@ -46,6 +46,7 @@ public class UiGameManager : MonoBehaviour
     List<GameObject> meshCreatorPoints;
     List<GameObject> JointCreatorPoints;
     List<GameObject> JointReference;
+    List<DistanceJoints> physicsJoints;
     [Header("Reference for the slider")]
     public LineRenderer meshCreatorLineRenderer;
     public LineRenderer JointCreatorLineRenderer;
@@ -80,6 +81,11 @@ public class UiGameManager : MonoBehaviour
     public GameObject FrequencySlider;
     public GameObject SelectAllToggle;
     public GameObject DeleteButton;
+    public TextMeshProUGUI SelectedJointText;
+    public TextMeshProUGUI DistanceText;
+    public TextMeshProUGUI DampingText;
+    public TextMeshProUGUI FrequencyText;
+    
     private bool draggable = false;
     private int selectedIndex;
     private BasicPhysicObject bo;
@@ -87,7 +93,7 @@ public class UiGameManager : MonoBehaviour
     private int counter = 0;
     bool jmState = false;
     bool cursorState = false;
-
+    DistanceJoints joint;
 
 
     void Start()
@@ -109,6 +115,8 @@ public class UiGameManager : MonoBehaviour
         meshCreatorPoints = new List<GameObject>();
         JointCreatorPoints = new List<GameObject>();
         JointReference = new List<GameObject>();
+        physicsJoints = new List<DistanceJoints>();
+        physicsJoints = physicsManager.Joints();
     }
 
     void Update()
@@ -398,13 +406,11 @@ public class UiGameManager : MonoBehaviour
                 jo = new GameObject();
                 jo.AddComponent<DistanceJoints>();
                 DistanceJoints joint = jo.GetComponent<DistanceJoints>();
-
+                
                 joint.bo1 = JointReference[0];
                 joint.bo2 = JointReference[1];
                 joint.frequency = 1.0f;
                 joint.dampingRatio = 0.5f;
-                joint.point1 = JointCreatorPoints[0];
-                joint.point2 = JointCreatorPoints[1];
                 joint.length = (JointReference[1].transform.position - JointReference[0].transform.position).magnitude;
                 physicsManager.AddDistanceJoints(jo);
 
@@ -412,6 +418,7 @@ public class UiGameManager : MonoBehaviour
                 JointReference.Remove(JointReference[0]);
                 JointCreatorLineRenderer.SetPosition(0, Vector3.zero);
                 JointCreatorLineRenderer.SetPosition(1, Vector3.zero);
+
                 counter = 0;
                 ResetMouseState();
             }
@@ -871,7 +878,7 @@ public class UiGameManager : MonoBehaviour
     {
         ResetMouseState();
         MOUSESTATE = 6;
-        currentShadowObject = prefabHolder.GetMeshCreatorPoint();
+        currentShadowObject = prefabHolder.GetMeshCreatorPoint(); 
         currentShadowObject.transform.SetParent(GamePanel.transform);
     }
     public void SetMouseState7()
@@ -977,9 +984,11 @@ public class UiGameManager : MonoBehaviour
 
         if (!jmState)
         {
+            physicsJoints = physicsManager.Joints();
             SetOnInspectorJointContent();
             jmButton.GetComponent<Image>().color = jmButton.GetComponent<Button>().colors.pressedColor;
             jmState = true;
+
         }
 
         else
@@ -1208,6 +1217,13 @@ public class UiGameManager : MonoBehaviour
 
     }
 
+    public void InspectorSelectedJoint(System.Single NewJoint) 
+    {
+       
 
-
+    }
+    public void InspectorChangeDistance(System.Single NewDistance)
+    {
+        
+    }
 }

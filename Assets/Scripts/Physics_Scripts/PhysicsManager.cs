@@ -30,7 +30,7 @@ public class PhysicsManager : MonoBehaviour
 
 	public List<MeshColliderScript> meshColliders;
 	List<BasicPhysicObject> physicObjects;
-	List<DistanceJoints> physicsJoints;
+	public List<DistanceJoints> physicsJoints;
 	List<GrabJoint> physicsGrabJoints;
 
 	public void Start()
@@ -518,6 +518,12 @@ public class PhysicsManager : MonoBehaviour
 		physicsJoints.Add(gb);
 		
 	}
+	public List<DistanceJoints> Joints()
+    {
+		if(physicsJoints == null) { return null; }
+		else return physicsJoints;
+		
+    }
 	public void ResetGrabJoint()
 	{
 		for (int i = physicsGrabJoints.Count - 1; i >= 0; i--)
