@@ -55,8 +55,7 @@ MonoBehaviour:
   fakemass: 0
   fakeSoftness: 0
   fakeSize: 0
-  point1: {fileID: 0}
-  point2: {fileID: 0}
+  lr: {fileID: 0}
 --- !u!1 &7786418396729871499
 GameObject:
   m_ObjectHideFlags: 0
@@ -112,8 +111,7 @@ MonoBehaviour:
   fakemass: 0
   fakeSoftness: 0
   fakeSize: 0
-  point1: {fileID: 0}
-  point2: {fileID: 0}
+  lr: {fileID: 0}
 --- !u!1 &7786418396856114888
 GameObject:
   m_ObjectHideFlags: 0
@@ -169,8 +167,7 @@ MonoBehaviour:
   fakemass: 0
   fakeSoftness: 0
   fakeSize: 0
-  point1: {fileID: 0}
-  point2: {fileID: 0}
+  lr: {fileID: 0}
 --- !u!1 &7786418397049532782
 GameObject:
   m_ObjectHideFlags: 0
@@ -226,8 +223,7 @@ MonoBehaviour:
   fakemass: 0
   fakeSoftness: 0
   fakeSize: 0
-  point1: {fileID: 0}
-  point2: {fileID: 0}
+  lr: {fileID: 0}
 --- !u!1 &7786418397102927319
 GameObject:
   m_ObjectHideFlags: 0
@@ -351,8 +347,7 @@ MonoBehaviour:
   fakemass: 0
   fakeSoftness: 0
   fakeSize: 0
-  point1: {fileID: 0}
-  point2: {fileID: 0}
+  lr: {fileID: 0}
 --- !u!1 &7786418397107708912
 GameObject:
   m_ObjectHideFlags: 0
@@ -544,8 +539,7 @@ MonoBehaviour:
   fakemass: 0
   fakeSoftness: 0
   fakeSize: 0
-  point1: {fileID: 0}
-  point2: {fileID: 0}
+  lr: {fileID: 0}
 --- !u!1 &7786418397313204772
 GameObject:
   m_ObjectHideFlags: 0
@@ -726,8 +720,7 @@ MonoBehaviour:
   fakemass: 0
   fakeSoftness: 0
   fakeSize: 0
-  point1: {fileID: 0}
-  point2: {fileID: 0}
+  lr: {fileID: 0}
 --- !u!1 &7786418397615626307
 GameObject:
   m_ObjectHideFlags: 0
@@ -919,8 +912,7 @@ MonoBehaviour:
   fakemass: 0
   fakeSoftness: 0
   fakeSize: 0
-  point1: {fileID: 0}
-  point2: {fileID: 0}
+  lr: {fileID: 0}
 --- !u!1 &7786418397729987698
 GameObject:
   m_ObjectHideFlags: 0
@@ -976,8 +968,7 @@ MonoBehaviour:
   fakemass: 0
   fakeSoftness: 0
   fakeSize: 0
-  point1: {fileID: 0}
-  point2: {fileID: 0}
+  lr: {fileID: 0}
 --- !u!1 &7786418398048380289
 GameObject:
   m_ObjectHideFlags: 0
@@ -1101,8 +1092,7 @@ MonoBehaviour:
   fakemass: 0
   fakeSoftness: 0
   fakeSize: 0
-  point1: {fileID: 0}
-  point2: {fileID: 0}
+  lr: {fileID: 0}
 --- !u!1 &7786418398053305294
 GameObject:
   m_ObjectHideFlags: 0
@@ -1158,8 +1148,7 @@ MonoBehaviour:
   fakemass: 0
   fakeSoftness: 0
   fakeSize: 0
-  point1: {fileID: 0}
-  point2: {fileID: 0}
+  lr: {fileID: 0}
 --- !u!1 &7786418398106104464
 GameObject:
   m_ObjectHideFlags: 0
@@ -1215,8 +1204,7 @@ MonoBehaviour:
   fakemass: 0
   fakeSoftness: 0
   fakeSize: 0
-  point1: {fileID: 0}
-  point2: {fileID: 0}
+  lr: {fileID: 0}
 --- !u!1 &7786418398148345337
 GameObject:
   m_ObjectHideFlags: 0

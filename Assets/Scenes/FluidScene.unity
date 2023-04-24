@@ -5470,7 +5470,7 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_Sprite: {fileID: 21300000, guid: 86af5e386ffe2094dac333847dc9f201, type: 3}
+  m_Sprite: {fileID: 21300000, guid: b5e187de52bb331469c29f5d41f6738a, type: 3}
   m_Type: 0
   m_PreserveAspect: 0
   m_FillCenter: 1
@@ -5599,6 +5599,7 @@ MonoBehaviour:
   middleTriangle: {fileID: 8493062347998074152, guid: 43c606fccab7e2341bd6d020edaa2e81, type: 3}
   bigSquare: {fileID: 1740621325950804957, guid: 8352f09228be0f0488953ed26e771459, type: 3}
   softBody1: {fileID: 7786418397313204772, guid: 4fa7c2ae0ce4df04dbce6eee34656569, type: 3}
+  softBody2: {fileID: 0}
   meshCreatorPoint: {fileID: 7476109825553098928, guid: f4570f05e2d270d41bb14d10465c4111, type: 3}
   waterAddSprite: {fileID: 6642790831416611938, guid: b23fe335c8795cc4ca8ef07887386793, type: 3}
   basicUnlitMaterial: {fileID: 2100000, guid: f8ea0197e3e47dd4aac55742c67427e4, type: 2}
@@ -6497,7 +6498,7 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_Sprite: {fileID: 21300000, guid: f6b5ab9b648c3c143bd81205178c8f6e, type: 3}
+  m_Sprite: {fileID: 21300000, guid: c375872e7f1355b4a91fcb600308357b, type: 3}
   m_Type: 0
   m_PreserveAspect: 0
   m_FillCenter: 1
