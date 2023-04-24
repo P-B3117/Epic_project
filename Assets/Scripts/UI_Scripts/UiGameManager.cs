@@ -34,7 +34,6 @@ public class UiGameManager : MonoBehaviour
     public TextMeshProUGUI SoundEffectVolumeText;
     public PrefabsHolder prefabHolder;
     public PhysicsManager physicsManager;
-    public GameObject gearImage;
     public GameObject jmButton;
     private float jointIndex;
     // Start is called before the first frame update
@@ -91,9 +90,13 @@ public class UiGameManager : MonoBehaviour
     private BasicPhysicObject bo;
     private GameObject parent;
     private int counter = 0;
+<<<<<<< Updated upstream
     bool jmState = false;
     bool cursorState = false;
     DistanceJoints joint;
+=======
+
+>>>>>>> Stashed changes
 
 
     void Start()
@@ -121,8 +124,6 @@ public class UiGameManager : MonoBehaviour
 
     void Update()
     {
-
-        gearImage.transform.Rotate(0, 0, 20*Time.deltaTime);
        
         //Universal inputs functionality
         if (Input.GetKeyDown(KeyCode.Escape))
@@ -436,8 +437,11 @@ public class UiGameManager : MonoBehaviour
 
                     
                     SELECTEDOBJECT = selectedIndex;
-                    if (selectedIndex == -1) SetOffInspectorContent();
-
+                    if (selectedIndex == -1)
+                    {
+                        SetOffInspectorContent();
+                        if (jmState) JointManager();
+                    }
                     bo = physicsManager.SelectSpecificObject(selectedIndex, prefabHolder, SELECTEDOBJECTGAMEOBJECT);
                     
                     if (bo != null)
@@ -564,7 +568,8 @@ public class UiGameManager : MonoBehaviour
                     if (selectedIndex == -1)
                     {
                         SetOffInspectorContent();
-                       // draggable = false;
+                        if (jmState) JointManager();
+                        // draggable = false;
                     }
                    
 
@@ -576,8 +581,8 @@ public class UiGameManager : MonoBehaviour
                         GameObject parent = null;
                        
                         if (bo.transform.parent != null) parent = bo.transform.parent.gameObject;
-                       
-                        //           else if (rotation)
+
+                        //           else if (singleDelete)
                         //           {
                         // ne marche pas live
                         //             ResetMouseState();
@@ -596,6 +601,7 @@ public class UiGameManager : MonoBehaviour
                         {
                             SetOnInspectorContent();
                             SetOffInspectorSoftContent();
+                            if (jmState) JointManager();
                             SELECTEDOBJECTGAMEOBJECT = bo.gameObject;
                             MeshColliderScript mc = bo.GetCollider();
                             MassText.text = mc.GetMass().ToString();
@@ -630,6 +636,7 @@ public class UiGameManager : MonoBehaviour
                         {
                             SetOffInspectorContent();
                             SetOnInspectorSoftContent();
+                            if (jmState) JointManager();
                             //Resets the materials for everyobject
                             physicsManager.SelectSpecificObject(-1, prefabHolder, SELECTEDOBJECTGAMEOBJECT);
                             SELECTEDOBJECTGAMEOBJECT = parent;
@@ -735,25 +742,24 @@ public class UiGameManager : MonoBehaviour
         SceneManager.LoadScene(1);
     }
 
-    private bool curseur = false, rotation = false, forces = false, twoX = false, threeX = false, pause = false;
+    private bool curseur = false, singleDelete = false, forces = false, twoX = false, threeX = false, pause = false, jmState = false;
 
     // bouton curseur (1)
     public void DeplacerObjets()
     {
         ResetMouseState();
-        if (cursorState == false) cursorState = true;
-        else cursorState = false;
 
-        if (jmState == true) { JointManager(); }
+        if (jmState) { JointManager(); }
+        if (singleDelete) { SingleDelete(); }
 
-        if (curseur && !rotation)
+        if (curseur && !singleDelete)
         {
             Color normalColor = GameObject.Find("Canvas/ToolPanel/BoutonCurseur").GetComponent<Button>().colors.normalColor;
             GameObject.Find("Canvas/ToolPanel/BoutonCurseur").GetComponent<Image>().color = normalColor;
             curseur = !curseur;
         }
 
-        else if (!rotation)
+        else if (!singleDelete)
         {
             Color pressedColor = GameObject.Find("Canvas/ToolPanel/BoutonCurseur").GetComponent<Button>().colors.pressedColor;
             GameObject boutonCurseur = GameObject.Find("Canvas/ToolPanel/BoutonCurseur");
@@ -767,25 +773,30 @@ public class UiGameManager : MonoBehaviour
         
     }
 
-    // bouton rotation (2)
-    public void TournerObjets()
+    // bouton SingleDelete (2)
+    public void SingleDelete()
     {
+        Debug.Log("gnagnagna");
         ResetMouseState();
 
-        if (jmState == true) { JointManager(); }
+        if (jmState) { JointManager(); }
+        if (curseur) { DeplacerObjets(); }
+
         // une fois qu'il se fait click, faire en sorte que le bouton reste "pes�" jusqu'� ce qu'il soit reclicked on
-        if (rotation && !curseur)
+        if (singleDelete && !curseur)
         {
             Color normalColor = GameObject.Find("Canvas/ToolPanel/BoutonSingleDelete").GetComponent<Button>().colors.normalColor;
             GameObject.Find("Canvas/ToolPanel/BoutonSingleDelete").GetComponent<Image>().color = normalColor;
-            rotation = !rotation;
+            singleDelete = !singleDelete;
+            Debug.Log("unclicked singleDelete");
         }
 
         else if (!curseur)
         {
             Color pressedColor = GameObject.Find("Canvas/ToolPanel/BoutonSingleDelete").GetComponent<Button>().colors.pressedColor;
             GameObject.Find("Canvas/ToolPanel/BoutonSingleDelete").GetComponent<Image>().color = pressedColor;
-            rotation = !rotation;
+            singleDelete = !singleDelete;
+            Debug.Log("clicked singleDelete");
             // faire en sorte qu'on peut tourner des objets ici => rendu single delete
         }
 
@@ -980,12 +991,15 @@ public class UiGameManager : MonoBehaviour
     public void JointManager()
     {
         ResetMouseState();
-        if (cursorState == true) { DeplacerObjets(); }
+        if (curseur) { DeplacerObjets(); }
+        if (singleDelete) { SingleDelete(); }
 
         if (!jmState)
         {
             physicsJoints = physicsManager.Joints();
             SetOnInspectorJointContent();
+            SetOffInspectorContent();
+            SetOffInspectorSoftContent();
             jmButton.GetComponent<Image>().color = jmButton.GetComponent<Button>().colors.pressedColor;
             jmState = true;
 
@@ -994,15 +1008,13 @@ public class UiGameManager : MonoBehaviour
         else
         {
             SetOffInspectorJointContent();
+            SELECTEDOBJECTGAMEOBJECT = null;
+            selectedIndex = -1;
             jmButton.GetComponent<Image>().color = jmButton.GetComponent<Button>().colors.normalColor;
             jmState = false;
         }
 
     }
-
-    public void SetOnInspectorJointContent() { InspectorJointContent.SetActive(true); }
-
-    public void SetOffInspectorJointContent() { InspectorJointContent.SetActive(false); }
 
     public void ShowSettingsPanel()
     {
@@ -1101,6 +1113,10 @@ public class UiGameManager : MonoBehaviour
     {
         InspectorContent.SetActive(false);
     }
+
+    public void SetOnInspectorJointContent() { InspectorJointContent.SetActive(true); }
+
+    public void SetOffInspectorJointContent() { InspectorJointContent.SetActive(false); }
 
     public void InspectorChangeMass(System.Single newMass)
     {
@@ -1216,6 +1232,7 @@ public class UiGameManager : MonoBehaviour
         }
 
     }
+<<<<<<< Updated upstream
 
     public void InspectorSelectedJoint(System.Single NewJoint) 
     {
@@ -1227,3 +1244,6 @@ public class UiGameManager : MonoBehaviour
         
     }
 }
+=======
+}
+>>>>>>> Stashed changes

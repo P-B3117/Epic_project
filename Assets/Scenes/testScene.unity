@@ -4081,7 +4081,6 @@ MonoBehaviour:
   SoundEffectVolumeText: {fileID: 1356353970}
   prefabHolder: {fileID: 1196685256}
   physicsManager: {fileID: 640414674}
-  gearImage: {fileID: 1367923037}
   jmButton: {fileID: 1059003230}
   meshCreatorLineRenderer: {fileID: 1204127249}
   JointCreatorLineRenderer: {fileID: 1204127249}
@@ -9247,7 +9246,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   m_Material: {fileID: 2100000, guid: 52a4bc7464086a34ba7024b5db971442, type: 2}
-  m_Color: {r: 1, g: 1, b: 1, a: 1}
+  m_Color: {r: 0, g: 1, b: 1, a: 1}
   m_RaycastTarget: 1
   m_RaycastPadding: {x: 0, y: 0, z: 0, w: 0}
   m_Maskable: 1
@@ -10325,7 +10324,7 @@ MonoBehaviour:
           m_FloatArgument: 0
           m_StringArgument: 
           m_BoolArgument: 0
-        m_CallState: 2
+        m_CallState: 1
 --- !u!114 &1059003233
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -11873,7 +11872,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   m_Navigation:
-    m_Mode: 3
+    m_Mode: 0
     m_WrapAround: 0
     m_SelectOnUp: {fileID: 0}
     m_SelectOnDown: {fileID: 0}
@@ -11903,7 +11902,19 @@ MonoBehaviour:
   m_TargetGraphic: {fileID: 1181551698}
   m_OnClick:
     m_PersistentCalls:
-      m_Calls: []
+      m_Calls:
+      - m_Target: {fileID: 454174834}
+        m_TargetAssemblyTypeName: UiGameManager, Assembly-CSharp
+        m_MethodName: AnimatorSelectedThanos
+        m_Mode: 2
+        m_Arguments:
+          m_ObjectArgument: {fileID: 1181551694}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.GameObject, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 0
 --- !u!114 &1181551698
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -16793,7 +16804,7 @@ MonoBehaviour:
       m_Calls:
       - m_Target: {fileID: 454174834}
         m_TargetAssemblyTypeName: UiGameManager, Assembly-CSharp
-        m_MethodName: TournerObjets
+        m_MethodName: SingleDelete
         m_Mode: 1
         m_Arguments:
           m_ObjectArgument: {fileID: 0}
