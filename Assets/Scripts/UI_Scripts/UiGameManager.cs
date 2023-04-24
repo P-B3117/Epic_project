@@ -1175,12 +1175,12 @@ public class UiGameManager : MonoBehaviour
         {
             switch (newMassSoft)
             {
-                case 1: individualmass = 4; frequency = 3.0f; Amass = 12; insideFreq = 8f; break;
-                case 2: individualmass = 8; frequency = 4.0f; Amass = 24; insideFreq = 9f; break;
-                case 3: individualmass = 14; frequency = 4f; Amass = 42; insideFreq = 9f; break;
-                case 4: individualmass = 20; frequency = 4f; Amass = 60; insideFreq = 9f; break;
-                case 5: individualmass = 26; frequency = 5f; Amass = 78; insideFreq = 10f; break;
-                default: individualmass = 4; frequency = 3f; Amass = 12; insideFreq = 10f; break;
+                case 1: individualmass = 4; frequency = 3.0f; Amass = 12; insideFreq = 4f; break;
+                case 2: individualmass = 8; frequency = 4.0f; Amass = 24; insideFreq = 4f; break;
+                case 3: individualmass = 14; frequency = 4f; Amass = 42; insideFreq = 5f; break;
+                case 4: individualmass = 20; frequency = 4f; Amass = 60; insideFreq = 5f; break;
+                case 5: individualmass = 26; frequency = 5f; Amass = 78; insideFreq = 5f; break;
+                default: individualmass = 4; frequency = 3f; Amass = 12; insideFreq = 4f; break;
 
             }
             for (int i = 0; i < softBodyBO.Length; i++)
