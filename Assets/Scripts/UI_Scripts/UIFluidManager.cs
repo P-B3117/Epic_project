@@ -138,11 +138,13 @@ public class UIFluidManager : MonoBehaviour
     {
         MOUSESTATE = 0;
         currentShadowObject = prefabHolder.GetWaterAddSprite();
+        CURSOR = false;
     }
     public void ResetMouseState() 
     {
         MOUSESTATE = -1;
         Destroy(currentShadowObject);
+        CURSOR = false;
     }
 
 
