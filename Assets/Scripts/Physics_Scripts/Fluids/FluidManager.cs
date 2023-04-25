@@ -14,10 +14,10 @@ public class FluidManager : MonoBehaviour
 	int gridSizeY = 40;
 
 	//Viscosity's linear dependence on the velocity
-	float SIGMA = 20.0f;
+	float SIGMA = 0.6f;
 
 	//Viscosity's quadratic dependence on the velocity
-	float BETA = 20.0f;
+	float BETA = 0.6f;
 
 
 	//Stiffness used in DoubleDensityRelaxation
@@ -58,17 +58,38 @@ public class FluidManager : MonoBehaviour
 		grid.AddParticle(particles[particles.Count - 1]);
 		
 	}
-	public void FluidPhysicsCalculations(float timeStep, Vector2 g)
+	public void FluidPhysicsCalculations(float timeStep, Vector2 g, bool isCursorClick, Vector3 mousePos)
 	{
 		
 		Vector3 gravity = -g * timeStep;
 
+		for (int i = 0; i < particles.Count; i++) 
+		{
+			//ApplyForces
+			particles[i].AddVelocity(gravity);
+			
+		}
+		if (isCursorClick) 
+		{
+			
+			Vector3 realMousePos = new Vector3(mousePos.x,mousePos.y, 0);
+			
+			for (int i = 0; i < particles.Count; i++) 
+			{
+
+				Vector3 diff = realMousePos - particles[i].GetPosition();
+				if(diff.magnitude < 8) 
+				{
+					particles[i].AddVelocity((9.8f * timeStep * diff.normalized));
+				}
+				
+			}
+		}
 		for (int i = 0; i < particles.Count; i++)
 		{
 			Particle p = particles[i];
 
-			//ApplyForces
-			p.AddVelocity(gravity);
+
 
 			//ApplyViscosity
 			List<int> neighbors = p.GetNeighbors();
@@ -76,32 +97,90 @@ public class FluidManager : MonoBehaviour
 			{
 				Particle n = particles[neighbors[j]];
 				Vector3 vPN = n.GetPosition() - p.GetPosition();
+				if (vPN.magnitude > radius || vPN.magnitude < 0.01f) { continue; }
 				float velInward = Vector3.Dot((p.GetVelocity() - n.GetVelocity()), vPN);
+
 				if (velInward > 0)
 				{
 					float length = vPN.magnitude;
+					if (length < 0.01f) { length = 0.01f; }
+					if (length > radius) { length = radius; }
 					velInward /= length;
+					if (velInward > 10) { velInward = 10; }
+					vPN.Normalize();
 					float q = length / radius;
 					Vector3 I = 0.5f * timeStep * (1 - q) * (SIGMA * velInward + BETA * velInward * velInward) * vPN;
-
 					p.AddVelocity(-I);
 				}
 			}
 
+		}
 
+		for (int i = 0; i < particles.Count; i++) 
+		{
+			Particle p = particles[i];
 			//UpdatePositions
 			p.SetPrevPosition(p.GetPosition());
 			p.AddPosition(p.GetVelocity() * timeStep);
+		}
+
+		//Update neighbors
+		for (int i = 0; i < particles.Count; i++)
+		{
+			Particle p = particles[i];
+			p.RefreshNeighbors();
+			List<int> possible = grid.PossibleNeighbors(p);
+			for (int j = 0; j < possible.Count; j++)
+			{
+
+				if ((p.GetPosition() - particles[possible[j]].GetPosition()).magnitude < radius)
+				{
+					p.AddNeighbor(possible[j]);
 
 
+				}
+			}
+
+		}
 
 
+		grid.ResetGrid();
+		//ResolveCollisions
+		for (int i = 0; i < particles.Count; i++)
+		{
+			Particle p = particles[i];
+			Vector3 position = p.GetPosition();
+			Vector3 newPos = position;
 
 
+			if (position.x <= gridPosition.x)
+			{
+				newPos.x = gridPosition.x;
+				p.SetPrevPosition(p.GetPrevPosition() + -Vector3.right * 0.03f);
+
+			}
+			else if (position.x >= gridDimension.x - 1)
+			{
+				newPos.x = gridDimension.x - 1;
+				p.SetPrevPosition(p.GetPrevPosition() + Vector3.right * 0.03f);
+			}
 
 
+			if (position.y <= gridPosition.y)
+			{
+				newPos.y = gridPosition.y;
+				p.SetPrevPosition(p.GetPrevPosition() + -Vector3.up * 0.03f);
+			}
+			else if (position.y >= gridDimension.y - 1)
+			{
+				newPos.y = gridDimension.y - 1;
+				p.SetPrevPosition(p.GetPrevPosition() + Vector3.up * 0.03f);
+			}
 
 
+			p.SetPosition(newPos);
+			//Update hashmap
+			grid.AddParticle(particles[i]);
 		}
 
 
@@ -129,17 +208,23 @@ public class FluidManager : MonoBehaviour
 			for (int j = 0; j < neighbors.Count; j++)
 			{
 				Particle neighbor = particles[neighbors[j]];
-				
+					
+					
+
 					float tempN = (part.GetPosition() - neighbor.GetPosition()).magnitude;
 					float q = 1.0f - (tempN / radius);
+					
 					Vector3 vPN = (part.GetPosition() - neighbor.GetPosition()).normalized;
 				
 					Vector3 D = (0.5f * timeStep * timeStep * (P * q + PNear * q * q)) * vPN;
-
 				
-					particles[neighbors[j]].AddPosition(D);
+			
+				 particles[neighbors[j]].AddPosition(D); 
+				
+					
 					delta -= D;
 				
+
 
 			}
 			part.AddPosition(delta);
@@ -151,66 +236,12 @@ public class FluidManager : MonoBehaviour
 
 
 
-		grid.ResetGrid();
-		//ResolveCollisions
-		for (int i = 0; i < particles.Count; i++)
-		{
-			Particle p = particles[i];
-			Vector3 position = p.GetPosition();
-			Vector3 newPos = position;
-
-
-			if (position.x <= gridPosition.x)
-			{
-				newPos.x = gridPosition.x;
-
-			}
-			else if (position.x >= gridDimension.x - 1)
-			{
-				newPos.x = gridDimension.x - 1;
-
-			}
-
-
-			if (position.y <= gridPosition.y)
-			{
-				newPos.y = gridPosition.y;
-
-			}
-			else if (position.y >= gridDimension.y - 1)
-			{
-				newPos.y = gridDimension.y - 1;
-
-			}
-
-
-			p.SetPosition(newPos);
-			//Update hashmap
-			grid.AddParticle(particles[i]);
-		}
+		
 
 
 
 
-
-		//Update neighbors
-		for (int i = 0; i < particles.Count; i++)
-		{
-			Particle p = particles[i];
-			p.RefreshNeighbors();
-			List<int> possible = grid.PossibleNeighbors(p);
-			for (int j = 0; j < possible.Count; j++)
-			{
-
-				if ((p.GetPosition() - particles[possible[j]].GetPosition()).magnitude < radius)
-				{
-					p.AddNeighbor(possible[j]);
-
-
-				}
-			}
-
-		}
+		
 
 
 
@@ -223,7 +254,13 @@ public class FluidManager : MonoBehaviour
 		{
 			//UpdateParticles
 			Particle p = particles[i];
-			p.SetVelocity((p.GetPosition() - p.GetPrevPosition()) / timeStep);
+			Vector3 newVel = (p.GetPosition() - p.GetPrevPosition()) / timeStep;
+			//if (newVel.magnitude > 100) 
+			//{
+			//	newVel = Vector3.zero;
+			//}
+			p.SetVelocity(newVel);
+			
 		}
 
 

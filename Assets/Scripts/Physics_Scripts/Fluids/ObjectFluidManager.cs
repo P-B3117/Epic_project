@@ -15,6 +15,8 @@ public class ObjectFluidManager : MonoBehaviour
 
 	public PrefabsHolder prefabHolder;
 
+
+	public UIFluidManager UIFluid;
 	public void Start()
 	{
 
@@ -55,7 +57,7 @@ public class ObjectFluidManager : MonoBehaviour
 	private void PhysicCalculations()
 	{
 
-		fluidManager.FluidPhysicsCalculations(stepLength, Gravity);
+		fluidManager.FluidPhysicsCalculations(stepLength, Gravity, UIFluid.IsCursorClick(), UIFluid.GetCursorPosition());
 
 	}
 

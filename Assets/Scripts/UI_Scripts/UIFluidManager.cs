@@ -37,7 +37,24 @@ public class UIFluidManager : MonoBehaviour
     private float addFluidTIMER = 0.1f;
     private GameObject currentShadowObject;
 
+    private bool CURSOR = false;
 
+    public bool IsCursorClick() 
+    {
+        if (CURSOR && Input.GetMouseButton(0))
+        {
+            return true;
+        }
+        else 
+        {
+            return false;
+        }
+    }
+    public Vector3 GetCursorPosition() 
+    {
+        Vector3 mousePos = Camera.main.ScreenToWorldPoint(Input.mousePosition);
+        return new Vector3(mousePos.x, mousePos.y, 0);
+    }
 
     void Start()
     {
@@ -141,31 +158,9 @@ public class UIFluidManager : MonoBehaviour
         SceneManager.LoadScene(1);
     }
 
-    private bool curseur = false, twoX = false, threeX = false;
+   private bool twoX = false, threeX = false;
     // bouton curseur (1)
-    public void DeplacerObjets()
-    {
-
-        ResetMouseState();
-        if (curseur)
-        {
-            Color normalColor = GameObject.Find("Canvas/ToolPanel/BoutonCurseur").GetComponent<Button>().colors.normalColor;
-            GameObject.Find("Canvas/ToolPanel/BoutonCurseur").GetComponent<Image>().color = normalColor;
-        }
-
-        else
-        {
-            Color pressedColor = GameObject.Find("Canvas/ToolPanel/BoutonCurseur").GetComponent<Button>().colors.pressedColor;
-            GameObject boutonCurseur = GameObject.Find("Canvas/ToolPanel/BoutonCurseur");
-            boutonCurseur.GetComponent<Image>().color = pressedColor;
-
-           
-
-        }
-        
-
-        curseur = !curseur;
-    }
+    
 
    
 
@@ -178,11 +173,21 @@ public class UIFluidManager : MonoBehaviour
 
 
 
-  
-
- 
 
 
+
+
+    public void FluidCursor() 
+    {
+        ResetMouseState();
+        CURSOR = !CURSOR;
+        if (CURSOR)
+            GameObject.Find("Canvas/ToolPanel/BoutonCurseur").GetComponent<Image>().color = Color.green;
+        else 
+        {
+            GameObject.Find("Canvas/ToolPanel/BoutonCurseur").GetComponent<Image>().color = Color.white;
+        }
+    }
     // bouton pause (5)
     public void PauseScene()
     {
@@ -210,24 +215,17 @@ public class UIFluidManager : MonoBehaviour
     {
 
         ResetMouseState();
-        // une fois qu'il se fait click, faire en sorte que le bouton reste "pesé" jusqu'à ce qu'il soit reclicked on
-        if (twoX && !threeX)
+        
+        Color normalColor = GameObject.Find("Canvas/ToolPanel/BoutonFF2").GetComponent<Button>().colors.normalColor;
+        GameObject.Find("Canvas/ToolPanel/BoutonFF2").GetComponent<Image>().color = Color.green;
+        ChangeTime("2");
+        twoX = true;
+        if (threeX) 
         {
-            Color normalColor = GameObject.Find("Canvas/ToolPanel/BoutonFF2").GetComponent<Button>().colors.normalColor;
-            GameObject.Find("Canvas/ToolPanel/BoutonFF2").GetComponent<Image>().color = normalColor;
-            ChangeTime("1");
-            twoX = !twoX;
+            threeX = false;
+            GameObject.Find("Canvas/ToolPanel/BoutonFF3").GetComponent<Image>().color = Color.white;
         }
 
-        else if (!threeX)
-        {
-            Color pressedColor = GameObject.Find("Canvas/ToolPanel/BoutonFF2").GetComponent<Button>().colors.pressedColor;
-            GameObject.Find("Canvas/ToolPanel/BoutonFF2").GetComponent<Image>().color = pressedColor;
-            // make time frames/calculations go twice as fast/second
-            ChangeTime("2");
-
-            twoX = !twoX;
-        }
 
     }
 
@@ -235,22 +233,14 @@ public class UIFluidManager : MonoBehaviour
     public void ThreeXFaster()
     {
         ResetMouseState();
-        // une fois qu'il se fait click, faire en sorte que le bouton reste "pesé" jusqu'à ce qu'il soit reclicked on
-        if (threeX && !twoX)
+        Color normalColor = GameObject.Find("Canvas/ToolPanel/BoutonFF3").GetComponent<Button>().colors.normalColor;
+        GameObject.Find("Canvas/ToolPanel/BoutonFF3").GetComponent<Image>().color = Color.green;
+        ChangeTime("3");
+        threeX = true;
+        if (twoX)
         {
-            Color normalColor = GameObject.Find("Canvas/ToolPanel/BoutonFF3").GetComponent<Button>().colors.normalColor;
-            GameObject.Find("Canvas/ToolPanel/BoutonFF3").GetComponent<Image>().color = normalColor;
-            ChangeTime("1");
-            threeX = !threeX;
-        }
-
-        else if (!twoX)
-        {
-            Color pressedColor = GameObject.Find("Canvas/ToolPanel/BoutonFF3").GetComponent<Button>().colors.pressedColor;
-            GameObject.Find("Canvas/ToolPanel/BoutonFF3").GetComponent<Image>().color = pressedColor;
-            // make time frames/calculations go three times as fast/second
-            ChangeTime("3");
-            threeX = !threeX;
+            twoX = false;
+            GameObject.Find("Canvas/ToolPanel/BoutonFF2").GetComponent<Image>().color = Color.white;
         }
 
     }

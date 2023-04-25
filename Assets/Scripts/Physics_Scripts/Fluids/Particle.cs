@@ -11,7 +11,7 @@ public struct intPosition
     public int x;
     public int y;
 }
-public class Particle
+public class Particle : MonoBehaviour
 {
     Vector3 oldPosition;
    
@@ -58,8 +58,10 @@ public class Particle
     }
     public void AddPosition(Vector3 addPos) 
     {
-
-        particle.transform.Translate(addPos);
+        if (addPos.x == Mathf.Infinity || addPos.x == -Mathf.Infinity || addPos.y == Mathf.Infinity || addPos.y == -Mathf.Infinity || float.IsNaN(addPos.x) || float.IsNaN(addPos.y)) { /*Debug.Log(addPos);*/particle.transform.Translate(addPos); }
+        else { particle.transform.Translate(addPos); }
+        
+		
         
     }
 
