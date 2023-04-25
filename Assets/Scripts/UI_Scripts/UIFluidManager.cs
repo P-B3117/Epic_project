@@ -139,12 +139,14 @@ public class UIFluidManager : MonoBehaviour
         MOUSESTATE = 0;
         currentShadowObject = prefabHolder.GetWaterAddSprite();
         CURSOR = false;
+        GameObject.Find("Canvas/ToolPanel/BoutonCurseur").GetComponent<Image>().color = Color.white;
     }
     public void ResetMouseState() 
     {
         MOUSESTATE = -1;
         Destroy(currentShadowObject);
         CURSOR = false;
+        GameObject.Find("Canvas/ToolPanel/BoutonCurseur").GetComponent<Image>().color = Color.white;
     }
 
 
