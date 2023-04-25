@@ -165,6 +165,8 @@ public class DistanceJoints : MonoBehaviour
         Vector3[] LinePoints = new Vector3[2];
         LinePoints[0] = anchorA;
         LinePoints[1] = anchorB;
+        LinePoints[0].z = -8;
+        LinePoints[1].z = -8;
         lr.SetPositions(LinePoints);
     }
     private void ComputeBetaAndGamma(float timeStep)

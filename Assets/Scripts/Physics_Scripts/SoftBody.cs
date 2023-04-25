@@ -8,8 +8,8 @@ public class SoftBody : MonoBehaviour
     public List<GameObject> points;
     public Material material;
     public float size = 1.0f;
-	///Wind up clockwise!!!!!!
-	
+    ///Wind up clockwise!!!!!!
+    public int type = 0;
     public void Initialise()
     {
         if(GetComponent<MeshRenderer>() == null) { this.gameObject.AddComponent<MeshRenderer>(); }
@@ -20,7 +20,8 @@ public class SoftBody : MonoBehaviour
         GetComponent<MeshFilter>().mesh = mesh;
         GetComponent<MeshRenderer>().material = material;
         Vector3[] modelPoints = new Vector3[points.Count];
-        
+        if (points.Count > 5) type = 1;
+        if (points.Count > 11) type = 2;
         for (int i = 0; i < points.Count; i++)
         {
             modelPoints[i] = points[i].transform.position;

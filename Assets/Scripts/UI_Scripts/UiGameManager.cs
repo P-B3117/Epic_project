@@ -1147,24 +1147,57 @@ public class UiGameManager : MonoBehaviour
         BasicPhysicObject[] softBodyBO = SELECTEDOBJECTGAMEOBJECT.GetComponentsInChildren<BasicPhysicObject>();
         MassSoftText.text = newMassSoft.ToString();
         float individualmass = 1;
+        float Amass = 1;
+        float insideFreq = 1;
         float frequency = 1;
-        switch (newMassSoft)
+        if (SELECTEDOBJECTGAMEOBJECT.GetComponent<SoftBody>().type == 1)
         {
-            case 1: individualmass = 4; frequency = 2.0f;  break;
-            case 2: individualmass = 8; frequency = 3.0f; break; 
-            case 3: individualmass = 14; frequency = 3.5f; break;
-            case 4: individualmass = 20; frequency = 3.5f; break;
-            case 5: individualmass = 26; frequency = 4.5f; break;
-            default: individualmass = 4; frequency = 2.5f; break;
+            switch (newMassSoft)
+            {
+                case 1: individualmass = 4; frequency = 2.0f; break;
+                case 2: individualmass = 8; frequency = 3.0f; break;
+                case 3: individualmass = 14; frequency = 3.5f; break;
+                case 4: individualmass = 20; frequency = 3.5f; break;
+                case 5: individualmass = 26; frequency = 4.5f; break;
+                default: individualmass = 4; frequency = 2.5f; break;
+            }
+            for (int i = 0; i < softBodyBO.Length; i++)
+            {
+                softBodyBO[i].GetCollider().SetMass(individualmass);
+            }
+            for (int i = 0; i < softBodyDJ.Length; i++)
+            {
+                softBodyDJ[i].setFakeMass(newMassSoft);
+                softBodyDJ[i].setfrequency(frequency);
+            }
         }
-        for (int i = 0; i < softBodyBO.Length; i++)
+        else if (SELECTEDOBJECTGAMEOBJECT.GetComponent<SoftBody>().type == 2)
         {
-            softBodyBO[i].GetCollider().SetMass(individualmass);
-        }
-        for (int i = 0; i < softBodyDJ.Length; i++)
-        {
-            softBodyDJ[i].setFakeMass(newMassSoft);
-            softBodyDJ[i].setfrequency(frequency);
+            switch (newMassSoft)
+            {
+                case 1: individualmass = 4; frequency = 3.0f; Amass = 12; insideFreq = 4f; break;
+                case 2: individualmass = 8; frequency = 4.0f; Amass = 24; insideFreq = 4f; break;
+                case 3: individualmass = 14; frequency = 4f; Amass = 42; insideFreq = 5f; break;
+                case 4: individualmass = 20; frequency = 4f; Amass = 60; insideFreq = 5f; break;
+                case 5: individualmass = 26; frequency = 5f; Amass = 78; insideFreq = 5f; break;
+                default: individualmass = 4; frequency = 3f; Amass = 12; insideFreq = 4f; break;
+
+            }
+            for (int i = 0; i < softBodyBO.Length; i++)
+            {
+                softBodyBO[i].GetCollider().SetMass(individualmass);
+            }
+            for (int i = 0; i < 6; i++)
+            {
+                softBodyDJ[i].setFakeMass(newMassSoft);
+                softBodyDJ[i].setfrequency(insideFreq);
+            }
+            for (int i = 6; i < softBodyDJ.Length; i++)
+            {
+                softBodyDJ[i].setFakeMass(newMassSoft);
+                softBodyDJ[i].setfrequency(frequency);
+            }
+            softBodyBO[0].GetCollider().SetMass(Amass);
         }
         
     }
@@ -1173,17 +1206,34 @@ public class UiGameManager : MonoBehaviour
         DistanceJoints[] softBodyDJ = SELECTEDOBJECTGAMEOBJECT.GetComponentsInChildren<DistanceJoints>();
         BasicPhysicObject[] softBodyBO = SELECTEDOBJECTGAMEOBJECT.GetComponentsInChildren<BasicPhysicObject>();
         SoftnessText.text = newSoftness.ToString();
-        for (int i = 0; i < 6; i++)
-        {
-            softBodyDJ[i].setDampingRatio(newSoftness + 0.1f);
-            softBodyDJ[i].setFakeSoftness(newSoftness);
-        }
-        for (int i = 6; i < softBodyDJ.Length; i++)
-        {
-            softBodyDJ[i].setDampingRatio(newSoftness);
-            softBodyDJ[i].setFakeSoftness(newSoftness);
-        }
 
+        if (SELECTEDOBJECTGAMEOBJECT.GetComponent<SoftBody>().type == 1)
+        {
+            for (int i = 0; i < 6; i++)
+            {
+                softBodyDJ[i].setDampingRatio(newSoftness + 0.1f);
+                softBodyDJ[i].setFakeSoftness(newSoftness);
+            }
+            for (int i = 6; i < softBodyDJ.Length; i++)
+            {
+                softBodyDJ[i].setDampingRatio(newSoftness);
+                softBodyDJ[i].setFakeSoftness(newSoftness);
+            }
+        }
+        else if (SELECTEDOBJECTGAMEOBJECT.GetComponent<SoftBody>().type == 2)
+        {
+
+            for (int i = 0; i < 12; i++)
+            {
+                softBodyDJ[i].setDampingRatio(newSoftness + 0.2f);
+                softBodyDJ[i].setFakeSoftness(newSoftness);
+            }
+            for (int i = 6; i < softBodyDJ.Length; i++)
+            {
+                softBodyDJ[i].setDampingRatio(newSoftness + 0.1f);
+                softBodyDJ[i].setFakeSoftness(newSoftness);
+            }
+        }
     }
     public void InspectorChangeSize(System.Single newSize)
     {
@@ -1194,24 +1244,25 @@ public class UiGameManager : MonoBehaviour
         float radius = 0;
         float length = 0;
         float softsize = 0;
-        switch (newSize)
+        if (SELECTEDOBJECTGAMEOBJECT.GetComponent<SoftBody>().type == 1)
         {
-            case 1: length = 4.0f; radius = 1.0f; softsize = 1.2f; break;
-            case 2: length = 6.0f; radius = 2.5f; softsize = 2.7f; break;
-            case 3: length = 9.0f; radius = 3.5f; softsize = 3.7f; break;
+            switch (newSize)
+            {
+                case 1: length = 4.0f; radius = 1.0f; softsize = 1.2f; break;
+                case 2: length = 6.0f; radius = 2.5f; softsize = 2.7f; break;
+                case 3: length = 9.0f; radius = 3.5f; softsize = 3.7f; break;
+            }
+            for (int i = 0; i < softBodyDJ.Length; i++)
+            {
+                softBodyDJ[i].setFakeSize(newSize);
+                softBodyDJ[i].setlength(length);
+            }
+            for (int i = 0; i < softBodyBO.Length; i++)
+            {
+                softBodyBO[i].GetCollider().setRadius(radius);
+            }
+            SELECTEDOBJECTGAMEOBJECT.GetComponent<SoftBody>().size = softsize;
         }
-        for (int i = 0; i < softBodyDJ.Length; i++)
-        {
-            softBodyDJ[i].setFakeSize(newSize);
-            softBodyDJ[i].setlength(length);
-
-        }
-        for (int i = 0; i < softBodyBO.Length; i++)
-        {
-            softBodyBO[i].GetCollider().setRadius(radius);
-        }
-        SELECTEDOBJECTGAMEOBJECT.GetComponent<SoftBody>().size = softsize;
-
     }
     public void InspectorChangeStaticSoft(System.Boolean newStaticSoft)
     {

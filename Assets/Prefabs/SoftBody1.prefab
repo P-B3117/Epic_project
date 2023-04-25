@@ -291,7 +291,7 @@ MonoBehaviour:
   material: {fileID: 2100000, guid: f8ea0197e3e47dd4aac55742c67427e4, type: 2}
   shadowMaterial: {fileID: 2100000, guid: e6ed93ae35f67b14ca1c28b98e60e05b, type: 2}
   isCircle: 1
-  rayonOfCircle: 1
+  rayonOfCircle: 1.2
 --- !u!1 &7786418397103808977
 GameObject:
   m_ObjectHideFlags: 0
@@ -415,7 +415,7 @@ MonoBehaviour:
   material: {fileID: 2100000, guid: f8ea0197e3e47dd4aac55742c67427e4, type: 2}
   shadowMaterial: {fileID: 2100000, guid: e6ed93ae35f67b14ca1c28b98e60e05b, type: 2}
   isCircle: 1
-  rayonOfCircle: 1
+  rayonOfCircle: 1.2
 --- !u!1 &7786418397159843181
 GameObject:
   m_ObjectHideFlags: 0
@@ -483,7 +483,7 @@ MonoBehaviour:
   material: {fileID: 2100000, guid: f8ea0197e3e47dd4aac55742c67427e4, type: 2}
   shadowMaterial: {fileID: 2100000, guid: e6ed93ae35f67b14ca1c28b98e60e05b, type: 2}
   isCircle: 1
-  rayonOfCircle: 1
+  rayonOfCircle: 1.2
 --- !u!1 &7786418397262878532
 GameObject:
   m_ObjectHideFlags: 0
@@ -788,7 +788,7 @@ MonoBehaviour:
   material: {fileID: 2100000, guid: f8ea0197e3e47dd4aac55742c67427e4, type: 2}
   shadowMaterial: {fileID: 2100000, guid: e6ed93ae35f67b14ca1c28b98e60e05b, type: 2}
   isCircle: 1
-  rayonOfCircle: 1
+  rayonOfCircle: 1.2
 --- !u!1 &7786418397691633698
 GameObject:
   m_ObjectHideFlags: 0
@@ -856,7 +856,7 @@ MonoBehaviour:
   material: {fileID: 2100000, guid: f8ea0197e3e47dd4aac55742c67427e4, type: 2}
   shadowMaterial: {fileID: 2100000, guid: e6ed93ae35f67b14ca1c28b98e60e05b, type: 2}
   isCircle: 1
-  rayonOfCircle: 1
+  rayonOfCircle: 1.2
 --- !u!1 &7786418397726066782
 GameObject:
   m_ObjectHideFlags: 0
@@ -1272,4 +1272,4 @@ MonoBehaviour:
   material: {fileID: 2100000, guid: f8ea0197e3e47dd4aac55742c67427e4, type: 2}
   shadowMaterial: {fileID: 2100000, guid: e6ed93ae35f67b14ca1c28b98e60e05b, type: 2}
   isCircle: 1
-  rayonOfCircle: 1
+  rayonOfCircle: 1.2
