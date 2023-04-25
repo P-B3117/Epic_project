@@ -89,8 +89,9 @@ public class UiGameManager : MonoBehaviour
     private int selectedIndex;
     private BasicPhysicObject bo;
     private GameObject parent;
-    private int counter = 0;
+    private int counter = 0, counter2 = 0;
     DistanceJoints joint;
+    private Vector3 lastPosition;
 
 
     void Start()
@@ -573,22 +574,22 @@ public class UiGameManager : MonoBehaviour
                     {
 
                         GameObject parent = null;
-                       
+
                         if (bo.transform.parent != null) parent = bo.transform.parent.gameObject;
 
-                        //           else if (singleDelete)
-                        //           {
-                        // ne marche pas live
-                        //             ResetMouseState();
-                        // code qui fait en sorte que les objets qui �taient dans la fen�tre disparaissent.
-                        //             physicsManager.RemoveAt(bo, parent);
-                        // 
-                        //             //enleve la selection de l'objet presentement
-                        //             selectedIndex = -1;
-                        //            SELECTEDOBJECT = -1;
-                        //            InspectorContent.SetActive(false);
-                        //            SELECTEDOBJECTGAMEOBJECT = null;
-                        //        }
+                        if (singleDelete)
+                        {
+                            //ne marche pas live
+                            ResetMouseState();
+                            //code qui fait en sorte que les objets qui �taient dans la fen�tre disparaissent.
+                            physicsManager.RemoveAt(bo, parent);
+
+                            //enleve la selection de l'objet presentement
+                            selectedIndex = -1;
+                            SELECTEDOBJECT = -1;
+                            InspectorContent.SetActive(false);
+                            SELECTEDOBJECTGAMEOBJECT = null;
+                        }
 
                         //If the parent object isn't a soft body, show the regular settings
                         if (parent == null || parent.GetComponent<SoftBody>() == null)
@@ -674,28 +675,34 @@ public class UiGameManager : MonoBehaviour
                 physicsManager.ResetGrabJoint();
             }
         }
-     //   Vector3 mousePosition = Camera.main.ScreenToWorldPoint(Input.mousePosition);
-   //     bo = physicsManager.SelectSpecificObject(selectedIndex, prefabHolder, SELECTEDOBJECTGAMEOBJECT);
-     //   parent = null;
-     //   if (bo.transform.parent != null) parent = bo.transform.parent.gameObject;
-      //  if (draggable && pause && mousePosition.x > -28.25f && mousePosition.x < 28.25 && mousePosition.y > -20 && mousePosition.y < 20)
-        //{
-        //    mousePosition = Camera.main.ScreenToWorldPoint(Input.mousePosition);
-        //    bo.gameObject.transform.position = new Vector3(mousePosition.x, mousePosition.y, 0);
-            //if (parent.GetComponent<SoftBody>() != null)
-            //{
+        Vector3 mousePosition = Camera.main.ScreenToWorldPoint(Input.mousePosition);
+        bo = physicsManager.SelectSpecificObject(selectedIndex, prefabHolder, SELECTEDOBJECTGAMEOBJECT);
+        parent = null;
 
-            //}
-            //else
-            //{
-                
-            //}
-            
-       // }
-      //  if (Input.GetMouseButton(1))
-      //  {
-       //     draggable = false;
-      //  }
+        if (!singleDelete && bo != null && bo.transform.parent != null) parent = bo.transform.parent.gameObject;
+        if (draggable && pause && mousePosition.x > -28.25f && mousePosition.x < 28.25 && mousePosition.y > -20 && mousePosition.y < 20 && bo != null)
+        {
+            mousePosition = Camera.main.ScreenToWorldPoint(Input.mousePosition);
+            if (lastPosition == Vector3.zero) lastPosition = mousePosition;
+            if (parent != null && parent.GetComponent<SoftBody>() != null)
+            {
+                Vector3 deltaPosition = mousePosition - lastPosition;
+                parent.GetComponent<SoftBody>().Move(deltaPosition);
+            }
+            else
+            {
+                bo.gameObject.transform.position = new Vector3(mousePosition.x, mousePosition.y, 0);
+            }
+            lastPosition = new Vector3(mousePosition.x, mousePosition.y, mousePosition.z);
+        }
+        if (Input.GetMouseButton(1))
+        {
+            draggable = false;
+            selectedIndex = -1;
+            SetOffInspectorContent();
+            SetOffInspectorSoftContent();
+            lastPosition = Vector3.zero;
+        }
 
 
     }

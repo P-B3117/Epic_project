@@ -102,6 +102,14 @@ public class SoftBody : MonoBehaviour
         mesh.triangles = newTriangles;
     }
 
+    public void Move(Vector3 displacement)
+    {
+        for (int i = 0; i < points.Count; i++)
+        {
+            points[i].transform.position += displacement;
+            //Debug.Log(displacement);
+        }
+    }
     public void OnDestroy()
     {
         for (int i = points.Count-1; i >= 0 ; i--)
