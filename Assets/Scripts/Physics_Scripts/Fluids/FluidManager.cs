@@ -14,10 +14,10 @@ public class FluidManager : MonoBehaviour
 	int gridSizeY = 40;
 
 	//Viscosity's linear dependence on the velocity
-	float SIGMA = 0.6f;
+	float SIGMA = 1.0f;
 
 	//Viscosity's quadratic dependence on the velocity
-	float BETA = 0.6f;
+	float BETA = 1.0f;
 
 
 	//Stiffness used in DoubleDensityRelaxation
@@ -63,12 +63,7 @@ public class FluidManager : MonoBehaviour
 		
 		Vector3 gravity = -g * timeStep;
 
-		for (int i = 0; i < particles.Count; i++) 
-		{
-			//ApplyForces
-			particles[i].AddVelocity(gravity);
-			
-		}
+		
 		if (isCursorClick) 
 		{
 			
@@ -89,7 +84,7 @@ public class FluidManager : MonoBehaviour
 		{
 			Particle p = particles[i];
 
-
+			particles[i].AddVelocity(gravity);
 
 			//ApplyViscosity
 			List<int> neighbors = p.GetNeighbors();
@@ -208,18 +203,18 @@ public class FluidManager : MonoBehaviour
 			for (int j = 0; j < neighbors.Count; j++)
 			{
 				Particle neighbor = particles[neighbors[j]];
-					
-					
 
-					float tempN = (part.GetPosition() - neighbor.GetPosition()).magnitude;
+
+					Vector3 diff = part.GetPosition() - neighbor.GetPosition();
+					float tempN = (diff).magnitude;
 					float q = 1.0f - (tempN / radius);
 					
-					Vector3 vPN = (part.GetPosition() - neighbor.GetPosition()).normalized;
+					Vector3 vPN = (diff).normalized;
 				
 					Vector3 D = (0.5f * timeStep * timeStep * (P * q + PNear * q * q)) * vPN;
 				
 			
-				 particles[neighbors[j]].AddPosition(D); 
+					particles[neighbors[j]].AddPosition(D); 
 				
 					
 					delta -= D;
