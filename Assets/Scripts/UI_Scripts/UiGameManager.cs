@@ -1000,14 +1000,13 @@ public class UiGameManager : MonoBehaviour
             SetOffInspectorSoftContent();
             jmButton.GetComponent<Image>().color = jmButton.GetComponent<Button>().colors.pressedColor;
             jmState = true;
-
+            selectedIndex = -1;
+            bo = physicsManager.SelectSpecificObject(selectedIndex, prefabHolder, SELECTEDOBJECTGAMEOBJECT);
         }
 
         else
         {
             SetOffInspectorJointContent();
-            SELECTEDOBJECTGAMEOBJECT = null;
-            selectedIndex = -1;
             jmButton.GetComponent<Image>().color = jmButton.GetComponent<Button>().colors.normalColor;
             jmState = false;
         }
