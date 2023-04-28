@@ -581,7 +581,6 @@ public class UiGameManager : MonoBehaviour
 
                         if (singleDelete)
                         {
-                            //ne marche pas live
                             ResetMouseState();
                             //code qui fait en sorte que les objets qui �taient dans la fen�tre disparaissent.
                             physicsManager.RemoveAt(bo, parent);
@@ -697,12 +696,24 @@ public class UiGameManager : MonoBehaviour
             }
             lastPosition = new Vector3(mousePosition.x, mousePosition.y, mousePosition.z);
         }
+        else if (draggable && mousePosition.x > -28.25f && mousePosition.x < 28.25 && mousePosition.y > -20 && mousePosition.y < 20 && bo != null && bo.getIsStatic() && !bo.IsWall)
+        {
+            mousePosition = Camera.main.ScreenToWorldPoint(Input.mousePosition);
+            if (lastPosition == Vector3.zero) lastPosition = mousePosition;
+            if (parent != null && parent.GetComponent<SoftBody>() != null)
+            {
+                Vector3 deltaPosition = mousePosition - lastPosition;
+                parent.GetComponent<SoftBody>().Move(deltaPosition);
+            }
+            else
+            {
+                bo.gameObject.transform.position = new Vector3(mousePosition.x, mousePosition.y, 0);
+            }
+            lastPosition = new Vector3(mousePosition.x, mousePosition.y, mousePosition.z);
+        }
         if (Input.GetMouseButton(1))
         {
             draggable = false;
-            selectedIndex = -1;
-            SetOffInspectorContent();
-            SetOffInspectorSoftContent();
             lastPosition = Vector3.zero;
         }
 
@@ -904,6 +915,10 @@ public class UiGameManager : MonoBehaviour
     public void PauseScene()
     {
         ResetMouseState();
+        selectedIndex = -1;
+        SELECTEDOBJECT = -1;
+        InspectorContent.SetActive(false);
+        SELECTEDOBJECTGAMEOBJECT = null;
         // make time frames/calculations equal to 0
         ChangeTime("0");
         GameObject.Find("Canvas/ToolPanel/BoutonFF2").GetComponent<Image>().color = buttonNormalColor;
@@ -1133,7 +1148,10 @@ public class UiGameManager : MonoBehaviour
     public void InspectorChangeStatic(System.Boolean newStatic)
     {
         BasicPhysicObject bo = physicsManager.GetPhysicObjectAt(SELECTEDOBJECT);
-        if (bo != null) { bo.setIsStatic(newStatic); }
+        if (bo != null) { 
+            bo.setIsStatic(newStatic);
+            ResetMouseState();
+        }
     }
     public void InspectorChangeMassSoft(System.Single newMassSoft)
     {

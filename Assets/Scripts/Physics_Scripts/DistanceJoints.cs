@@ -49,7 +49,26 @@ public class DistanceJoints : MonoBehaviour
     private float invInertiaSum;
     private float invMassSum;
     public LineRenderer lr;
-    
+
+    public void Update()
+    {
+        if (lr != null)
+        {
+            Transform bodyA = bo1.transform;
+            Transform bodyB = bo2.transform;
+            anchorA = bodyA.position;
+            anchorB = bodyB.position;
+            //just for keeping track of the position 
+            transform.position = (anchorB + anchorA) / 2.0f;
+            Vector3[] LinePoints = new Vector3[2];
+            LinePoints[0] = anchorA;
+            LinePoints[1] = anchorB;
+            LinePoints[0].z = -8;
+            LinePoints[1].z = -8;
+            lr.SetPositions(LinePoints);
+        }
+        
+    }
     public void Initialize() 
     {
         // Get references to the BasicPhysicObject and MeshColliderScript components for both bodies
@@ -160,14 +179,7 @@ public class DistanceJoints : MonoBehaviour
             bpB.SetVelocity(v2, w2, timeStep);
         }
 
-        //just for keeping track of the position 
-        transform.position = (anchorB + anchorA) / 2.0f;
-        Vector3[] LinePoints = new Vector3[2];
-        LinePoints[0] = anchorA;
-        LinePoints[1] = anchorB;
-        LinePoints[0].z = -8;
-        LinePoints[1].z = -8;
-        lr.SetPositions(LinePoints);
+      
     }
     private void ComputeBetaAndGamma(float timeStep)
     {
