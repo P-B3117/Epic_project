@@ -12,7 +12,7 @@ using UnityEngine;
 public static class UniversalVariable
 {
     private static float gravity = 9.8f;
-    private static float airDrag = 1.0f;
+    private static float airDensity = 1.292f;
     private static float time = 1.0f;
 
     public static void SetTime(float xtime)
@@ -35,13 +35,13 @@ public static class UniversalVariable
         gravity = xgravity;
     }
 
-    public static float GetAirDrag() 
+    public static float GetAirDensity() 
     {
-        return airDrag;
+        return airDensity;
     }
 
-    public static void SetAirDrag(float xairDrag)
+    public static void SetAirDensity(float xairDensity)
     {
-        airDrag = xairDrag;
+        airDensity = xairDensity;
     }
 }

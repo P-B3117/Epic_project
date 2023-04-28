@@ -55,7 +55,7 @@ public class UiGameManager : MonoBehaviour
 
     public void ChangeAirDrag(string airDrag)
     {
-        UniversalVariable.SetAirDrag(float.Parse(airDrag));
+        UniversalVariable.SetAirDensity(float.Parse(airDrag));
     }
 
     public void ChangeToDefault()
@@ -65,7 +65,7 @@ public class UiGameManager : MonoBehaviour
         TimeInputField.GetComponent<TMP_InputField>().text = "1";
         UniversalVariable.SetGravity(float.Parse("9,8"));
         UniversalVariable.SetTime(float.Parse("1"));
-        UniversalVariable.SetAirDrag(float.Parse("1"));
+        UniversalVariable.SetAirDensity(float.Parse("1"));
     }
 
     public void LoadMenuScene()
