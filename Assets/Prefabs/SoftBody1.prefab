@@ -615,6 +615,7 @@ MonoBehaviour:
   - {fileID: 7786418397159843181}
   material: {fileID: 2100000, guid: 1fe515de609d2fb4199e85911e30a32d, type: 2}
   size: 1.2
+  type: 1
 --- !u!23 &7786418397313204768
 MeshRenderer:
   m_ObjectHideFlags: 0

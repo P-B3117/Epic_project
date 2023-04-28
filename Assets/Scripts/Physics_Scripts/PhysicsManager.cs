@@ -115,6 +115,11 @@ public class PhysicsManager : MonoBehaviour
 		{
 			Destroy(joints[i]);
 			joints.RemoveAt(i);
+		}
+
+		for (int i = physicsJoints.Count - 1; i >= 0; i--)
+		{
+			Destroy(physicsJoints[i].gameObject);
 			physicsJoints.RemoveAt(i);
 		}
 
