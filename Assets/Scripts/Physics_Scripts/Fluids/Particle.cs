@@ -106,14 +106,6 @@ public class Particle
         neighbors.Add(p);
     }
 
-    public void InverseVelocityX()
-    {
-        velocity = new Vector3(-velocity.x, velocity.y, 0);
-    }
-    public void InverseVelocityY()
-    {
-        velocity = new Vector3(velocity.x, -velocity.y, 0);
-    }
 
     public void Delete() 
     {

@@ -145,8 +145,7 @@ public class UIFluidManager : MonoBehaviour
     {
         MOUSESTATE = -1;
         Destroy(currentShadowObject);
-        CURSOR = false;
-        GameObject.Find("Canvas/ToolPanel/BoutonCurseur").GetComponent<Image>().color = Color.white;
+       
     }
 
 
@@ -186,7 +185,9 @@ public class UIFluidManager : MonoBehaviour
         ResetMouseState();
         CURSOR = !CURSOR;
         if (CURSOR)
+        { 
             GameObject.Find("Canvas/ToolPanel/BoutonCurseur").GetComponent<Image>().color = Color.green;
+        }
         else 
         {
             GameObject.Find("Canvas/ToolPanel/BoutonCurseur").GetComponent<Image>().color = Color.white;
