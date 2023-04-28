@@ -110,8 +110,7 @@ public class UIInspectorScript : MonoBehaviour
 				DynamicFrictionText.text = bo.getDynamicFriction().ToString();
 				IsStaticToggle.isOn = bo.getIsStatic();
 
-                print(mc);
-                print(mc.GetMass());
+               
                 MassSlider.value = mc.GetMass();
 
                 //BoucinessSlider.value = bo.getBounciness();
@@ -139,7 +138,7 @@ public class UIInspectorScript : MonoBehaviour
             //If the parent object is a softbody
             else if (parent.GetComponent<SoftBody>() != null)
             {
-                print("Selected Index : " + selectedIndex + " --- SELECTEDOBJECT : " + SELECTEDOBJECT);
+              
                 SetOffInspectorContent();
                 SetOnInspectorSoftContent();
                 if (gameManager.jmState) bo = gameManager.JointManager();
@@ -211,7 +210,7 @@ public class UIInspectorScript : MonoBehaviour
     {
         MassText.text = newMass.ToString();
         MeshColliderScript mc = physicsManager.GetMeshCollliderObjectAt(SELECTEDOBJECT);
-        if (mc != null) { print("New mass : " + newMass); mc.SetMass(newMass); }
+        if (mc != null) {  mc.SetMass(newMass); }
     }
     public void InspectorChangeBouciness(System.Single newBouciness)
     {
