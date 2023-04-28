@@ -1772,10 +1772,10 @@ MonoBehaviour:
   m_OnValueChanged:
     m_PersistentCalls:
       m_Calls:
-      - m_Target: {fileID: 454174834}
-        m_TargetAssemblyTypeName: UiGameManager, Assembly-CSharp
+      - m_Target: {fileID: 454174835}
+        m_TargetAssemblyTypeName: UIInspectorScript, Assembly-CSharp
         m_MethodName: InspectorChangeStaticFriction
-        m_Mode: 0
+        m_Mode: 4
         m_Arguments:
           m_ObjectArgument: {fileID: 0}
           m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
@@ -2230,10 +2230,10 @@ MonoBehaviour:
   m_OnValueChanged:
     m_PersistentCalls:
       m_Calls:
-      - m_Target: {fileID: 454174834}
-        m_TargetAssemblyTypeName: UiGameManager, Assembly-CSharp
-        m_MethodName: InspectorChangeStaticFriction
-        m_Mode: 0
+      - m_Target: {fileID: 454174835}
+        m_TargetAssemblyTypeName: UIInspectorScript, Assembly-CSharp
+        m_MethodName: InspectorChangeFrequency
+        m_Mode: 4
         m_Arguments:
           m_ObjectArgument: {fileID: 0}
           m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
@@ -4019,6 +4019,8 @@ GameObject:
   m_Component:
   - component: {fileID: 454174833}
   - component: {fileID: 454174834}
+  - component: {fileID: 454174836}
+  - component: {fileID: 454174835}
   m_Layer: 0
   m_Name: UiManager
   m_TagString: Untagged
@@ -4082,8 +4084,32 @@ MonoBehaviour:
   prefabHolder: {fileID: 1196685256}
   physicsManager: {fileID: 640414674}
   jmButton: {fileID: 1059003230}
-  meshCreatorLineRenderer: {fileID: 1204127249}
-  JointCreatorLineRenderer: {fileID: 1204127249}
+  inspectorScript: {fileID: 454174835}
+  sliderScript: {fileID: 454174836}
+  jmState: 0
+  curseur: 0
+  singleDelete: 0
+  forces: 0
+  draggable: 0
+--- !u!114 &454174835
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 454174831}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 7433aa514c6863945b81affb551975ce, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  SELECTEDOBJECT: -1
+  selectedIndex: -1
+  SELECTEDOBJECTGAMEOBJECT: {fileID: 0}
+  physicsManager: {fileID: 640414674}
+  sliderScript: {fileID: 454174836}
+  prefabHolder: {fileID: 1196685256}
+  gameManager: {fileID: 454174834}
   InspectorContent: {fileID: 245014400}
   InspectorSoftContent: {fileID: 985491740}
   InspectorJointContent: {fileID: 1294719549}
@@ -4103,16 +4129,35 @@ MonoBehaviour:
   MassSoftText: {fileID: 951608568}
   SoftnessText: {fileID: 1412555341}
   SizeText: {fileID: 503693037}
-  SelectedJointSlider: {fileID: 866558019}
-  DistanceSlider: {fileID: 1612964986}
-  DampingSlider: {fileID: 15823479}
-  FrequencySlider: {fileID: 1424007193}
-  SelectAllToggle: {fileID: 365151918}
-  DeleteButton: {fileID: 1181551694}
+  SelectedJointSlider: {fileID: 878676724}
+  DistanceSlider: {fileID: 1343289731}
+  DampingSlider: {fileID: 983314115}
+  FrequencySlider: {fileID: 251054273}
+  SelectAllToggle: {fileID: 1972074279}
+  DeleteButton: {fileID: 1181551697}
   SelectedJointText: {fileID: 1336883846}
-  DistanceText: {fileID: 374048077}
-  DampingText: {fileID: 1731940897}
-  FrequencyText: {fileID: 1872928637}
+  DistanceText: {fileID: 1764248762}
+  DampingText: {fileID: 124390227}
+  FrequencyText: {fileID: 1404669242}
+--- !u!114 &454174836
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 454174831}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 49de36db9a6728e4f87eca93acba735b, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  physicsManager: {fileID: 640414674}
+  gameManager: {fileID: 454174834}
+  inspectorScript: {fileID: 454174835}
+  prefabHolder: {fileID: 1196685256}
+  GamePanel: {fileID: 2000940687}
+  meshCreatorLineRenderer: {fileID: 1204127249}
+  JointCreatorLineRenderer: {fileID: 1204127249}
 --- !u!1 &472907599
 GameObject:
   m_ObjectHideFlags: 0
@@ -4196,8 +4241,8 @@ MonoBehaviour:
   m_OnClick:
     m_PersistentCalls:
       m_Calls:
-      - m_Target: {fileID: 454174834}
-        m_TargetAssemblyTypeName: UiGameManager, Assembly-CSharp
+      - m_Target: {fileID: 454174836}
+        m_TargetAssemblyTypeName: UISliderScript, Assembly-CSharp
         m_MethodName: SetMouseState7
         m_Mode: 1
         m_Arguments:
@@ -4978,10 +5023,10 @@ MonoBehaviour:
   m_OnValueChanged:
     m_PersistentCalls:
       m_Calls:
-      - m_Target: {fileID: 454174834}
-        m_TargetAssemblyTypeName: UiGameManager, Assembly-CSharp
+      - m_Target: {fileID: 454174835}
+        m_TargetAssemblyTypeName: UIInspectorScript, Assembly-CSharp
         m_MethodName: InspectorChangeMass
-        m_Mode: 0
+        m_Mode: 4
         m_Arguments:
           m_ObjectArgument: {fileID: 0}
           m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
@@ -5073,8 +5118,8 @@ MonoBehaviour:
   m_OnClick:
     m_PersistentCalls:
       m_Calls:
-      - m_Target: {fileID: 454174834}
-        m_TargetAssemblyTypeName: UiGameManager, Assembly-CSharp
+      - m_Target: {fileID: 454174836}
+        m_TargetAssemblyTypeName: UISliderScript, Assembly-CSharp
         m_MethodName: SetMouseState2
         m_Mode: 1
         m_Arguments:
@@ -5593,10 +5638,10 @@ MonoBehaviour:
   m_OnValueChanged:
     m_PersistentCalls:
       m_Calls:
-      - m_Target: {fileID: 454174834}
-        m_TargetAssemblyTypeName: UiGameManager, Assembly-CSharp
+      - m_Target: {fileID: 454174835}
+        m_TargetAssemblyTypeName: UIInspectorScript, Assembly-CSharp
         m_MethodName: InspectorChangeMassSoft
-        m_Mode: 0
+        m_Mode: 4
         m_Arguments:
           m_ObjectArgument: {fileID: 0}
           m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
@@ -5922,10 +5967,10 @@ MonoBehaviour:
   onValueChanged:
     m_PersistentCalls:
       m_Calls:
-      - m_Target: {fileID: 454174834}
-        m_TargetAssemblyTypeName: UiGameManager, Assembly-CSharp
+      - m_Target: {fileID: 454174835}
+        m_TargetAssemblyTypeName: UIInspectorScript, Assembly-CSharp
         m_MethodName: InspectorChangeStatic
-        m_Mode: 0
+        m_Mode: 6
         m_Arguments:
           m_ObjectArgument: {fileID: 0}
           m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
@@ -6276,10 +6321,10 @@ MonoBehaviour:
   m_OnValueChanged:
     m_PersistentCalls:
       m_Calls:
-      - m_Target: {fileID: 454174834}
-        m_TargetAssemblyTypeName: UiGameManager, Assembly-CSharp
+      - m_Target: {fileID: 454174835}
+        m_TargetAssemblyTypeName: UIInspectorScript, Assembly-CSharp
         m_MethodName: InspectorChangeBouciness
-        m_Mode: 0
+        m_Mode: 4
         m_Arguments:
           m_ObjectArgument: {fileID: 0}
           m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
@@ -6425,8 +6470,8 @@ MonoBehaviour:
   m_OnClick:
     m_PersistentCalls:
       m_Calls:
-      - m_Target: {fileID: 454174834}
-        m_TargetAssemblyTypeName: UiGameManager, Assembly-CSharp
+      - m_Target: {fileID: 454174836}
+        m_TargetAssemblyTypeName: UISliderScript, Assembly-CSharp
         m_MethodName: SetMouseState5
         m_Mode: 1
         m_Arguments:
@@ -8302,10 +8347,10 @@ MonoBehaviour:
   m_OnValueChanged:
     m_PersistentCalls:
       m_Calls:
-      - m_Target: {fileID: 454174834}
-        m_TargetAssemblyTypeName: UiGameManager, Assembly-CSharp
+      - m_Target: {fileID: 454174835}
+        m_TargetAssemblyTypeName: UIInspectorScript, Assembly-CSharp
         m_MethodName: InspectorSelectedJoint
-        m_Mode: 0
+        m_Mode: 4
         m_Arguments:
           m_ObjectArgument: {fileID: 0}
           m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
@@ -9010,8 +9055,8 @@ MonoBehaviour:
   m_OnClick:
     m_PersistentCalls:
       m_Calls:
-      - m_Target: {fileID: 454174834}
-        m_TargetAssemblyTypeName: UiGameManager, Assembly-CSharp
+      - m_Target: {fileID: 454174836}
+        m_TargetAssemblyTypeName: UISliderScript, Assembly-CSharp
         m_MethodName: SetMouseState4
         m_Mode: 1
         m_Arguments:
@@ -9399,10 +9444,10 @@ MonoBehaviour:
   m_OnValueChanged:
     m_PersistentCalls:
       m_Calls:
-      - m_Target: {fileID: 454174834}
-        m_TargetAssemblyTypeName: UiGameManager, Assembly-CSharp
-        m_MethodName: InspectorChangeDynamicFriction
-        m_Mode: 0
+      - m_Target: {fileID: 454174835}
+        m_TargetAssemblyTypeName: UIInspectorScript, Assembly-CSharp
+        m_MethodName: InspectorChangeDamping
+        m_Mode: 4
         m_Arguments:
           m_ObjectArgument: {fileID: 0}
           m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
@@ -11809,7 +11854,6 @@ GameObject:
   - component: {fileID: 1181551699}
   - component: {fileID: 1181551698}
   - component: {fileID: 1181551697}
-  - component: {fileID: 1181551696}
   m_Layer: 5
   m_Name: Delete
   m_TagString: Untagged
@@ -11838,26 +11882,6 @@ RectTransform:
   m_AnchoredPosition: {x: 0, y: -350}
   m_SizeDelta: {x: 160, y: 30}
   m_Pivot: {x: 0.5, y: 0.5}
---- !u!95 &1181551696
-Animator:
-  serializedVersion: 5
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1181551694}
-  m_Enabled: 1
-  m_Avatar: {fileID: 0}
-  m_Controller: {fileID: 9100000, guid: 790c8e922a25e1347907977c97420079, type: 2}
-  m_CullingMode: 0
-  m_UpdateMode: 0
-  m_ApplyRootMotion: 0
-  m_LinearVelocityBlending: 0
-  m_StabilizeFeet: 0
-  m_WarningMessage: 
-  m_HasTransformHierarchy: 1
-  m_AllowConstantClipSamplingOptimization: 1
-  m_KeepAnimatorStateOnDisable: 0
 --- !u!114 &1181551697
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -11902,13 +11926,13 @@ MonoBehaviour:
   m_OnClick:
     m_PersistentCalls:
       m_Calls:
-      - m_Target: {fileID: 454174834}
-        m_TargetAssemblyTypeName: UiGameManager, Assembly-CSharp
-        m_MethodName: AnimatorSelectedThanos
-        m_Mode: 2
+      - m_Target: {fileID: 454174835}
+        m_TargetAssemblyTypeName: UIInspectorScript, Assembly-CSharp
+        m_MethodName: InspectorDeleteClick
+        m_Mode: 1
         m_Arguments:
-          m_ObjectArgument: {fileID: 1181551694}
-          m_ObjectArgumentAssemblyTypeName: UnityEngine.GameObject, UnityEngine
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
           m_IntArgument: 0
           m_FloatArgument: 0
           m_StringArgument: 
@@ -12738,8 +12762,8 @@ MonoBehaviour:
   m_OnClick:
     m_PersistentCalls:
       m_Calls:
-      - m_Target: {fileID: 454174834}
-        m_TargetAssemblyTypeName: UiGameManager, Assembly-CSharp
+      - m_Target: {fileID: 454174836}
+        m_TargetAssemblyTypeName: UISliderScript, Assembly-CSharp
         m_MethodName: SetMouseState1
         m_Mode: 1
         m_Arguments:
@@ -14123,10 +14147,10 @@ MonoBehaviour:
   m_OnValueChanged:
     m_PersistentCalls:
       m_Calls:
-      - m_Target: {fileID: 454174834}
-        m_TargetAssemblyTypeName: UiGameManager, Assembly-CSharp
-        m_MethodName: InspectorChangeBouciness
-        m_Mode: 0
+      - m_Target: {fileID: 454174835}
+        m_TargetAssemblyTypeName: UIInspectorScript, Assembly-CSharp
+        m_MethodName: InspectorChangeDistance
+        m_Mode: 4
         m_Arguments:
           m_ObjectArgument: {fileID: 0}
           m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
@@ -14630,10 +14654,10 @@ MonoBehaviour:
   m_OnValueChanged:
     m_PersistentCalls:
       m_Calls:
-      - m_Target: {fileID: 454174834}
-        m_TargetAssemblyTypeName: UiGameManager, Assembly-CSharp
+      - m_Target: {fileID: 454174835}
+        m_TargetAssemblyTypeName: UIInspectorScript, Assembly-CSharp
         m_MethodName: InspectorChangeSize
-        m_Mode: 0
+        m_Mode: 4
         m_Arguments:
           m_ObjectArgument: {fileID: 0}
           m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
@@ -17898,10 +17922,10 @@ MonoBehaviour:
   m_OnValueChanged:
     m_PersistentCalls:
       m_Calls:
-      - m_Target: {fileID: 454174834}
-        m_TargetAssemblyTypeName: UiGameManager, Assembly-CSharp
+      - m_Target: {fileID: 454174835}
+        m_TargetAssemblyTypeName: UIInspectorScript, Assembly-CSharp
         m_MethodName: InspectorChangeSoftness
-        m_Mode: 0
+        m_Mode: 4
         m_Arguments:
           m_ObjectArgument: {fileID: 0}
           m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
@@ -18438,10 +18462,10 @@ MonoBehaviour:
   onValueChanged:
     m_PersistentCalls:
       m_Calls:
-      - m_Target: {fileID: 454174834}
-        m_TargetAssemblyTypeName: UiGameManager, Assembly-CSharp
+      - m_Target: {fileID: 454174835}
+        m_TargetAssemblyTypeName: UIInspectorScript, Assembly-CSharp
         m_MethodName: InspectorChangeStaticSoft
-        m_Mode: 0
+        m_Mode: 6
         m_Arguments:
           m_ObjectArgument: {fileID: 0}
           m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
@@ -20753,8 +20777,8 @@ MonoBehaviour:
   m_OnClick:
     m_PersistentCalls:
       m_Calls:
-      - m_Target: {fileID: 454174834}
-        m_TargetAssemblyTypeName: UiGameManager, Assembly-CSharp
+      - m_Target: {fileID: 454174836}
+        m_TargetAssemblyTypeName: UISliderScript, Assembly-CSharp
         m_MethodName: SetMouseState6
         m_Mode: 1
         m_Arguments:
@@ -21275,10 +21299,10 @@ MonoBehaviour:
   m_OnValueChanged:
     m_PersistentCalls:
       m_Calls:
-      - m_Target: {fileID: 454174834}
-        m_TargetAssemblyTypeName: UiGameManager, Assembly-CSharp
+      - m_Target: {fileID: 454174835}
+        m_TargetAssemblyTypeName: UIInspectorScript, Assembly-CSharp
         m_MethodName: InspectorChangeDynamicFriction
-        m_Mode: 0
+        m_Mode: 4
         m_Arguments:
           m_ObjectArgument: {fileID: 0}
           m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
@@ -21504,8 +21528,8 @@ MonoBehaviour:
   m_OnClick:
     m_PersistentCalls:
       m_Calls:
-      - m_Target: {fileID: 454174834}
-        m_TargetAssemblyTypeName: UiGameManager, Assembly-CSharp
+      - m_Target: {fileID: 454174836}
+        m_TargetAssemblyTypeName: UISliderScript, Assembly-CSharp
         m_MethodName: SetMouseState0
         m_Mode: 1
         m_Arguments:
@@ -21640,10 +21664,10 @@ MonoBehaviour:
   onValueChanged:
     m_PersistentCalls:
       m_Calls:
-      - m_Target: {fileID: 454174834}
-        m_TargetAssemblyTypeName: UiGameManager, Assembly-CSharp
-        m_MethodName: InspectorChangeStatic
-        m_Mode: 0
+      - m_Target: {fileID: 454174835}
+        m_TargetAssemblyTypeName: UIInspectorScript, Assembly-CSharp
+        m_MethodName: InspectorSelectAllTogggle
+        m_Mode: 6
         m_Arguments:
           m_ObjectArgument: {fileID: 0}
           m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
@@ -22712,8 +22736,8 @@ MonoBehaviour:
   m_OnClick:
     m_PersistentCalls:
       m_Calls:
-      - m_Target: {fileID: 454174834}
-        m_TargetAssemblyTypeName: UiGameManager, Assembly-CSharp
+      - m_Target: {fileID: 454174836}
+        m_TargetAssemblyTypeName: UISliderScript, Assembly-CSharp
         m_MethodName: SetMouseState3
         m_Mode: 1
         m_Arguments:
@@ -23400,8 +23424,8 @@ MonoBehaviour:
   m_OnClick:
     m_PersistentCalls:
       m_Calls:
-      - m_Target: {fileID: 454174834}
-        m_TargetAssemblyTypeName: UiGameManager, Assembly-CSharp
+      - m_Target: {fileID: 454174836}
+        m_TargetAssemblyTypeName: UISliderScript, Assembly-CSharp
         m_MethodName: SetMouseState8
         m_Mode: 1
         m_Arguments:
