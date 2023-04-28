@@ -61,8 +61,8 @@ public class DistanceJoints : MonoBehaviour
             //just for keeping track of the position 
             transform.position = (anchorB + anchorA) / 2.0f;
             Vector3[] LinePoints = new Vector3[2];
-            LinePoints[0] = anchorA;
-            LinePoints[1] = anchorB;
+            LinePoints[0] = anchorA + (bodyA.rotation) * offsetA;
+            LinePoints[1] = anchorB + (bodyB.rotation) * offsetB;
             LinePoints[0].z = -8;
             LinePoints[1].z = -8;
             lr.SetPositions(LinePoints);
@@ -83,7 +83,7 @@ public class DistanceJoints : MonoBehaviour
         invInertiaSum = invInertiaA + invInertiaB;
         invMassSum = invMassA + invMassB;
       
-            fakemass = 1;
+        fakemass = 1;
         fakeSoftness = 0.0f;
         fakeSize = 1;
         lr = this.gameObject.AddComponent<LineRenderer>();
@@ -110,14 +110,8 @@ public class DistanceJoints : MonoBehaviour
 
         // Compute the effective mass of the constraint 
         // M = (J · M^-1 · J^t)^-1
-        float crossA = d.x * ra.y - d.x * ra.x;
-        float crossB = d.x * rb.y - d.x * rb.x;
-        invMassA = 1.0f / mcA.GetMass();
-        invMassB = 1.0f / mcB.GetMass();
-        invInertiaA = 1.0f / mcA.GetInertia();
-        invInertiaB = 1.0f / mcB.GetInertia();
-        invInertiaSum = invInertiaA + invInertiaB;
-        invMassSum = invMassA + invMassB;
+        float crossA = d.x * ra.y + d.x * ra.x;
+        float crossB = d.x * rb.y + d.x * rb.x;
         float invEffectiveMass;
         if (bpA.getIsStatic()) { invEffectiveMass = invMassB + crossB * crossB * invInertiaB / d.sqrMagnitude; }
         else if (bpB.getIsStatic()) { invEffectiveMass = invMassA + crossA * crossA * invInertiaA / d.sqrMagnitude; }
