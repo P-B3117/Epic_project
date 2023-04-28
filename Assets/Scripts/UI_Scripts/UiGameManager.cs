@@ -123,7 +123,8 @@ public class UiGameManager : MonoBehaviour
         //Universal inputs functionality
         if (Input.GetKeyDown(KeyCode.Escape))
         {
-            ShowPausePanel();
+            if (!PausePanel.activeSelf) ShowPausePanel();
+            else ShowGamePanel();
         }
         if (Input.GetMouseButtonDown(1)) 
         {
