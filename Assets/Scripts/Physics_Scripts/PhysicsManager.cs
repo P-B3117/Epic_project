@@ -200,31 +200,12 @@ public class PhysicsManager : MonoBehaviour
 	{
 		//ApplyForces
 		for (int i = 0; i < objects.Count; i++)
-		{
-			if (objects[i] == null)
-			{
-				objects.RemoveAt(i);
-                i--;
-				continue;
-			}
-			if (physicObjects[i] == null)
-			{
-				physicObjects.RemoveAt(i);
-				i--;
-				continue;
-			}
-			if (meshColliders[i] == null)
-			{
-				meshColliders.RemoveAt(i);
-				i--;
-				continue;
-			}
-
-						
+		{				
 			physicObjects[i].UpdateState(stepLength);
 			meshColliders[i].UpdateColliderOrientation();
 			physicObjects[i].ApplyForceGravity();
-		}
+            physicObjects[i].ApplyAirDensity();
+        }
 
 
 

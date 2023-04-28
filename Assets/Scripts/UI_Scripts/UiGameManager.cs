@@ -24,7 +24,7 @@ public class UiGameManager : MonoBehaviour
     public GameObject MusicSlider;
     public GameObject SoundEffectSlider;
     public GameObject GravityInputField;
-    public GameObject AirDragInputField;
+    public GameObject AirDensityInputField;
     public GameObject BouncinessInputField;
     public GameObject SFrictionInputField;
     public GameObject DFrictionInputField;
@@ -103,7 +103,7 @@ public class UiGameManager : MonoBehaviour
         MusicSlider.GetComponent<Slider>().value = GameConstants.MusicVolume;
         SoundEffectSlider.GetComponent<Slider>().value = GameConstants.SoundEffectVolume;
         GravityInputField.GetComponent<TMP_InputField>().text = "9.8";
-        AirDragInputField.GetComponent<TMP_InputField>().text = "1";
+        AirDensityInputField.GetComponent<TMP_InputField>().text = "1";
         TimeInputField.GetComponent<TMP_InputField>().text = "1";
         BouncinessInputField.GetComponent<TMP_InputField>().text = "1";
         SFrictionInputField.GetComponent<TMP_InputField>().text = "1";
@@ -719,15 +719,15 @@ public class UiGameManager : MonoBehaviour
         UniversalVariable.SetGravity(float.Parse(gravity));
     }
 
-    public void ChangeAirDrag(string airDrag)
+    public void ChangeAirDensity(string AirDensity)
     {
-        UniversalVariable.SetAirDensity(float.Parse(airDrag));
+        UniversalVariable.SetAirDensity(float.Parse(AirDensity));
     }
 
     public void ChangeToDefault()
     {
         GravityInputField.GetComponent<TMP_InputField>().text = "9.8";
-        AirDragInputField.GetComponent<TMP_InputField>().text = "1";
+        AirDensityInputField.GetComponent<TMP_InputField>().text = "1";
         TimeInputField.GetComponent<TMP_InputField>().text = "1";
         BouncinessInputField.GetComponent<TMP_InputField>().text = "1";
         SFrictionInputField.GetComponent<TMP_InputField>().text = "1";
@@ -799,7 +799,7 @@ public class UiGameManager : MonoBehaviour
         
     }
 
-    private float gravityBefore, airDragBefore;
+    private float gravityBefore, AirDensityBefore;
     // bouton F (3)
     public void AppliquerForcesDePhysique()
     {
@@ -809,7 +809,7 @@ public class UiGameManager : MonoBehaviour
         {
             GameObject.Find("Canvas/ToolPanel/BoutonF").GetComponent<Image>().color = buttonNormalColor;
             if (UniversalVariable.GetGravity() == 0) { UniversalVariable.SetGravity(gravityBefore); } 
-            if (UniversalVariable.GetAirDrag() == 0) { UniversalVariable.SetAirDrag(airDragBefore); }
+            if (UniversalVariable.GetAirDensity() == 0) { UniversalVariable.SetAirDensity(AirDensityBefore); }
         }
 
         else
@@ -817,9 +817,9 @@ public class UiGameManager : MonoBehaviour
             GameObject.Find("Canvas/ToolPanel/BoutonF").GetComponent<Image>().color = buttonPressedColor;
             // une fois qu'il se fait click, faire en sorte que le bouton reste "pes�" jusqu'� ce qu'il soit reclicked on
             gravityBefore = UniversalVariable.GetGravity();
-            airDragBefore = UniversalVariable.GetAirDrag();
+            AirDensityBefore = UniversalVariable.GetAirDensity();
             UniversalVariable.SetGravity(0);
-            UniversalVariable.SetAirDrag(0);
+            UniversalVariable.SetAirDensity(0);
         }
         forces = !forces;
     }

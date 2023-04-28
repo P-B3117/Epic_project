@@ -123,7 +123,46 @@ public class BasicPhysicObject : MonoBehaviour
 
     }
 
-	
+    public void ApplyAirDensity()
+    {
+        Rect bond = collider.GetBoundariesAABB();
+        Vector3 drag;
+
+        Vector3 normalisedVel = velocity.normalized;
+
+        Vector3[] p = new Vector3[4];
+        p[0] = new Vector3(bond.position.x, bond.position.y, 0.0f);
+        p[1] = new Vector3(bond.position.x + bond.width, bond.position.y, 0.0f);
+        p[2] = new Vector3(bond.position.x, bond.position.y + bond.height, 0.0f);
+        p[3] = new Vector3(bond.position.x + bond.width, bond.position.y + bond.height, 0.0f);
+        float min1 = Mathf.Infinity;
+        float max1 = -Mathf.Infinity;
+        for (int i = 0; i < p.Length; i++)
+        {
+            float temp = Vector3.Dot(normalisedVel, p[i]);
+            min1 = Mathf.Min(temp, min1);
+            max1 = Mathf.Max(temp, max1);
+        }
+
+        float A = Mathf.Abs(min1 - max1);
+
+
+
+        float AirForce;
+        float P = UniversalVariable.GetAirDensity();
+        float C = 0.4f;
+        float speed = velocity.magnitude;
+
+
+
+        AirForce = 0.5f * C * P * A * (speed * speed);
+        drag = (AirForce * -normalisedVel);
+        ApplyForceAtCenterOfMass(drag);
+
+
+    }
+
+
 
     public Vector3 getVelocity()
     {
