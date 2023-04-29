@@ -156,6 +156,7 @@ public class UiGameManager : MonoBehaviour
 
     public void ChangeAirDensity(string AirDensity)
     {
+        print(AirDensity);
         UniversalVariable.SetAirDensity(float.Parse(AirDensity));
     }
 
@@ -282,10 +283,7 @@ public class UiGameManager : MonoBehaviour
     public void PauseScene()
     {
         sliderScript.ResetMouseState();
-        inspectorScript.selectedIndex = -1;
-        inspectorScript.SELECTEDOBJECT = -1;
-        inspectorScript.SetAllOff();
-        inspectorScript.SELECTEDOBJECTGAMEOBJECT = null;
+        
         // make time frames/calculations equal to 0
         ChangeTime("0");
         GameObject.Find("Canvas/ToolPanel/BoutonFF2").GetComponent<Image>().color = buttonNormalColor;
@@ -356,7 +354,7 @@ public class UiGameManager : MonoBehaviour
     }
 
     // bouton Joint Manager
-    public BasicPhysicObject JointManager()
+    public void JointManager()
     {
         sliderScript.ResetMouseState();
         if (curseur) { DeplacerObjets(); }
@@ -364,16 +362,21 @@ public class UiGameManager : MonoBehaviour
         BasicPhysicObject bo = null;
         if (!jmState)
         {
-            
-            inspectorScript.SetOnInspectorJointContent();
-            inspectorScript.SetOffInspectorContent();
-            inspectorScript.SetOffInspectorSoftContent();
-            jmButton.GetComponent<Image>().color = buttonPressedColor;
-            jmState = true;
-            inspectorScript.selectedIndex = -1;
 
-            bo = physicsManager.SelectSpecificObject(inspectorScript.selectedIndex, prefabHolder, inspectorScript.SELECTEDOBJECTGAMEOBJECT);
-            
+            List<DistanceJoints> independentJoints = physicsManager.GetAllNonSoftBodyJoints();
+            if(independentJoints.Count > 0) { 
+
+                inspectorScript.SetOnInspectorJointContent();
+                inspectorScript.SetOffInspectorContent();
+                inspectorScript.SetOffInspectorSoftContent();
+                jmButton.GetComponent<Image>().color = buttonPressedColor;
+                jmState = true;
+                inspectorScript.selectedIndex = -1;
+
+                bo = physicsManager.SelectSpecificObject(inspectorScript.selectedIndex, prefabHolder, inspectorScript.SELECTEDOBJECTGAMEOBJECT);
+                inspectorScript.JointInspectorInitialize(independentJoints);
+            }
+
         }
 
         else
@@ -381,8 +384,9 @@ public class UiGameManager : MonoBehaviour
             inspectorScript.SetOffInspectorJointContent();
             jmButton.GetComponent<Image>().color = buttonNormalColor;
             jmState = false;
+            inspectorScript.DeselectAll();
         }
-        return bo;
+        
     }
 
     public void ShowSettingsPanel()
@@ -414,7 +418,7 @@ public class UiGameManager : MonoBehaviour
     public void ShowPausePanel()
     {
 
-        GamePanel.SetActive(false);
+        GamePanel.SetActive(true);
         ToolPanel.SetActive(true);
         ScrollViewPanel.SetActive(true);
         SettingPanel.SetActive(true);

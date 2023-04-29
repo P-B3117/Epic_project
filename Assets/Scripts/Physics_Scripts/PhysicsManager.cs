@@ -572,4 +572,30 @@ public class PhysicsManager : MonoBehaviour
 		else { return null; }
 	}
 
+	public void RemoveJoint(DistanceJoints dj) 
+	{
+		for (int i = 0; i < physicsJoints.Count; i++) 
+		{
+			if (physicsJoints[i] == dj) 
+			{
+				physicsJoints.RemoveAt(i);
+			}
+		}
+	}
+
+	public List<DistanceJoints> GetAllNonSoftBodyJoints() 
+	{
+		List<DistanceJoints> list = new List<DistanceJoints>();
+		for (int i = 0; i < physicsJoints.Count; i++) 
+		{
+			DistanceJoints dj = physicsJoints[i];
+			if (dj.transform.parent == null || dj.transform.parent.GetComponent<SoftBody>() == null) 
+			{
+				list.Add(dj);
+			}
+		}
+
+		return list;
+	}
+
 }

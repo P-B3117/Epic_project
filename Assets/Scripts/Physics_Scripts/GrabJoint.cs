@@ -106,7 +106,9 @@ public class GrabJoint : MonoBehaviour
         transform.position = (anchorB + anchorA) / 2.0f;
         Vector3[] LinePoints = new Vector3[2];
         LinePoints[0] = anchorA;
+        LinePoints[0].z = -8;
         LinePoints[1] = anchorB;
+        LinePoints[1].z = -8;
         lr.SetPositions(LinePoints);
     }
     private void ComputeBetaAndGamma(float timeStep)
