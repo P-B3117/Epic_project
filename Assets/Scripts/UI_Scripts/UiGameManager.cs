@@ -35,22 +35,28 @@ public class UiGameManager : MonoBehaviour
     public PrefabsHolder prefabHolder;
     public PhysicsManager physicsManager;
     public GameObject jmButton;
-    private float jointIndex;
-
+    public GameObject boutonCurseur;
+    public GameObject boutonSingleDelete;
+    public GameObject boutonG;
+    public GameObject boutonFF2;
+    public GameObject boutonFF3;
+    public GameObject boutonPause;
+    public GameObject boutonPlay;
     public UIInspectorScript inspectorScript;
     public UISliderScript sliderScript;
 
-
-
- 
-    
-   
-    
-   
-    
     private Vector3 lastPosition;
     private Color buttonNormalColor = new Color(1f, 1f, 1f, 1f);
     private Color buttonPressedColor = new Color(0.04705882f, 1f, 0f, 1f);
+    private float jointIndex;
+    private Image jmButtonImage;
+    private Image boutonCurseurImage;
+    private Image boutonSingleDeleteImage;
+    private Image boutonGImage;
+    private Image boutonFF2Image;
+    private Image boutonFF3Image;
+    private Image boutonPauseImage;
+    private Image boutonPlayImage;
 
     private bool twoX = false, threeX = false, pause = false;
     [HideInInspector]
@@ -69,7 +75,18 @@ public class UiGameManager : MonoBehaviour
 
     void Start()
     {
+        jmButtonImage = jmButton.GetComponent<Image>();
+        boutonCurseurImage = boutonCurseur.GetComponent<Image>();
+        boutonSingleDeleteImage = boutonCurseur.GetComponent<Image>();
+        boutonGImage = boutonG.GetComponent<Image>();
+        boutonFF2Image = boutonFF2.GetComponent<Image>();
+        boutonFF3Image = boutonFF3.GetComponent<Image>();
+        boutonPauseImage = boutonPause.GetComponent<Image>();
+        boutonPlayImage = boutonPlay.GetComponent<Image>();
+
+
         ShowGamePanel();
+        PlayScene();
         Screen.SetResolution(1920, 1080, GameConstants.Fullscreen, 60); //int width, int height, bool fullscreen, int preferredRefreshRate (0 = unlimited)
         FullscreenToggle.GetComponent<Toggle>().isOn = GameConstants.Fullscreen;
         MusicSlider.GetComponent<Slider>().value = GameConstants.MusicVolume;
@@ -80,8 +97,9 @@ public class UiGameManager : MonoBehaviour
         BouncinessInputField.GetComponent<TMP_InputField>().text = "1";
         SFrictionInputField.GetComponent<TMP_InputField>().text = "1";
         DFrictionInputField.GetComponent<TMP_InputField>().text = "1";
+        
 
-      
+
     }
 
     void Update()
@@ -181,16 +199,6 @@ public class UiGameManager : MonoBehaviour
         SceneManager.LoadScene(1);
     }
 
-    
-
-    public GameObject boutonCusreur;
-    public GameObject boutonSingleDelete;
-    public GameObject boutonF;
-    public GameObject boutonFF2;
-    public GameObject boutonFF3;
-    public GameObject boutonPause;
-    public GameObject boutonPlay;
-
     // bouton curseur (1)
     public void DeplacerObjets()
     {
@@ -201,13 +209,13 @@ public class UiGameManager : MonoBehaviour
 
         if (curseur && !singleDelete)
         {
-            boutonCurseur.GetComponent<Image>().color = buttonNormalColor;
+            boutonCurseurImage.color = (buttonNormalColor);
             curseur = !curseur;
         }
 
         else if (!singleDelete)
         {
-            boutonCurseur.GetComponent<Image>().color = buttonPressedColor;
+            boutonCurseurImage.color = (buttonPressedColor);
 
             // code ici qui fait en sorte qu'on peut d�placer des objets
             curseur = !curseur;
@@ -225,16 +233,16 @@ public class UiGameManager : MonoBehaviour
         if (jmState) { JointManager(); }
         if (curseur) { DeplacerObjets(); }
 
-        // une fois qu'il se fait click, faire en sorte que le bouton reste "pes�" jusqu'� ce qu'il soit reclicked on
+         
         if (singleDelete && !curseur)
         {
-            boutonSingleDelete.GetComponent<Image>().color = buttonNormalColor;
+            boutonSingleDeleteImage.color = (buttonNormalColor);
             singleDelete = !singleDelete;
         }
 
         else if (!curseur)
         {
-            boutonSingleDelete.GetComponent<Image>().color = buttonPressedColor;
+            boutonSingleDeleteImage.color = (buttonPressedColor);
             singleDelete = !singleDelete;
             // faire en sorte qu'on peut tourner des objets ici => rendu single delete
         }
@@ -250,15 +258,15 @@ public class UiGameManager : MonoBehaviour
         // code qui fait en sorte que les forces de physique seront appliqu�es sur les objets
         if (forces)
         {
-            boutonF.GetComponent<Image>().color = buttonNormalColor;
+            boutonGImage.color = (buttonNormalColor);
             if (UniversalVariable.GetGravity() == 0) { UniversalVariable.SetGravity(gravityBefore); } 
             if (UniversalVariable.GetAirDensity() == 0) { UniversalVariable.SetAirDensity(AirDensityBefore); }
         }
 
         else
         {
-            boutonF.GetComponent<Image>().color = buttonPressedColor;
-            // une fois qu'il se fait click, faire en sorte que le bouton reste "pes�" jusqu'� ce qu'il soit reclicked on
+            boutonGImage.color = (buttonPressedColor);
+             
             gravityBefore = UniversalVariable.GetGravity();
             AirDensityBefore = UniversalVariable.GetAirDensity();
             UniversalVariable.SetGravity(0);
@@ -293,8 +301,10 @@ public class UiGameManager : MonoBehaviour
         
         // make time frames/calculations equal to 0
         ChangeTime("0");
-        boutonFF2.GetComponent<Image>().color = buttonNormalColor;
-        boutonFF3.GetComponent<Image>().color = buttonNormalColor;
+        boutonPauseImage.color = buttonPressedColor;
+        boutonPlayImage.color = buttonNormalColor;
+        boutonFF2Image.color = (buttonNormalColor);
+        boutonFF3Image.color = (buttonNormalColor);
         pause = true;
     }
     
@@ -304,8 +314,10 @@ public class UiGameManager : MonoBehaviour
         sliderScript.ResetMouseState();
         // make time frames/calculations start
         ChangeTime("1");
-        boutonFF2.GetComponent<Image>().color = buttonNormalColor;
-        boutonFF3.GetComponent<Image>().color = buttonNormalColor;
+        boutonPauseImage.color = buttonNormalColor;
+        boutonPlayImage.color = buttonPressedColor;
+        boutonFF2Image.color = (buttonNormalColor);
+        boutonFF3Image.color = (buttonNormalColor);
         if (pause) pause = false;
     }
 
@@ -313,19 +325,21 @@ public class UiGameManager : MonoBehaviour
     public void TwoXFaster()
     {
         sliderScript.ResetMouseState();
-        // une fois qu'il se fait click, faire en sorte que le bouton reste "pes�" jusqu'� ce qu'il soit reclicked on
+         
         if (pause) pause = false;
         if (twoX && !threeX)
         {
-            boutonFF2.GetComponent<Image>().color = buttonNormalColor;
+            boutonFF2Image.color = (buttonNormalColor);
             ChangeTime("1");
             twoX = !twoX;
         }
 
-        else// if (!threeX)
+        else
         {
-            boutonFF2.GetComponent<Image>().color = buttonPressedColor;
-            boutonFF3.GetComponent<Image>().color = buttonNormalColor;
+            boutonFF2Image.color = (buttonPressedColor);
+            boutonFF3Image.color = (buttonNormalColor);
+            boutonPlayImage.color = buttonNormalColor;
+            boutonPauseImage.color = buttonNormalColor;
             // make time frames/calculations go twice as fast/second
             ChangeTime("2");
             
@@ -340,18 +354,20 @@ public class UiGameManager : MonoBehaviour
     {
         sliderScript.ResetMouseState();
         if (pause) pause = false;
-        // une fois qu'il se fait click, faire en sorte que le bouton reste "pes�" jusqu'� ce qu'il soit reclicked on
+         
         if (threeX && !twoX)
         {
-            boutonFF3.GetComponent<Image>().color = buttonNormalColor;
+            boutonFF3Image.color = (buttonNormalColor);
             ChangeTime("1");
             threeX = !threeX;
         }
         
         else// if (!twoX)
         {
-            boutonFF3.GetComponent<Image>().color = buttonPressedColor;
-            boutonFF2.GetComponent<Image>().color = buttonNormalColor;
+            boutonFF3Image.color = (buttonPressedColor);
+            boutonFF2Image.color = (buttonNormalColor);
+            boutonPlayImage.color = buttonNormalColor;
+            boutonPauseImage.color = buttonNormalColor;
             // make time frames/calculations go three times as fast/second
             ChangeTime("3");
             threeX = !threeX;
@@ -376,7 +392,7 @@ public class UiGameManager : MonoBehaviour
                 inspectorScript.SetOnInspectorJointContent();
                 inspectorScript.SetOffInspectorContent();
                 inspectorScript.SetOffInspectorSoftContent();
-                jmButton.GetComponent<Image>().color = buttonPressedColor;
+                jmButtonImage.color = (buttonPressedColor);
                 jmState = true;
                 inspectorScript.selectedIndex = -1;
 
@@ -389,7 +405,7 @@ public class UiGameManager : MonoBehaviour
         else
         {
             inspectorScript.SetOffInspectorJointContent();
-            jmButton.GetComponent<Image>().color = buttonNormalColor;
+            jmButtonImage.color = (buttonNormalColor);
             jmState = false;
             inspectorScript.DeselectAll();
         }
