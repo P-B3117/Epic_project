@@ -55,7 +55,10 @@ public class UIInspectorScript : MonoBehaviour
     public TextMeshProUGUI DampingText;
     public TextMeshProUGUI FrequencyText;
 
-   
+
+    private List<DistanceJoints> jointInspectorReference;
+    private int jointInspectorINDEX = -1;
+    private bool ALLSELECTED = false;
 
     public void MouseClickInsideBoundaries(Vector3 worldPoint) 
     {
@@ -68,7 +71,7 @@ public class UIInspectorScript : MonoBehaviour
         if (selectedIndex == -1)
         {
             SetOffInspectorContent();
-            if (gameManager.jmState)bo =  gameManager.JointManager();
+            if (gameManager.jmState)gameManager.JointManager();
             // draggable = false;
         }
 
@@ -100,7 +103,7 @@ public class UIInspectorScript : MonoBehaviour
                 
                 SetOnInspectorContent();
                 SetOffInspectorSoftContent();
-                if (gameManager.jmState) bo =  gameManager.JointManager();
+                if (gameManager.jmState) gameManager.JointManager();
                
                 SELECTEDOBJECTGAMEOBJECT = bo.gameObject;
 				MeshColliderScript mc = bo.GetCollider();
@@ -141,7 +144,7 @@ public class UIInspectorScript : MonoBehaviour
               
                 SetOffInspectorContent();
                 SetOnInspectorSoftContent();
-                if (gameManager.jmState) bo = gameManager.JointManager();
+                if (gameManager.jmState) gameManager.JointManager();
                 //Resets the materials for everyobject
                 physicsManager.SelectSpecificObject(-1, prefabHolder, SELECTEDOBJECTGAMEOBJECT);
                 SELECTEDOBJECTGAMEOBJECT = parent;
@@ -378,28 +381,152 @@ public class UIInspectorScript : MonoBehaviour
 
     public void InspectorSelectedJoint(System.Single NewJoint)
     {
+        SelectedJointText.text = (NewJoint).ToString();
+        jointInspectorINDEX = (int) (NewJoint-1);
+        SelectSpecificJoint(jointInspectorINDEX);
+
+        DistanceSlider.value = jointInspectorReference[jointInspectorINDEX].length;
+        DampingSlider.value = jointInspectorReference[jointInspectorINDEX].dampingRatio;
+        FrequencySlider.value = jointInspectorReference[jointInspectorINDEX].frequency;
 
 
     }
+
     public void InspectorChangeDistance(System.Single NewDistance)
     {
-
+        if (ALLSELECTED)
+        {
+            for (int i = 0; i < jointInspectorReference.Count; i++) 
+            {
+                DistanceText.text = NewDistance.ToString();
+                jointInspectorReference[i].setlength(NewDistance);
+            }
+        }
+		else 
+        {
+            DistanceText.text = NewDistance.ToString();
+            jointInspectorReference[jointInspectorINDEX].setlength(NewDistance);
+        }
+            
     }
     public void InspectorChangeDamping(System.Single NewDamping)
     {
+        if (ALLSELECTED)
+        {
+            for (int i = 0; i < jointInspectorReference.Count; i++)
+            {
+                DampingText.text = NewDamping.ToString();
+                jointInspectorReference[i].setdampingRatio(NewDamping);
+            }
 
+        }
+        else 
+        {
+            DampingText.text = NewDamping.ToString();
+            jointInspectorReference[jointInspectorINDEX].setdampingRatio(NewDamping);
+        }
+        
     }
     public void InspectorChangeFrequency(System.Single NewFrequency) 
     {
+        if (ALLSELECTED)
+        {
+            for (int i = 0; i < jointInspectorReference.Count; i++) 
+            {
+                FrequencyText.text = NewFrequency.ToString();
+                jointInspectorReference[i].setfrequency(NewFrequency);
+            }
+        }
+        else 
+        {
+            FrequencyText.text = NewFrequency.ToString();
+            jointInspectorReference[jointInspectorINDEX].setfrequency(NewFrequency);
+        }
         
     }
     public void InspectorSelectAllTogggle(System.Boolean newSelectAll) 
     {
-        
+        if (newSelectAll == true)
+        {
+            ALLSELECTED = true;
+            SelectAllJoints();
+        }
+        else 
+        {
+            ALLSELECTED = false;
+            SelectSpecificJoint(jointInspectorINDEX);
+        }
     }
 
     public void InspectorDeleteClick() 
     {
         
+        if (ALLSELECTED)
+        {
+            for (int i = 0; i < jointInspectorReference.Count; i++) 
+            {
+                physicsManager.RemoveJoint(jointInspectorReference[i]);
+                Destroy(jointInspectorReference[i].gameObject);
+            }
+            gameManager.JointManager();
+        }
+        else 
+        {
+            physicsManager.RemoveJoint(jointInspectorReference[jointInspectorINDEX]);
+            Destroy(jointInspectorReference[jointInspectorINDEX].gameObject);
+            jointInspectorReference = physicsManager.GetAllNonSoftBodyJoints();
+            if (jointInspectorReference.Count <= 0)
+            {
+                gameManager.JointManager();
+            }
+            else 
+            {
+                JointInspectorInitialize(jointInspectorReference);
+            }
+
+        }
+    }
+
+    public void JointInspectorInitialize(List<DistanceJoints> joints) 
+    {
+        jointInspectorReference = joints;
+        SelectedJointSlider.maxValue = jointInspectorReference.Count;
+        SelectedJointSlider.value = 1;
+        InspectorSelectedJoint(1);
+    }
+
+    private void SelectSpecificJoint(int index) 
+    {
+        for (int i = 0; i < index; i++) 
+        {
+            jointInspectorReference[i].lr.SetColors(Color.magenta, Color.magenta);
+            jointInspectorReference[i].lr.material = new Material(Shader.Find("Sprites/Default"));
+        }
+        
+        jointInspectorReference[index].lr.SetColors(Color.white, Color.white);
+        jointInspectorReference[index].lr.material = new Material(Shader.Find("Sprites/Default"));
+        for (int i = index + 1; i < jointInspectorReference.Count; i++) 
+        {
+            jointInspectorReference[i].lr.SetColors(Color.magenta, Color.magenta);
+            jointInspectorReference[i].lr.material = new Material(Shader.Find("Sprites/Default"));
+        }
+    }
+    private void SelectAllJoints() 
+    {
+        for (int i = 0; i < jointInspectorReference.Count; i++)
+        {
+            jointInspectorReference[i].lr.SetColors(Color.white, Color.white);
+            jointInspectorReference[i].lr.material = new Material(Shader.Find("Sprites/Default"));
+        }
+    }
+    public void DeselectAll() 
+    {
+        for (int i = 0; i < jointInspectorReference.Count; i++)
+        {
+            jointInspectorReference[i].lr.SetColors(Color.magenta, Color.magenta);
+            jointInspectorReference[i].lr.material = new Material(Shader.Find("Sprites/Default"));
+        }
+        SelectAllToggle.isOn = false;
+        ALLSELECTED = false;
     }
 }

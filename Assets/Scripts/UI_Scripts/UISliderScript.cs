@@ -349,6 +349,10 @@ public class UISliderScript : MonoBehaviour
         {
             JointCreatorPoints[0].transform.position = JointReference[0].transform.position;
             Vector3[] position = new Vector3[] { JointCreatorPoints[0].transform.position, currentShadowObject.transform.position };
+            position[0].z = -8;
+            position[1].z = -8;
+            Color col = Color.cyan;
+            JointCreatorLineRenderer.SetColors(col, col);
             JointCreatorLineRenderer.SetPositions(position);
         }
 
@@ -371,7 +375,7 @@ public class UISliderScript : MonoBehaviour
             JointReference.Remove(JointReference[0]);
             JointCreatorLineRenderer.SetPosition(0, Vector3.zero);
             JointCreatorLineRenderer.SetPosition(1, Vector3.zero);
-
+            inspectorScript.JointInspectorInitialize(physicsManager.GetAllNonSoftBodyJoints());
             counter = 0;
             ResetMouseState();
         }
@@ -392,7 +396,7 @@ public class UISliderScript : MonoBehaviour
                 if (inspectorScript.selectedIndex == -1)
                 {
                     inspectorScript.SetOffInspectorContent();
-                    if (gameManager.jmState) bo = gameManager.JointManager();
+                    if (gameManager.jmState)gameManager.JointManager();
                 }
                 
                 bo = physicsManager.SelectSpecificObject(inspectorScript.selectedIndex, prefabHolder, inspectorScript.SELECTEDOBJECTGAMEOBJECT);
@@ -560,6 +564,8 @@ public class UISliderScript : MonoBehaviour
         MOUSESTATE = -1;
         Destroy(currentShadowObject);
         currentShadowObject = null;
+       
+
         for (int i = meshCreatorPoints.Count - 1; i >= 0; i--)
         {
             Destroy(meshCreatorPoints[i]);
