@@ -103,7 +103,7 @@ public class DistanceJoints : MonoBehaviour
         Vector3 pa = ra + anchorA;
         Vector3 pb = rb + anchorB;   
         
-        Vector3 d = pa - pb;
+        Vector3 d = pb - pa;
 
         // Compute the current length 
         float currentLength = d.magnitude;
@@ -113,9 +113,9 @@ public class DistanceJoints : MonoBehaviour
         float crossA = d.x * ra.y - d.y * ra.x;
         float crossB = d.x * rb.y - d.y * rb.x;
         float invEffectiveMass;
-        if (bpA.getIsStatic()) { invEffectiveMass = invMassB + crossB * crossB * invInertiaB / d.sqrMagnitude; }
-        else if (bpB.getIsStatic()) { invEffectiveMass = invMassA + crossA * crossA * invInertiaA / d.sqrMagnitude; }
-        else { invEffectiveMass = invMassSum + crossA * crossA * invInertiaA / d.sqrMagnitude + crossB * crossB * invInertiaB / d.sqrMagnitude; }
+        if (bpA.getIsStatic()) { invEffectiveMass = invMassB + crossB * crossB * invInertiaB ; }
+        else if (bpB.getIsStatic()) { invEffectiveMass = invMassA + crossA * crossA * invInertiaA ; }
+        else { invEffectiveMass = invMassSum + crossA * crossA * invInertiaA  + crossB * crossB * invInertiaB ; }
 
         float m = invEffectiveMass != 0 ? 1 / invEffectiveMass : 0;
         if (frequency >= 0.0f)
@@ -135,19 +135,17 @@ public class DistanceJoints : MonoBehaviour
         float w1 = bpA.getAngularVelocity();
         float w2 = bpB.getAngularVelocity();
 
-        Vector3 raCross = Vector3.Cross(new Vector3(0.0f, 0.0f, w1), ra);
-        Vector3 rbCross = Vector3.Cross(new Vector3(0.0f, 0.0f, w2), rb);
+        Vector3 raCross = new Vector3(-w1 * ra.y, w2 * ra.x, 0);
+        Vector3 rbCross = new Vector3(-w1 * rb.y, w2 * rb.x,0);
 
         Vector3 dv = v2 + rbCross - v1 - raCross;
-        Vector3 J = new Vector3(-d.x, -d.y, 0) / d.sqrMagnitude;
+        Vector3 J = d / d.sqrMagnitude;
         float jv = Vector3.Dot(dv, J);
 
         // Compute the impulse magnitude for the constraint
-        float impulseMag = m * (jv + bias + gamma);
+        float impulseMag = m * -(jv + bias + gamma);
 
         // Compute the corrective impulse and apply it to the bodies
-        float impulseA = impulseMag * invMassA;
-        float impulseB = impulseMag * invMassB;
         Vector3 impulseDir = d.normalized;
         if (onlyPull)
         {
@@ -161,14 +159,14 @@ public class DistanceJoints : MonoBehaviour
         //prevent any impulse added if static... 
         if (!bpA.getIsStatic())
         {
-            v1 -= impulseA * impulseDir;
-            w1 -= Vector3.Dot(-J, ra* impulseMag) * invInertiaA;
+            v1 -= impulseMag * invMassA * impulseDir;
+            w1 -= Vector3.Dot(J, new Vector3(ra.y* -impulseMag,impulseMag *ra.x,0)) * invInertiaA;
             bpA.SetVelocity(v1, w1, timeStep);
         }
         if (!bpB.getIsStatic())
         {
-            v2 += impulseB * impulseDir;
-            w2 -= Vector3.Dot(-J, rb * impulseMag) * invInertiaB;
+            v2 += impulseMag * invMassB * impulseDir;
+            w2 += Vector3.Dot(J, new Vector3(rb.y * -impulseMag, impulseMag * rb.x, 0)) * invInertiaB;
 
             bpB.SetVelocity(v2, w2, timeStep);
         }
