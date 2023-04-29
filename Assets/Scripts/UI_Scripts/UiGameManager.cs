@@ -86,7 +86,7 @@ public class UiGameManager : MonoBehaviour
 
 
         ShowGamePanel();
-        PlayScene();
+        boutonPlayImage.color = buttonPressedColor;
         Screen.SetResolution(1920, 1080, GameConstants.Fullscreen, 60); //int width, int height, bool fullscreen, int preferredRefreshRate (0 = unlimited)
         FullscreenToggle.GetComponent<Toggle>().isOn = GameConstants.Fullscreen;
         MusicSlider.GetComponent<Slider>().value = GameConstants.MusicVolume;
