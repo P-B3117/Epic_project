@@ -61,8 +61,8 @@ public class DistanceJoints : MonoBehaviour
             //just for keeping track of the position 
             transform.position = (anchorB + anchorA) / 2.0f;
             Vector3[] LinePoints = new Vector3[2];
-            LinePoints[0] = anchorA;
-            LinePoints[1] = anchorB;
+            LinePoints[0] = anchorA + (bodyA.rotation) * offsetA;
+            LinePoints[1] = anchorB + (bodyB.rotation) * offsetB;
             LinePoints[0].z = -8;
             LinePoints[1].z = -8;
             lr.SetPositions(LinePoints);
@@ -83,7 +83,7 @@ public class DistanceJoints : MonoBehaviour
         invInertiaSum = invInertiaA + invInertiaB;
         invMassSum = invMassA + invMassB;
       
-            fakemass = 1;
+        fakemass = 1;
         fakeSoftness = 0.0f;
         fakeSize = 1;
         lr = this.gameObject.AddComponent<LineRenderer>();
@@ -110,14 +110,8 @@ public class DistanceJoints : MonoBehaviour
 
         // Compute the effective mass of the constraint 
         // M = (J · M^-1 · J^t)^-1
-        float crossA = d.x * ra.y - d.x * ra.x;
-        float crossB = d.x * rb.y - d.x * rb.x;
-        invMassA = 1.0f / mcA.GetMass();
-        invMassB = 1.0f / mcB.GetMass();
-        invInertiaA = 1.0f / mcA.GetInertia();
-        invInertiaB = 1.0f / mcB.GetInertia();
-        invInertiaSum = invInertiaA + invInertiaB;
-        invMassSum = invMassA + invMassB;
+        float crossA = d.x * ra.y - d.y * ra.x;
+        float crossB = d.x * rb.y - d.y * rb.x;
         float invEffectiveMass;
         if (bpA.getIsStatic()) { invEffectiveMass = invMassB + crossB * crossB * invInertiaB / d.sqrMagnitude; }
         else if (bpB.getIsStatic()) { invEffectiveMass = invMassA + crossA * crossA * invInertiaA / d.sqrMagnitude; }
@@ -145,7 +139,7 @@ public class DistanceJoints : MonoBehaviour
         Vector3 rbCross = Vector3.Cross(new Vector3(0.0f, 0.0f, w2), rb);
 
         Vector3 dv = v2 + rbCross - v1 - raCross;
-        Vector3 J = new Vector3(-d.x, -d.y, -crossA) / d.sqrMagnitude;
+        Vector3 J = new Vector3(-d.x, -d.y, 0) / d.sqrMagnitude;
         float jv = Vector3.Dot(dv, J);
 
         // Compute the impulse magnitude for the constraint
@@ -168,13 +162,13 @@ public class DistanceJoints : MonoBehaviour
         if (!bpA.getIsStatic())
         {
             v1 -= impulseA * impulseDir;
-            w1 -= Vector3.Dot(impulse, ra) * invInertiaA;
+            w1 -= Vector3.Dot(-J, ra* impulseMag) * invInertiaA;
             bpA.SetVelocity(v1, w1, timeStep);
         }
         if (!bpB.getIsStatic())
         {
             v2 += impulseB * impulseDir;
-            w2 += Vector3.Dot(impulse, rb) * invInertiaB;
+            w2 -= Vector3.Dot(-J, rb * impulseMag) * invInertiaB;
 
             bpB.SetVelocity(v2, w2, timeStep);
         }
