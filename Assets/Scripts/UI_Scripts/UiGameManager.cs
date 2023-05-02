@@ -77,7 +77,7 @@ public class UiGameManager : MonoBehaviour
     {
         jmButtonImage = jmButton.GetComponent<Image>();
         boutonCurseurImage = boutonCurseur.GetComponent<Image>();
-        boutonSingleDeleteImage = boutonCurseur.GetComponent<Image>();
+        boutonSingleDeleteImage = boutonSingleDelete.GetComponent<Image>();
         boutonGImage = boutonG.GetComponent<Image>();
         boutonFF2Image = boutonFF2.GetComponent<Image>();
         boutonFF3Image = boutonFF3.GetComponent<Image>();
