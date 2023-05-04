@@ -44,6 +44,10 @@ public class UiGameManager : MonoBehaviour
     public GameObject boutonPlay;
     public UIInspectorScript inspectorScript;
     public UISliderScript sliderScript;
+    public GameObject buttonParent;
+    public GameObject settingButton;
+    public GameObject viewport;
+    public GameObject inspectorParent;
 
     private Vector3 lastPosition;
     private Color buttonNormalColor = new Color(1f, 1f, 1f, 1f);
@@ -75,6 +79,7 @@ public class UiGameManager : MonoBehaviour
 
     void Start()
     {
+        ChangeTime("1");
         jmButtonImage = jmButton.GetComponent<Image>();
         boutonCurseurImage = boutonCurseur.GetComponent<Image>();
         boutonSingleDeleteImage = boutonSingleDelete.GetComponent<Image>();
@@ -414,39 +419,19 @@ public class UiGameManager : MonoBehaviour
 
     public void ShowSettingsPanel()
     {
-        GamePanel.SetActive(false);
-        ToolPanel.SetActive(true);
-        ScrollViewPanel.SetActive(true);
-        SettingPanel.SetActive(true);
-        InspectorPanel.SetActive(true);
-        GameviewPanel.SetActive(true);
         PausePanel.SetActive(false);
-        PhysicsPanel.SetActive(false);
         SettingsPanel.SetActive(true);
     }
 
     public void ShowPhysicsPanel()
     {
-        GamePanel.SetActive(false);
-        ToolPanel.SetActive(true);
-        ScrollViewPanel.SetActive(true);
-        SettingPanel.SetActive(true);
-        InspectorPanel.SetActive(true);
-        GameviewPanel.SetActive(true);
         PausePanel.SetActive(false);
-        SettingsPanel.SetActive(false);
         PhysicsPanel.SetActive(true);
     }
 
     public void ShowPausePanel()
     {
-
-        GamePanel.SetActive(true);
-        ToolPanel.SetActive(true);
-        ScrollViewPanel.SetActive(true);
-        SettingPanel.SetActive(true);
-        InspectorPanel.SetActive(true);
-        GameviewPanel.SetActive(true);
+        DisableInteraction();
         SettingsPanel.SetActive(false);
         PhysicsPanel.SetActive(false);
         PausePanel.SetActive(true);
@@ -454,15 +439,27 @@ public class UiGameManager : MonoBehaviour
 
     public void ShowGamePanel()
     {
-        ToolPanel.SetActive(true);
-        ScrollViewPanel.SetActive(true);
-        SettingPanel.SetActive(true);
-        InspectorPanel.SetActive(true);
-        GameviewPanel.SetActive(true);
-        GamePanel.SetActive(true);
-        SettingsPanel.SetActive(false);
+        EnableInteraction();
         PausePanel.SetActive(false);
-        PhysicsPanel.SetActive(false);
+    }
+
+    public void DisableInteraction()
+    {
+        sliderScript.ResetMouseState();
+        inspectorParent.SetActive(false);
+        buttonParent.SetActive(false);
+        viewport.SetActive(false);
+        settingButton.SetActive(false);
+        GamePanel.SetActive(false);
+    }
+
+    public void EnableInteraction()
+    {
+        inspectorParent.SetActive(true);
+        buttonParent.SetActive(true);
+        viewport.SetActive(true);
+        settingButton.SetActive(true);
+        GamePanel.SetActive(true);
     }
 
     public void ChangeFullscreenState(bool check)
