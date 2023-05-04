@@ -97,12 +97,13 @@ public class DistanceJoints : MonoBehaviour
         Transform bodyB = bo2.transform;
         anchorA = bodyA.position;
         anchorB = bodyB.position;
-        Vector3 ra = (bodyA.rotation) * offsetA;
-        Vector3 rb = (bodyB.rotation) * offsetB;
+        Vector3 ra = (bodyA.localRotation) * offsetA;
+        Vector3 rb = (bodyB.localRotation) * offsetB;
+        Debug.Log("ra : " + ra + " rb : " + rb);
         // Compute the vector between the two anchor points
         Vector3 pa = ra + anchorA;
-        Vector3 pb = rb + anchorB;   
-        
+        Vector3 pb = rb + anchorB;
+
         Vector3 d = pb - pa;
 
         // Compute the current length 
@@ -113,9 +114,9 @@ public class DistanceJoints : MonoBehaviour
         float crossA = d.x * ra.y - d.y * ra.x;
         float crossB = d.x * rb.y - d.y * rb.x;
         float invEffectiveMass;
-        if (bpA.getIsStatic()) { invEffectiveMass = invMassB + crossB * crossB * invInertiaB ; }
-        else if (bpB.getIsStatic()) { invEffectiveMass = invMassA + crossA * crossA * invInertiaA ; }
-        else { invEffectiveMass = invMassSum + crossA * crossA * invInertiaA  + crossB * crossB * invInertiaB ; }
+        if (bpA.getIsStatic()) { invEffectiveMass = invMassB + crossB * crossB * invInertiaB; }
+        else if (bpB.getIsStatic()) { invEffectiveMass = invMassA + crossA * crossA * invInertiaA; }
+        else {invEffectiveMass = invMassSum + crossA * crossA * invInertiaA + crossB * crossB * invInertiaB; }
 
         float m = invEffectiveMass != 0 ? 1 / invEffectiveMass : 0;
         if (frequency >= 0.0f)
@@ -135,12 +136,12 @@ public class DistanceJoints : MonoBehaviour
         float w1 = bpA.getAngularVelocity();
         float w2 = bpB.getAngularVelocity();
 
-        Vector3 raCross = new Vector3(-w1 * ra.y, w2 * ra.x, 0);
-        Vector3 rbCross = new Vector3(-w1 * rb.y, w2 * rb.x,0);
+        Vector3 raCross = new Vector3(-w1 * ra.y, w1 * ra.x, 0);
+        Vector3 rbCross = new Vector3(-w2 * rb.y, w2 * rb.x,0);
 
         Vector3 dv = v2 + rbCross - v1 - raCross;
         Vector3 J = d / d.sqrMagnitude;
-        float jv = Vector3.Dot(dv, J);
+        float jv = Vector3.Dot(dv, J.normalized);
 
         // Compute the impulse magnitude for the constraint
         float impulseMag = m * -(jv + bias + gamma);
