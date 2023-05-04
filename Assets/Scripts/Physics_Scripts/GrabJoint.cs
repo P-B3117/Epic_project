@@ -61,11 +61,11 @@ public class GrabJoint : MonoBehaviour
         Transform bodyA = bo1.transform;
         anchorA = bodyA.position;
         Vector3 anchorB = cursorPosition;
-
+        
 
         // Compute the current length 
         float currentLength = d.magnitude;
-        // Calculate the matrix K
+        // Calculate the matrix K inverse
         float k11 = invMassA + invInertiaA * anchorA.y * anchorA.y;
         float k12 = -invInertiaA * anchorA.y * anchorA.x;
         float k21 = -invInertiaA * anchorA.x * anchorA.y;
@@ -83,17 +83,17 @@ public class GrabJoint : MonoBehaviour
 
 
 
-        Vector2 bias = (anchorB - anchorA) * beta / timeStep;
+        Vector2 bias = (( anchorA- anchorB) * beta) / timeStep;
       
         Vector3 v1 = bpA.getVelocity();
         float w1 = bpA.getAngularVelocity();
 
         Vector2 jv = v1 + d;
-        Vector2 lambda = new Vector2(-(jv.x + gamma + bias.x), -(jv.y + gamma + bias.y));
+        Vector2 lambda = new Vector2( -(jv.x + bias.x), -(jv.y + bias.y));
+        //matrix multiplication [2x2][1x2]^t so m1*lamda^t and m2*lamda^t 
+        Vector3 impulse = new Vector2(lambda.x * m1.x + lambda.y * m1.y, lambda.x * m2.x + lambda.y * m2.y);
 
-        Vector2 impulse0 = new Vector2(lambda.x * m1.x + lambda.y * m2.x, lambda.x * m1.y + lambda.y * m2.y);
-
-        Vector3 impulse = new Vector3(-impulse0.x, -impulse0.y, 0);
+        
 
         //prevent any impulse added if static... 
         if (!bpA.getIsStatic())
