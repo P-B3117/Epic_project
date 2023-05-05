@@ -125,11 +125,12 @@ public class DistanceJoints : MonoBehaviour
         }
         // Compute beta and gamma values
         ComputeBetaAndGamma(timeStep);
-        // Compute the bias term for the constraint
 
+        //Résolution de contraintes *****************************************************************************
+        // Compute the bias term for the constraint
         float bias = (currentLength - length) * beta / timeStep;
 
-        // Compute the relative velocities and Jacobian for the constraint
+        // Compute the relative velocities
         // J = [-t^t, -(ra + d)×t, t^t, rb×t]
         Vector3 v1 = bpA.getVelocity();
         Vector3 v2 = bpB.getVelocity();
@@ -140,13 +141,15 @@ public class DistanceJoints : MonoBehaviour
         Vector3 rbCross = new Vector3(-w2 * rb.y, w2 * rb.x,0);
 
         Vector3 dv = v2 + rbCross - v1 - raCross;
+        // Compute Jacobian for the constraint 
+        
         Vector3 J = d / d.sqrMagnitude;
-        float jv = Vector3.Dot(dv, J.normalized);
+        float jv;
+        if (offsetA == new Vector3(0,0,0) && offsetB == new Vector3(0, 0, 0)) jv = Vector3.Dot(dv, J);
+        else jv = Vector3.Dot(dv, J.normalized);
 
-        // Compute the impulse magnitude for the constraint
+        // Compute the corrective impulse 
         float impulseMag = m * -(jv + bias + gamma);
-
-        // Compute the corrective impulse and apply it to the bodies
         Vector3 impulseDir = d.normalized;
         if (onlyPull)
         {
@@ -157,7 +160,7 @@ public class DistanceJoints : MonoBehaviour
         }
 
         Vector3 impulse = impulseMag * impulseDir;
-        //prevent any impulse added if static... 
+        //Apply corrective impulse 
         if (!bpA.getIsStatic())
         {
             v1 -= impulse * invMassA ;
@@ -189,17 +192,20 @@ public class DistanceJoints : MonoBehaviour
         {
             // β = hk / (c + hk)
             // γ = 1 / (c + hk)
+            // k = m * ω^2
+            // c = 2 * m * ζ * ω
             //https://box2d.org/files/ErinCatto_SoftConstraints_GDC2011.pdf 
 
             float omega = 2.0f * Mathf.PI * frequency;
             float k = jointMass * omega * omega;               // Spring
             float h = timeStep;
-            float d = 2.0f * jointMass * dampingRatio * omega; // Damping coefficient
+            float c = 2.0f * jointMass * dampingRatio * omega; // Damping coefficient
 
-            beta = h * k / (d + h * k);
-            gamma = 1.0f / ((d + h * k) * h);
+            beta = h * k / (c + h * k);
+            gamma = 1.0f / (c + h * k);
         }
     }
+   
 
     public float getbeta()
     {
