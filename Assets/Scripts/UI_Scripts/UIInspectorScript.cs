@@ -116,9 +116,9 @@ public class UIInspectorScript : MonoBehaviour
                
                 MassSlider.value = mc.GetMass();
 
-                //BoucinessSlider.value = bo.getBounciness();
-                //StaticFrictionSlider.value = bo.getStaticFriction();
-                //DynamicFrictionSlider.value = bo.getDynamicFriction();
+                BoucinessSlider.value = bo.getBounciness();
+                StaticFrictionSlider.value = bo.getStaticFriction();
+                DynamicFrictionSlider.value = bo.getDynamicFriction();
 
 
                 gameManager.draggable = true;
