@@ -160,13 +160,13 @@ public class DistanceJoints : MonoBehaviour
         //prevent any impulse added if static... 
         if (!bpA.getIsStatic())
         {
-            v1 -= impulseMag * invMassA * impulseDir;
+            v1 -= impulse * invMassA ;
             w1 -= Vector3.Dot(J, new Vector3(ra.y* -impulseMag,impulseMag *ra.x,0)) * invInertiaA;
             bpA.SetVelocity(v1, w1, timeStep);
         }
         if (!bpB.getIsStatic())
         {
-            v2 += impulseMag * invMassB * impulseDir;
+            v2 += impulse * invMassB ;
             w2 += Vector3.Dot(J, new Vector3(rb.y * -impulseMag, impulseMag * rb.x, 0)) * invInertiaB;
 
             bpB.SetVelocity(v2, w2, timeStep);
