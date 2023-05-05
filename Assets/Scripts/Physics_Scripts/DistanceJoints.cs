@@ -94,7 +94,7 @@ public class DistanceJoints : MonoBehaviour
 
         
         dampingRatio = Mathf.Clamp(dampingRatio, 0.0f, 1.0f);
-        ComputeBetaAndGamma(timeStep);
+        
         //get positions 
         Transform bodyA = bo1.transform;
         Transform bodyB = bo2.transform;
@@ -118,15 +118,15 @@ public class DistanceJoints : MonoBehaviour
         // J = [-n, -n×ra, n, n×rb]
         // ( n = (anchorB-anchorA) / ||anchorB-anchorA|| )
         // ra, rb = vec from center of mass to offset 
-        // crossA or b = nxra
         float crossA = Vector3.Cross(n,ra).z;
         float crossB = Vector3.Cross(n, rb).z;
         float invEffectiveMass;
         //first part is transitional aspect of the equation and the two second ones are relative to the rotation 
-        invEffectiveMass = invMassSum + crossA * crossA * invInertiaA + crossB * crossB * invInertiaB + gamma; 
+        invEffectiveMass = invMassSum + crossA * crossA * invInertiaA + crossB * crossB * invInertiaB ;
 
+        ComputeBetaAndGamma(timeStep);
+        float m = invEffectiveMass + gamma != 0 ? 1 / invEffectiveMass + gamma : 0;
 
-        float m = invEffectiveMass != 0 ? 1 / invEffectiveMass : 0;
         if (frequency >= 0.0f)
         {
             jointMass = m;
@@ -139,7 +139,7 @@ public class DistanceJoints : MonoBehaviour
         float bias = (currentLength - length) * beta / timeStep;
 
         // Compute the relative velocities
-        // J = [-t^t, -(ra + d)×t, t^t, rb×t]
+        
         Vector3 v1 = bpA.getVelocity();
         Vector3 v2 = bpB.getVelocity();
         float w1 = bpA.getAngularVelocity();
