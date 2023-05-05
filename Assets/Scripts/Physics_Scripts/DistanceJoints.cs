@@ -15,7 +15,7 @@ public class DistanceJoints : MonoBehaviour
     public float frequency;
     public float dampingRatio;
     public float length;
-    public bool onlyPull;
+  
     public Vector3 offsetA;
     public Vector3 offsetB;
     //private Vector3 localAnchorA;
@@ -91,11 +91,10 @@ public class DistanceJoints : MonoBehaviour
     }
     public void UpdateJointState(float timeStep)
     {
-
-        
+        // Clamp damping ratio between 0 and 1
         dampingRatio = Mathf.Clamp(dampingRatio, 0.0f, 1.0f);
-        
-        //get positions 
+
+        // Get the transforms of both bodies and anchor points
         Transform bodyA = bo1.transform;
         Transform bodyB = bo2.transform;
         anchorA = bodyA.position;
@@ -106,25 +105,29 @@ public class DistanceJoints : MonoBehaviour
         // Compute the vector between the two anchor points
         Vector3 pa = anchorA + ra;
         Vector3 pb = anchorB+ rb;
-        
         Vector3 d = (pb - pa);
        
         // Compute the current length 
         float currentLength = d.magnitude;
 
+        // Compute the normalized direction vector between the two anchor points
         Vector3 n = d.normalized;
+
         // Compute the effective mass of the constraint 
         // M = (J · M^-1 · J^t)^-1
         // J = [-n, -n×ra, n, n×rb]
         // ( n = (anchorB-anchorA) / ||anchorB-anchorA|| )
         // ra, rb = vec from center of mass to offset 
-        float crossA = Vector3.Cross(n,ra).z;
+        float crossA = Vector3.Cross(-n,ra).z;
         float crossB = Vector3.Cross(n, rb).z;
         float invEffectiveMass;
         //first part is transitional aspect of the equation and the two second ones are relative to the rotation 
         invEffectiveMass = invMassSum + crossA * crossA * invInertiaA + crossB * crossB * invInertiaB ;
 
+        // Compute beta and gamma values
         ComputeBetaAndGamma(timeStep);
+
+        // Compute the joint mass
         float m = invEffectiveMass + gamma != 0 ? 1 / invEffectiveMass + gamma : 0;
 
         if (frequency >= 0.0f)
@@ -139,38 +142,28 @@ public class DistanceJoints : MonoBehaviour
         float bias = (currentLength - length) * beta / timeStep;
 
         // Compute the relative velocities
-        
         Vector3 v1 = bpA.getVelocity();
         Vector3 v2 = bpB.getVelocity();
         float w1 = bpA.getAngularVelocity();
         float w2 = bpB.getAngularVelocity();
-        
         Vector3 raCross = new Vector3(-w1*ra.y, w1*ra.x, 0); 
-        Vector3 rbCross = new Vector3(w2*-rb.y,w2*rb.x,0);
+        Vector3 rbCross = new Vector3(-w2*rb.y,w2*rb.x,0);
         //vitesse relative (dériver de vitesse)
         Vector3 dv = v2 + rbCross - v1 - raCross;
-        // Compute Jacobian for the constraint 
 
-        // J = d / ||d||
-        Vector3 J = d /d.sqrMagnitude;
+        // Compute Jacobian for the constraint (C = impulse Dir)
+        Vector3 J = d / d.sqrMagnitude ;
         float jv = Vector3.Dot(dv, J);
         // Compute the corrective impulse 
         float impulseMag = -m *(jv + bias);
         
-        if (onlyPull)
-        {
-            if (currentLength <= length)
-            {
-                J = Vector3.zero;
-            }
-        }
 
         Vector3 impulse = impulseMag * J;
         //Apply corrective impulse 
         if (!bpA.getIsStatic())
         {
             v1 -= impulse * invMassA ;
-            w1 -= Vector3.Dot(new Vector3( -ra.y*impulseMag,ra.x*impulseMag),J ) * invInertiaA;
+            w1 -= Vector3.Dot(new Vector3( -ra.y*impulseMag,ra.x*impulseMag), J) * invInertiaA;
             bpA.SetVelocity(v1, w1, timeStep);
         }
         if (!bpB.getIsStatic())
@@ -203,7 +196,7 @@ public class DistanceJoints : MonoBehaviour
             //https://box2d.org/files/ErinCatto_SoftConstraints_GDC2011.pdf 
 
             float omega = 2.0f * Mathf.PI * frequency;
-            float k = jointMass * omega * omega;               // Spring
+            float k = 2* jointMass * omega * omega;               // Spring
             float h = timeStep;
             float c = 2.0f * jointMass * dampingRatio * omega; // Damping coefficient
 
