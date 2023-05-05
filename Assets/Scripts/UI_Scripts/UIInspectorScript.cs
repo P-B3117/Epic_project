@@ -148,8 +148,7 @@ public class UIInspectorScript : MonoBehaviour
                 //Resets the materials for everyobject
                 physicsManager.SelectSpecificObject(-1, prefabHolder, SELECTEDOBJECTGAMEOBJECT);
                 SELECTEDOBJECTGAMEOBJECT = parent;
-                //Set the material for the softbody
-                parent.GetComponent<MeshRenderer>().material = prefabHolder.GetSelectedObjectMaterial();
+                
 
                 DistanceJoints[] softBodyDJ = parent.GetComponentsInChildren<DistanceJoints>();
                 BasicPhysicObject[] softBodyBO = parent.GetComponentsInChildren<BasicPhysicObject>();
@@ -176,6 +175,9 @@ public class UIInspectorScript : MonoBehaviour
 
                     physicsManager.AddGrabJoint(jo);
                 }
+                print(1);
+                //Set the material for the softbody
+                parent.GetComponent<MeshRenderer>().material = prefabHolder.GetSelectedObjectMaterial();
             }
 
         }

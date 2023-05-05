@@ -74,6 +74,8 @@ public class UiGameManager : MonoBehaviour
     [HideInInspector]
     public bool draggable = false;
 
+    private BasicPhysicObject bo = null;
+
 
     private float gravityBefore, AirDensityBefore;
 
@@ -119,12 +121,15 @@ public class UiGameManager : MonoBehaviour
 
 
         
-        BasicPhysicObject bo;
+        
         GameObject parent;
 		Vector3 mousePosition = Camera.main.ScreenToWorldPoint(Input.mousePosition);
-		bo = physicsManager.SelectSpecificObject(inspectorScript.selectedIndex, prefabHolder, inspectorScript.SELECTEDOBJECTGAMEOBJECT);
+		
 		parent = null;
-
+        if (bo == null && (Input.GetMouseButtonDown(0))) 
+        {
+            bo = physicsManager.SelectSpecificObject(inspectorScript.selectedIndex, prefabHolder, inspectorScript.SELECTEDOBJECTGAMEOBJECT);
+        }
 		if (!singleDelete && bo != null && bo.transform.parent != null) parent = bo.transform.parent.gameObject;
 		if (draggable && pause && mousePosition.x > -28.25f && mousePosition.x < 28.25 && mousePosition.y > -20 && mousePosition.y < 20 && bo != null)
 		{
@@ -161,6 +166,7 @@ public class UiGameManager : MonoBehaviour
 		{
 			draggable = false;
 			lastPosition = Vector3.zero;
+            bo = null;
 		}
 		
 	}

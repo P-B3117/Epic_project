@@ -473,6 +473,7 @@ public class PhysicsManager : MonoBehaviour
 	//when index is bigger or equal to 0 : Resets all objects except for the selected one;
 	public BasicPhysicObject SelectSpecificObject(int index, PrefabsHolder ph, GameObject oldSelectedObject) 
 	{
+		print("Test");
 		//For deselecting the selected softbody
 		if (oldSelectedObject != null)
 		{
