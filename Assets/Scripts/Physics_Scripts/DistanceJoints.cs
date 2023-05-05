@@ -141,14 +141,15 @@ public class DistanceJoints : MonoBehaviour
 
         Vector3 dv = v2 + rbCross - v1 - raCross;
         // Compute Jacobian for the constraint 
-        
+
+        // J = d / ||d||
         Vector3 J = d / d.sqrMagnitude;
         float jv;
         if (offsetA == new Vector3(0,0,0) && offsetB == new Vector3(0, 0, 0)) jv = Vector3.Dot(dv, J);
         else jv = Vector3.Dot(dv, J.normalized);
 
         // Compute the corrective impulse 
-        float impulseMag = m * -(jv + bias + gamma);
+        float impulseMag = -m *(jv + bias + gamma);
         Vector3 impulseDir = d.normalized;
         if (onlyPull)
         {
@@ -201,7 +202,7 @@ public class DistanceJoints : MonoBehaviour
             float c = 2.0f * jointMass * dampingRatio * omega; // Damping coefficient
 
             beta = h * k / (c + h * k);
-            gamma = 1.0f / (c + h * k);
+            gamma = 1.0f / ((c + h * k)*h);
         }
     }
    
