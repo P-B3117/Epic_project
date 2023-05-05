@@ -201,7 +201,7 @@ public class UiGameManager : MonoBehaviour
 
     public void LoadMenuScene()
     {
-        SceneManager.LoadScene(1);
+        SceneManager.LoadScene(0);
     }
 
     // bouton curseur (1)

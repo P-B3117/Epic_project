@@ -729,7 +729,7 @@ MonoBehaviour:
   m_OnClick:
     m_PersistentCalls:
       m_Calls:
-      - m_Target: {fileID: 116850877}
+      - m_Target: {fileID: 216224792}
         m_TargetAssemblyTypeName: PlayButtonScript, Assembly-CSharp
         m_MethodName: OnClickBasicSandBox
         m_Mode: 1
@@ -944,6 +944,7 @@ GameObject:
   m_Component:
   - component: {fileID: 216224791}
   - component: {fileID: 216224790}
+  - component: {fileID: 216224792}
   m_Layer: 0
   m_Name: UiManager
   m_TagString: Untagged
@@ -992,6 +993,18 @@ RectTransform:
   m_AnchoredPosition: {x: 550.5, y: 257}
   m_SizeDelta: {x: 100, y: 100}
   m_Pivot: {x: 0.5, y: 0.5}
+--- !u!114 &216224792
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 216224789}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 60297422b6993854bb1d943cb9de9125, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1 &332509306
 GameObject:
   m_ObjectHideFlags: 0
@@ -3576,7 +3589,6 @@ GameObject:
   - component: {fileID: 1474743150}
   - component: {fileID: 1474743149}
   - component: {fileID: 1474743148}
-  - component: {fileID: 1474743152}
   - component: {fileID: 1474743153}
   m_Layer: 5
   m_Name: FluidSandboxButton
@@ -3670,7 +3682,7 @@ MonoBehaviour:
   m_OnClick:
     m_PersistentCalls:
       m_Calls:
-      - m_Target: {fileID: 1474743152}
+      - m_Target: {fileID: 216224792}
         m_TargetAssemblyTypeName: PlayButtonScript, Assembly-CSharp
         m_MethodName: OnClickFluidSandBox
         m_Mode: 1
@@ -3720,18 +3732,6 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1474743146}
   m_CullTransparentMesh: 1
---- !u!114 &1474743152
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1474743146}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 60297422b6993854bb1d943cb9de9125, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
 --- !u!95 &1474743153
 Animator:
   serializedVersion: 5
