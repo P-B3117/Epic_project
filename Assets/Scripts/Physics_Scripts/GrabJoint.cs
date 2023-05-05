@@ -41,7 +41,7 @@ public class GrabJoint : MonoBehaviour
         GameObject parent = null;
         if (bo1.transform.parent != null) parent = bo1.transform.parent.gameObject;
         
-        if(parent != null && parent.GetComponent<SoftBody>() != null && parent.GetComponent<SoftBody>().type == 1) invMassA = invMassA*6;
+        if(parent != null && parent.GetComponent<SoftBody>() != null && parent.GetComponent<SoftBody>().type == 1) invMassA = invMassA*  6;
         if (parent != null && parent.GetComponent<SoftBody>() != null && parent.GetComponent<SoftBody>().type == 2) invMassA = invMassA * 2;
         invInertiaA = 1.0f / mcA.GetInertia();
        
@@ -65,11 +65,13 @@ public class GrabJoint : MonoBehaviour
 
         // Compute the current length 
         float currentLength = d.magnitude;
-        // Calculate the matrix K inverse
-        float k11 = invMassA + invInertiaA * anchorA.y * anchorA.y;
-        float k12 = -invInertiaA * anchorA.y * anchorA.x;
-        float k21 = -invInertiaA * anchorA.x * anchorA.y;
-        float k22 = invMassA + invInertiaA * anchorA.x * anchorA.x;
+        // Calculate the jacobian and effective mass 
+        // J = [I, skew(r)]
+        // M = (J · M^-1 · J^t)^-1
+        float k11 = invMassA + invInertiaA ;
+        float k12 = -invInertiaA ;
+        float k21 = -invInertiaA ;
+        float k22 = invMassA + invInertiaA;
 
         k11 += gamma;
         k22 += gamma;
@@ -102,6 +104,10 @@ public class GrabJoint : MonoBehaviour
 
             bpA.SetVelocity(v1, w1, timeStep);
         }
+
+
+
+
         //just for keeping track of the position 
         transform.position = (anchorB + anchorA) / 2.0f;
         Vector3[] LinePoints = new Vector3[2];

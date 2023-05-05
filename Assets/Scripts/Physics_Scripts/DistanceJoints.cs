@@ -82,7 +82,7 @@ public class DistanceJoints : MonoBehaviour
         invInertiaB = 1.0f / mcB.GetInertia();
         invInertiaSum = invInertiaA + invInertiaB;
         invMassSum = invMassA + invMassB;
-      
+       jointMass = 1 ;
         fakemass = 1;
         fakeSoftness = 0.0f;
         fakeSize = 1;
@@ -91,31 +91,40 @@ public class DistanceJoints : MonoBehaviour
     }
     public void UpdateJointState(float timeStep)
     {
+
+        
         dampingRatio = Mathf.Clamp(dampingRatio, 0.0f, 1.0f);
+        ComputeBetaAndGamma(timeStep);
         //get positions 
         Transform bodyA = bo1.transform;
         Transform bodyB = bo2.transform;
         anchorA = bodyA.position;
         anchorB = bodyB.position;
-        Vector3 ra = (bodyA.localRotation) * offsetA;
-        Vector3 rb = (bodyB.localRotation) * offsetB;
+        Vector3 ra  = (bodyA.rotation) * (offsetA);
+        Vector3 rb = (bodyB.rotation) * (offsetB);
+
         // Compute the vector between the two anchor points
-        Vector3 pa = ra + anchorA;
-        Vector3 pb = rb + anchorB;
-
+        Vector3 pa = anchorA + ra;
+        Vector3 pb = anchorB+ rb;
+        
         Vector3 d = (pb - pa);
-
+       
         // Compute the current length 
         float currentLength = d.magnitude;
 
+        Vector3 n = d.normalized;
         // Compute the effective mass of the constraint 
         // M = (J · M^-1 · J^t)^-1
-        float crossA = d.x * ra.y - d.y * ra.x;
-        float crossB = d.x * rb.y - d.y * rb.x;
+        // J = [-n, -n×ra, n, n×rb]
+        // ( n = (anchorB-anchorA) / ||anchorB-anchorA|| )
+        // ra, rb = vec from center of mass to offset 
+        // crossA or b = nxra
+        float crossA = Vector3.Cross(n,ra).z;
+        float crossB = Vector3.Cross(n, rb).z;
         float invEffectiveMass;
-        if (bpA.getIsStatic()) { invEffectiveMass = invMassB + crossB * crossB * invInertiaB; }
-        else if (bpB.getIsStatic()) { invEffectiveMass = invMassA + crossA * crossA * invInertiaA; }
-        else {invEffectiveMass = invMassSum + crossA * crossA * invInertiaA + crossB * crossB * invInertiaB ; }
+        //first part is transitional aspect of the equation and the two second ones are relative to the rotation 
+        invEffectiveMass = invMassSum + crossA * crossA * invInertiaA + crossB * crossB * invInertiaB + gamma; 
+
 
         float m = invEffectiveMass != 0 ? 1 / invEffectiveMass : 0;
         if (frequency >= 0.0f)
@@ -123,8 +132,8 @@ public class DistanceJoints : MonoBehaviour
             jointMass = m;
         }
         // Compute beta and gamma values
-        ComputeBetaAndGamma(timeStep);
-        m = m + gamma;
+        
+        
         //Résolution de contraintes *****************************************************************************
         // Compute the bias term for the constraint
         float bias = (currentLength - length) * beta / timeStep;
@@ -135,15 +144,15 @@ public class DistanceJoints : MonoBehaviour
         Vector3 v2 = bpB.getVelocity();
         float w1 = bpA.getAngularVelocity();
         float w2 = bpB.getAngularVelocity();
-
-        Vector3 raCross = Vector3.Cross(new Vector3(w1, w1, 0), ra); 
-        Vector3 rbCross = Vector3.Cross(new Vector3(w2,w2,0),rb);
         
+        Vector3 raCross = new Vector3(-w1*ra.y, w1*ra.x, 0); 
+        Vector3 rbCross = new Vector3(w2*-rb.y,w2*rb.x,0);
+        //vitesse relative (dériver de vitesse)
         Vector3 dv = v2 + rbCross - v1 - raCross;
         // Compute Jacobian for the constraint 
 
         // J = d / ||d||
-        Vector3 J = d / d.sqrMagnitude;
+        Vector3 J = d /d.sqrMagnitude;
         float jv = Vector3.Dot(dv, J);
         // Compute the corrective impulse 
         float impulseMag = -m *(jv + bias);
@@ -161,13 +170,13 @@ public class DistanceJoints : MonoBehaviour
         if (!bpA.getIsStatic())
         {
             v1 -= impulse * invMassA ;
-            w1 -= Vector3.Dot(Vector3.Cross(new Vector3(impulseMag, impulseMag, 0), ra),J ) * invInertiaA;
+            w1 -= Vector3.Dot(new Vector3( -ra.y*impulseMag,ra.x*impulseMag),J ) * invInertiaA;
             bpA.SetVelocity(v1, w1, timeStep);
         }
         if (!bpB.getIsStatic())
         {
             v2 += impulse * invMassB ;
-            w2 += Vector3.Dot( Vector3.Cross(new Vector3(impulseMag, impulseMag, 0), rb),J) * invInertiaB;
+            w2 += Vector3.Dot(new Vector3(-rb.y * impulseMag, rb.x * impulseMag), J) * invInertiaB;
 
             bpB.SetVelocity(v2, w2, timeStep);
         }
