@@ -161,13 +161,13 @@ public class DistanceJoints : MonoBehaviour
         if (!bpA.getIsStatic())
         {
             v1 -= impulse * invMassA ;
-            w1 -= Vector3.Dot(J,  Vector3.Cross(new Vector3(impulseMag, impulseMag, 0), ra)) * invInertiaA;
+            w1 -= Vector3.Dot(Vector3.Cross(new Vector3(impulseMag, impulseMag, 0), ra),J ) * invInertiaA;
             bpA.SetVelocity(v1, w1, timeStep);
         }
         if (!bpB.getIsStatic())
         {
             v2 += impulse * invMassB ;
-            w2 += Vector3.Dot(J, Vector3.Cross(new Vector3(impulseMag, impulseMag, 0), rb)) * invInertiaB;
+            w2 += Vector3.Dot( Vector3.Cross(new Vector3(impulseMag, impulseMag, 0), rb),J) * invInertiaB;
 
             bpB.SetVelocity(v2, w2, timeStep);
         }
@@ -199,7 +199,7 @@ public class DistanceJoints : MonoBehaviour
             float c = 2.0f * jointMass * dampingRatio * omega; // Damping coefficient
 
             beta = h * k / (c + h * k);
-            gamma = 1.0f / ((c + h * k)*h);
+            gamma = 1.0f / ((c + h * k));
         }
     }
    
