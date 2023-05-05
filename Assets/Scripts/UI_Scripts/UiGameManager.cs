@@ -118,7 +118,7 @@ public class UiGameManager : MonoBehaviour
         }
 
 
-        //??
+        
         BasicPhysicObject bo;
         GameObject parent;
 		Vector3 mousePosition = Camera.main.ScreenToWorldPoint(Input.mousePosition);
@@ -130,14 +130,15 @@ public class UiGameManager : MonoBehaviour
 		{
 			mousePosition = Camera.main.ScreenToWorldPoint(Input.mousePosition);
 			if (lastPosition == Vector3.zero) lastPosition = mousePosition;
-			if (parent != null && parent.GetComponent<SoftBody>() != null)
+            Vector3 deltaPosition = mousePosition - lastPosition;
+            if (parent != null && parent.GetComponent<SoftBody>() != null)
 			{
-				Vector3 deltaPosition = mousePosition - lastPosition;
 				parent.GetComponent<SoftBody>().Move(deltaPosition);
 			}
 			else
 			{
 				bo.gameObject.transform.position = new Vector3(mousePosition.x, mousePosition.y, 0);
+                bo.gameObject.GetComponent<MeshColliderScript>().Translate(deltaPosition);
 			}
 			lastPosition = new Vector3(mousePosition.x, mousePosition.y, mousePosition.z);
 		}
@@ -161,8 +162,7 @@ public class UiGameManager : MonoBehaviour
 			draggable = false;
 			lastPosition = Vector3.zero;
 		}
-		//??
-
+		
 	}
 
 
