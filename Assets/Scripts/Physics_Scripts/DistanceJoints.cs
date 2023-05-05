@@ -103,7 +103,7 @@ public class DistanceJoints : MonoBehaviour
         Vector3 pa = ra + anchorA;
         Vector3 pb = rb + anchorB;
 
-        Vector3 d = pb - pa;
+        Vector3 d = (pb - pa);
 
         // Compute the current length 
         float currentLength = d.magnitude;
@@ -115,7 +115,7 @@ public class DistanceJoints : MonoBehaviour
         float invEffectiveMass;
         if (bpA.getIsStatic()) { invEffectiveMass = invMassB + crossB * crossB * invInertiaB; }
         else if (bpB.getIsStatic()) { invEffectiveMass = invMassA + crossA * crossA * invInertiaA; }
-        else {invEffectiveMass = invMassSum + crossA * crossA * invInertiaA + crossB * crossB * invInertiaB; }
+        else {invEffectiveMass = invMassSum + crossA * crossA * invInertiaA + crossB * crossB * invInertiaB ; }
 
         float m = invEffectiveMass != 0 ? 1 / invEffectiveMass : 0;
         if (frequency >= 0.0f)
@@ -124,7 +124,7 @@ public class DistanceJoints : MonoBehaviour
         }
         // Compute beta and gamma values
         ComputeBetaAndGamma(timeStep);
-
+        m = m + gamma;
         //Résolution de contraintes *****************************************************************************
         // Compute the bias term for the constraint
         float bias = (currentLength - length) * beta / timeStep;
@@ -136,41 +136,38 @@ public class DistanceJoints : MonoBehaviour
         float w1 = bpA.getAngularVelocity();
         float w2 = bpB.getAngularVelocity();
 
-        Vector3 raCross = new Vector3(-w1 * ra.y, w1 * ra.x, 0);
-        Vector3 rbCross = new Vector3(-w2 * rb.y, w2 * rb.x,0);
-
+        Vector3 raCross = Vector3.Cross(new Vector3(w1, w1, 0), ra); 
+        Vector3 rbCross = Vector3.Cross(new Vector3(w2,w2,0),rb);
+        
         Vector3 dv = v2 + rbCross - v1 - raCross;
         // Compute Jacobian for the constraint 
 
         // J = d / ||d||
         Vector3 J = d / d.sqrMagnitude;
-        float jv;
-        if (offsetA == new Vector3(0,0,0) && offsetB == new Vector3(0, 0, 0)) jv = Vector3.Dot(dv, J);
-        else jv = Vector3.Dot(dv, J.normalized);
-
+        float jv = Vector3.Dot(dv, J);
         // Compute the corrective impulse 
-        float impulseMag = -m *(jv + bias + gamma);
-        Vector3 impulseDir = d.normalized;
+        float impulseMag = -m *(jv + bias);
+        
         if (onlyPull)
         {
             if (currentLength <= length)
             {
-                impulseDir = Vector3.zero;
+                J = Vector3.zero;
             }
         }
 
-        Vector3 impulse = impulseMag * impulseDir;
+        Vector3 impulse = impulseMag * J;
         //Apply corrective impulse 
         if (!bpA.getIsStatic())
         {
             v1 -= impulse * invMassA ;
-            w1 -= Vector3.Dot(J, new Vector3(ra.y* -impulseMag,impulseMag *ra.x,0)) * invInertiaA;
+            w1 -= Vector3.Dot(J,  Vector3.Cross(new Vector3(impulseMag, impulseMag, 0), ra)) * invInertiaA;
             bpA.SetVelocity(v1, w1, timeStep);
         }
         if (!bpB.getIsStatic())
         {
             v2 += impulse * invMassB ;
-            w2 += Vector3.Dot(J, new Vector3(rb.y * -impulseMag, impulseMag * rb.x, 0)) * invInertiaB;
+            w2 += Vector3.Dot(J, Vector3.Cross(new Vector3(impulseMag, impulseMag, 0), rb)) * invInertiaB;
 
             bpB.SetVelocity(v2, w2, timeStep);
         }
