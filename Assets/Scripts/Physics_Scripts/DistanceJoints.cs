@@ -99,7 +99,6 @@ public class DistanceJoints : MonoBehaviour
         anchorB = bodyB.position;
         Vector3 ra = (bodyA.localRotation) * offsetA;
         Vector3 rb = (bodyB.localRotation) * offsetB;
-        Debug.Log("ra : " + ra + " rb : " + rb);
         // Compute the vector between the two anchor points
         Vector3 pa = ra + anchorA;
         Vector3 pb = rb + anchorB;
