@@ -125,7 +125,7 @@ public class PhysicsManager : MonoBehaviour
 
 	}
 
-	// ne marche pas live
+	//Detruit un objet specifique de la scene
     public void RemoveAt(BasicPhysicObject bo, GameObject parent)
 	{
 
@@ -133,12 +133,23 @@ public class PhysicsManager : MonoBehaviour
 		{
 			BasicPhysicObject[] bos = parent.GetComponentsInChildren<BasicPhysicObject>();
 			MeshColliderScript[] mcs = parent.GetComponentsInChildren<MeshColliderScript>();
+
 			for (int i = meshColliders.Count - 1; i >= 0; i--) 
 			{
 				for (int j = 0; j < bos.Length; j++) 
 				{
 					if (mcs[j] == meshColliders[i]) 
 					{
+						for (int k = physicsJoints.Count-1; k >= 0; k--)
+						{
+							if (physicsJoints[k].bo1 == mcs[j].gameObject || physicsJoints[k].bo2 == mcs[j].gameObject) 
+							{
+								Destroy(physicsJoints[k].gameObject);
+
+								physicsJoints.RemoveAt(k);
+
+							}
+						}
 						meshColliders.RemoveAt(i);
 						physicObjects.RemoveAt(i);
 						objects.RemoveAt(i);
@@ -185,6 +196,18 @@ public class PhysicsManager : MonoBehaviour
 			}
 			if (index != -1) 
 			{
+				for (int k = physicsJoints.Count - 1; k >= 0; k--)
+				{
+					if (physicsJoints[k].bo1 == mcs.gameObject || physicsJoints[k].bo2 == mcs.gameObject)
+					{
+						
+						Destroy(physicsJoints[k].gameObject);
+						
+						physicsJoints.RemoveAt(k);
+						
+						
+					}
+				}
 				meshColliders.RemoveAt(index);
 				physicObjects.RemoveAt(index);
 				objects.RemoveAt(index);

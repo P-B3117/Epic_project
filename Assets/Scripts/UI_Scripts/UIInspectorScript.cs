@@ -76,7 +76,7 @@ public class UIInspectorScript : MonoBehaviour
         }
 
         
-        //if the object clickd isn't null
+        //if the object clicked isn't null
         if (bo != null)
         {
 
