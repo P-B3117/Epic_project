@@ -82,6 +82,7 @@ public class UiGameManager : MonoBehaviour
     void Start()
     {
         ChangeTime("1");
+        ChangeToDefault();
         jmButtonImage = jmButton.GetComponent<Image>();
         boutonCurseurImage = boutonCurseur.GetComponent<Image>();
         boutonSingleDeleteImage = boutonSingleDelete.GetComponent<Image>();
@@ -192,14 +193,14 @@ public class UiGameManager : MonoBehaviour
     public void ChangeToDefault()
     {
         GravityInputField.GetComponent<TMP_InputField>().text = "9.8";
-        AirDensityInputField.GetComponent<TMP_InputField>().text = "1";
+        AirDensityInputField.GetComponent<TMP_InputField>().text = "0.7";
         TimeInputField.GetComponent<TMP_InputField>().text = "1";
         BouncinessInputField.GetComponent<TMP_InputField>().text = "1";
         SFrictionInputField.GetComponent<TMP_InputField>().text = "1";
         DFrictionInputField.GetComponent<TMP_InputField>().text = "1";
         UniversalVariable.SetGravity(float.Parse("9,8"));
         UniversalVariable.SetTime(float.Parse("1"));
-        UniversalVariable.SetAirDensity(float.Parse("1"));
+        UniversalVariable.SetAirDensity(float.Parse("0.7"));
         UniversalVariable.SetBounciness(float.Parse("1"));
         UniversalVariable.SetSFriction(float.Parse("1"));
         UniversalVariable.SetDFriction(float.Parse("1"));
