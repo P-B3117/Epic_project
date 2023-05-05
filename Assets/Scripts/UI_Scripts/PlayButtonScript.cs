@@ -8,7 +8,7 @@ public class PlayButtonScript : MonoBehaviour
 
     public void OnClickBasicSandBox()
     {
-            SceneManager.LoadScene(0);
+            SceneManager.LoadScene(1);
     }
     public void OnClickFluidSandBox() 
     {
