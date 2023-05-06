@@ -12,7 +12,7 @@ using UnityEngine;
 public static class UniversalVariable
 {
     private static float gravity = 9.8f;
-    private static float airDensity = 1.292f;
+    private static float airDensity = 0.7f;
     private static float time = 1.0f;
     private static float Bounciness = 1.0f;
     private static float SFriction = 1.0f;

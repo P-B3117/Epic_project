@@ -23,6 +23,10 @@ public class UISliderScript : MonoBehaviour
     GameObject currentShadowObject;
     GameObject jo;
 
+    //sound variables
+    public AudioSource SolidDropSound;
+    public AudioSource SoftDropSound;
+    public AudioSource JointSound;
 
     //Other variables
     private int counter = 0;
@@ -123,6 +127,7 @@ public class UISliderScript : MonoBehaviour
             {
                 GameObject newGO = Instantiate(currentShadowObject);
                 physicsManager.AddPhysicObject(newGO);
+                SolidDropSound.Play();
             }
         }
         //If the mouse isn't in bound, change the material color to red
@@ -297,6 +302,7 @@ public class UISliderScript : MonoBehaviour
                 GameObject newGO = Instantiate(empty);
                 Destroy(empty);
                 physicsManager.AddPhysicObject(newGO);
+                SolidDropSound.Play();
                 ResetMouseState();
             }
         }
@@ -377,6 +383,7 @@ public class UISliderScript : MonoBehaviour
             JointCreatorLineRenderer.SetPosition(1, Vector3.zero);
             inspectorScript.JointInspectorInitialize(physicsManager.GetAllNonSoftBodyJoints());
             counter = 0;
+            JointSound.Play();
             ResetMouseState();
         }
         else if (Input.GetMouseButtonDown(0) && JointCreatorPoints.Count < 2)
@@ -455,6 +462,7 @@ public class UISliderScript : MonoBehaviour
 
 
                 physicsManager.AddSoftBody(newGO);
+                SoftDropSound.Play();
             }
         }
         //If mouse is out of the boundaries, change color to red
@@ -495,6 +503,7 @@ public class UISliderScript : MonoBehaviour
 
 
                 physicsManager.AddSoftBody(newGO);
+                SoftDropSound.Play();
             }
         }
         //If mouse is out of the boundaries, change color to red
@@ -586,4 +595,5 @@ public class UISliderScript : MonoBehaviour
         counter = 0;
 
     }
+
 }
