@@ -26,10 +26,12 @@ public class UiGameManager : MonoBehaviour
     public GameObject GravityInputField;
     public GameObject AirDensityInputField;
     public GameObject BouncinessInputField;
-    public GameObject SFrictionInputField;
-    public GameObject DFrictionInputField;
     public GameObject TimeInputField;
     public AudioSource MusicSource;
+    public AudioSource SolidDropSound;
+    public AudioSource SoftDropSound;
+    public AudioSource JointSound;
+    public AudioSource ButtonClickedSound;
     public TextMeshProUGUI MusicVolumeText;
     public TextMeshProUGUI SoundEffectVolumeText;
     public PrefabsHolder prefabHolder;
@@ -102,8 +104,6 @@ public class UiGameManager : MonoBehaviour
         AirDensityInputField.GetComponent<TMP_InputField>().text = "0.7";
         TimeInputField.GetComponent<TMP_InputField>().text = "1";
         BouncinessInputField.GetComponent<TMP_InputField>().text = "1";
-        SFrictionInputField.GetComponent<TMP_InputField>().text = "1";
-        DFrictionInputField.GetComponent<TMP_InputField>().text = "1";
         ChangeToDefault();
     }
 
@@ -193,14 +193,10 @@ public class UiGameManager : MonoBehaviour
         AirDensityInputField.GetComponent<TMP_InputField>().text = "0.7";
         TimeInputField.GetComponent<TMP_InputField>().text = "1";
         BouncinessInputField.GetComponent<TMP_InputField>().text = "1";
-        SFrictionInputField.GetComponent<TMP_InputField>().text = "1";
-        DFrictionInputField.GetComponent<TMP_InputField>().text = "1";
         UniversalVariable.SetGravity(float.Parse("9.8"));
         UniversalVariable.SetTime(float.Parse("1"));
         UniversalVariable.SetAirDensity(float.Parse("0.7"));
         UniversalVariable.SetBounciness(float.Parse("1"));
-        UniversalVariable.SetSFriction(float.Parse("1"));
-        UniversalVariable.SetDFriction(float.Parse("1"));
     }
 
     public void LoadMenuScene()
@@ -483,13 +479,19 @@ public class UiGameManager : MonoBehaviour
     {
         MusicVolumeText.text = Mathf.RoundToInt(value * 100) + "%";
         GameConstants.MusicVolume = value * 100;
-        MusicSource.volume = Mathf.Log10(float.Parse(value.ToString()));
+        //MusicSource.volume = Mathf.Log10(float.Parse(value.ToString()));
     }
 
     public void SoundEffectVolumeUpdate(float value)
     {
-        SoundEffectVolumeText.text = Mathf.RoundToInt(value * 100) + "%";
+        float volume = (Mathf.Log10(value) + 1);
+        SoundEffectVolumeText.text = Mathf.RoundToInt(volume * 100) + "%";
         GameConstants.SoundEffectVolume = value * 100;
+        SolidDropSound.volume = volume;
+        SoftDropSound.volume = volume;
+        JointSound.volume = volume;
+        ButtonClickedSound.volume = volume;
+        //Debug.Log(volume);
     }
 
 

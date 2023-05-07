@@ -984,6 +984,10 @@ MonoBehaviour:
   MusicVolumeText: {fileID: 1539270397}
   SoundEffectVolumeText: {fileID: 56805864}
   Title: {fileID: 465074777}
+  SolidDropSound: {fileID: 1467442508}
+  SoftDropSound: {fileID: 1654829038}
+  JointSound: {fileID: 726425410}
+  ButtonClickedSound: {fileID: 855825005}
 --- !u!224 &216224791
 RectTransform:
   m_ObjectHideFlags: 0
@@ -1722,10 +1726,10 @@ MonoBehaviour:
   m_FillRect: {fileID: 347895400}
   m_HandleRect: {fileID: 1203843331}
   m_Direction: 0
-  m_MinValue: 0
+  m_MinValue: 0.1
   m_MaxValue: 1
   m_WholeNumbers: 0
-  m_Value: 0
+  m_Value: 0.1
   m_OnValueChanged:
     m_PersistentCalls:
       m_Calls:
@@ -2504,10 +2508,10 @@ MonoBehaviour:
   m_FillRect: {fileID: 1855192502}
   m_HandleRect: {fileID: 1300237766}
   m_Direction: 0
-  m_MinValue: 0
+  m_MinValue: 0.1
   m_MaxValue: 1
   m_WholeNumbers: 0
-  m_Value: 0
+  m_Value: 0.1
   m_OnValueChanged:
     m_PersistentCalls:
       m_Calls:
@@ -2811,7 +2815,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
-  m_AnchoredPosition: {x: -1132, y: -0.001915}
+  m_AnchoredPosition: {x: -1120, y: -0.001915}
   m_SizeDelta: {x: 550.2946, y: 907.6216}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &1014381071

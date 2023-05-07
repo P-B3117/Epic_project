@@ -16,6 +16,10 @@ public class UiManager : MonoBehaviour
     public TextMeshProUGUI MusicVolumeText;
     public TextMeshProUGUI SoundEffectVolumeText;
     public TextMeshProUGUI Title;
+    public AudioSource SolidDropSound;
+    public AudioSource SoftDropSound;
+    public AudioSource JointSound;
+    public AudioSource ButtonClickedSound;
 
     private Vector3 slidedPosition;
     private Vector3 retractedPosition;
@@ -96,7 +100,13 @@ public class UiManager : MonoBehaviour
 
     public void SoundEffectVolumeUpdate(float value)
     {
-        SoundEffectVolumeText.text = Mathf.RoundToInt(value * 100) + "%";
+        float volume = ((Mathf.Log10(value) + 1));
+        SoundEffectVolumeText.text = Mathf.RoundToInt(volume * 100) + "%";
         GameConstants.SoundEffectVolume = value * 100;
+        SolidDropSound.volume = volume;
+        SoftDropSound.volume = volume;
+        JointSound.volume = volume;
+        ButtonClickedSound.volume = volume;
+        //Debug.Log(volume);
     }
 }

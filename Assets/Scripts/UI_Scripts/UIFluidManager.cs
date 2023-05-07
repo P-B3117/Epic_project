@@ -26,10 +26,13 @@ public class UIFluidManager : MonoBehaviour
     public GameObject viewport;
     public GameObject inspectorParent;
     public GameObject objectFluidManager;
-    public AudioSource SoftDropSound;
 
 
     public AudioSource MusicSource;
+    public AudioSource SolidDropSound;
+    public AudioSource SoftDropSound;
+    public AudioSource JointSound;
+    public AudioSource ButtonClickedSound;
     public TextMeshProUGUI MusicVolumeText;
     public TextMeshProUGUI SoundEffectVolumeText;
 
@@ -360,8 +363,14 @@ public class UIFluidManager : MonoBehaviour
 
     public void SoundEffectVolumeUpdate(float value)
     {
-        SoundEffectVolumeText.text = Mathf.RoundToInt(value * 100) + "%";
+        float volume = ((Mathf.Log10(value) + 1));
+        SoundEffectVolumeText.text = Mathf.RoundToInt(volume * 100) + "%";
         GameConstants.SoundEffectVolume = value * 100;
+        SolidDropSound.volume = volume;
+        SoftDropSound.volume = volume;
+        JointSound.volume = volume;
+        ButtonClickedSound.volume = volume;
+        //Debug.Log(volume);
     }
 
     public void ChangeGravityX(System.Single newGX) 
