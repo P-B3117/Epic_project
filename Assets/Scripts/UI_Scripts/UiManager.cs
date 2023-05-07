@@ -12,7 +12,7 @@ public class UiManager : MonoBehaviour
     public GameObject FullscreenToggle;
     public GameObject MusicSlider;
     public GameObject SoundEffectSlider;
-    public AudioSource MusicSource;
+    //public AudioSource MusicSource;
     public TextMeshProUGUI MusicVolumeText;
     public TextMeshProUGUI SoundEffectVolumeText;
     public TextMeshProUGUI Title;
@@ -38,28 +38,30 @@ public class UiManager : MonoBehaviour
         menuSlided = false;
         slidedPosition = new Vector3(256, 540, 0);
         retractedPosition = new Vector3(-164, 540, 0);
-        titleSlidedPosition = new Vector3(1200, 900, 0);
-        titleRetractedPosition = new Vector3(980, 900, 0);
+        titleSlidedPosition = new Vector3(1200, 950, 0);
+        titleRetractedPosition = new Vector3(980, 950, 0);
     }
     public void Update()
     {
         if (!menuSlided && menuHasToSlide) { MenuPanel.transform.position = Vector3.MoveTowards(MenuPanel.transform.position, slidedPosition, slideSpeed); Title.transform.position = Vector3.MoveTowards(Title.transform.position, titleSlidedPosition, slideSpeed); }
-            if (MenuPanel.transform.position == slidedPosition) { menuSlided = true; menuHasToSlide = false; }
-        else menuSlided = false;
+        if (MenuPanel.transform.position == slidedPosition) { menuSlided = true; menuHasToSlide = false; }
+     else menuSlided = false;
 
         if (!menuRetracted && menuHasToRetract) { MenuPanel.transform.position = Vector3.MoveTowards(MenuPanel.transform.position, retractedPosition, slideSpeed); Title.transform.position = Vector3.MoveTowards(Title.transform.position, titleRetractedPosition, slideSpeed); }
-        if (MenuPanel.transform.position == retractedPosition) { menuRetracted = true; menuHasToRetract = false; }
-        else menuRetracted = false;
+     if (MenuPanel.transform.position == retractedPosition) { menuRetracted = true; menuHasToRetract = false; }
+     else menuRetracted = false; 
     }
 
     public void SlideMenu()
     {//256
         if (MenuPanel.transform.position.x >= -164 && MenuPanel.transform.position.x < 256) { menuHasToSlide = true; menuHasToRetract = false; }
+        //Debug.Log("slide");
     }
 
     public void RetractMenu()
     {//-164
         if (MenuPanel.transform.position.x > -164 && MenuPanel.transform.position.x <= 256) { menuHasToRetract = true; menuHasToSlide = false; }
+        //Debug.Log("retract");
     }
 
     public void ShowSettingsPanel()
@@ -89,7 +91,7 @@ public class UiManager : MonoBehaviour
     {
         MusicVolumeText.text = Mathf.RoundToInt(value * 100) + "%";
         GameConstants.MusicVolume = value * 100;
-        MusicSource.volume = Mathf.Log10(float.Parse(value.ToString()));
+        //MusicSource.volume = Mathf.Log10(float.Parse(value.ToString()));
     }
 
     public void SoundEffectVolumeUpdate(float value)

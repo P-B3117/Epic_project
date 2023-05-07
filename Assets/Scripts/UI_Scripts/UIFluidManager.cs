@@ -26,6 +26,7 @@ public class UIFluidManager : MonoBehaviour
     public GameObject viewport;
     public GameObject inspectorParent;
     public GameObject objectFluidManager;
+    public AudioSource SoftDropSound;
 
 
     public AudioSource MusicSource;
@@ -131,6 +132,7 @@ public class UIFluidManager : MonoBehaviour
                             Vector3 D = new Vector3(r1, r2, 0.0f);
                             D = D.normalized * fluidManager.GetParticleSize() * 2;
                             fluidManager.AddParticle(screenPos + D, prefabHolder);
+                            SoftDropSound.Play();
                         }
                         addFluidTIMER = 0;
                     }
@@ -162,7 +164,7 @@ public class UIFluidManager : MonoBehaviour
         MOUSESTATE = 0;
         currentShadowObject = prefabHolder.GetWaterAddSprite();
         CURSOR = false;
-        GameObject.Find("Canvas/ToolPanel/BoutonCurseur").GetComponent<Image>().color = Color.white;
+        boutonCurseurImage.color = buttonNormalColor;
     }
     public void ResetMouseState() 
     {
@@ -181,7 +183,7 @@ public class UIFluidManager : MonoBehaviour
 
     public void LoadMenuScene()
     {
-        SceneManager.LoadScene(1);
+        SceneManager.LoadScene(0);
     }
 
    private bool twoX = false, threeX = false;
