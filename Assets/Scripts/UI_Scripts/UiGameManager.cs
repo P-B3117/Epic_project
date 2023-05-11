@@ -7,7 +7,13 @@ using UnityEngine.SceneManagement;
 using TMPro;
 using Unity.VisualScripting;
 using System.Runtime.CompilerServices;
-
+/*
+ * Filename : UIGameManager
+ * 
+ * Goal : Contains all the button functionalities of the BASIC Physic SIMULATION
+ * 
+ * Requirements : Attach this script to the UIManager
+ */
 public class UiGameManager : MonoBehaviour
 {
     [Header("Reference for UI basic functions")]

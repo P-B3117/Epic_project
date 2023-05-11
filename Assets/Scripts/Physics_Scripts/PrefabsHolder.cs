@@ -1,7 +1,13 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
-
+/*
+ * Filename : PrefasbHolder
+ * 
+ * Goal : Instance of a script that holds all the references to materials and prefabs
+ * 
+ * Requirements : Put a single instance of this script in the Inspector and feed him all the necessary prefabs
+ */
 public class PrefabsHolder : MonoBehaviour
 {
 	[SerializeField]

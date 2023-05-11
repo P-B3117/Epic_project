@@ -5,7 +5,13 @@ using UnityEngine.UI;
 using UnityEngine.Audio;
 using UnityEngine.SceneManagement;
 using TMPro;
-
+/*
+ * Filename : UIFluidManager
+ * 
+ * Goal : Contains all the UI functionnalities of the FLUID SIMULATION
+ * 
+ * Requirements : Attach this script to the UIManager
+ */
 public class UIFluidManager : MonoBehaviour
 {
     [Header("Reference for UI basic functions")]

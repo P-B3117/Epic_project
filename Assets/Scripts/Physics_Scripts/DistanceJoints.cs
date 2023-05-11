@@ -2,6 +2,16 @@
 using System.Collections.Generic;
 using UnityEngine;
 
+/*
+ * Filename : DistanceJoints
+ * 
+ * Goal : Creates a joint between 2 physicsObject
+ * 
+ * Requirements : Create an instance of this script and feed him the necessary data
+ */
+
+
+
 //get relative location of joint 
 //get the position offset as serial and then clamp the values to the range of the object in question 
 //clamp values in general so that it can't break 
@@ -50,6 +60,8 @@ public class DistanceJoints : MonoBehaviour
     private float invMassSum;
     public LineRenderer lr;
 
+
+    //Update the appearance of the distanceJoint
     public void Update()
     {
         if (lr != null)
@@ -69,6 +81,8 @@ public class DistanceJoints : MonoBehaviour
         }
         
     }
+
+    //Initialize the necessary variables
     public void Initialize() 
     {
         // Get references to the BasicPhysicObject and MeshColliderScript components for both bodies
@@ -89,6 +103,8 @@ public class DistanceJoints : MonoBehaviour
         lr = this.gameObject.AddComponent<LineRenderer>();
         lr.SetWidth(0.3f, 0.3f);
     }
+
+    //Update the joint and change its properties
     public void UpdateJointState(float timeStep)
     {
         // Clamp damping ratio between 0 and 1

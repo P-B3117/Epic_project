@@ -2,6 +2,13 @@
 using System.Collections.Generic;
 using UnityEngine;
 
+/*
+ * Filename : UISliderScript
+ * 
+ * Goal : Contains all the functionalities of the SLIDER in the Basic Physic Simulation
+ * 
+ * Requirements : Attach this script to the UIManager
+ */
 public class UISliderScript : MonoBehaviour
 {
     //Universal references

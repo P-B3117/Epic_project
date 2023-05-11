@@ -8,6 +8,13 @@ using Unity.VisualScripting;
 using System.Runtime.CompilerServices;
 using UnityEngine.UI;
 
+/*
+ * Filename : UISliderScript
+ * 
+ * Goal : Contains all the functionalities of the INSPECTOR (The menu that allows to change parameters of the object) in the Basic Physic Simulation
+ * 
+ * Requirements : Attach this script to the UIManager
+ */
 public class UIInspectorScript : MonoBehaviour
 {
     [HideInInspector]

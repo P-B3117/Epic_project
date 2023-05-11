@@ -7,7 +7,7 @@ using UnityEngine;
  * 
  * Goal : Provides a public single instance of universal physic constants, those constants will be used in every physics based calculations
  * 
- * Requirements : NaN
+ * Requirements : NaN - Simply reference the static class and functions to use them
  */
 public static class UniversalVariable
 {

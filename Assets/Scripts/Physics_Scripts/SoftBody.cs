@@ -2,6 +2,13 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
+/*
+ * Filename : SoftBody
+ * 
+ * Goal : Puts a skin (mesh) over softbodies to make them appear as soft material
+ * 
+ * Requirements : Put this script in the parent of a softbody
+ */
 public class SoftBody : MonoBehaviour
 {
 
@@ -10,6 +17,8 @@ public class SoftBody : MonoBehaviour
     public float size = 1.0f;
     ///Wind up clockwise!!!!!!
     public int type = 0;
+
+    //Get all the necessery references in order to allow the drawing of the mesh
     public void Initialise()
     {
         if(GetComponent<MeshRenderer>() == null) { this.gameObject.AddComponent<MeshRenderer>(); }
@@ -42,11 +51,15 @@ public class SoftBody : MonoBehaviour
         mesh.triangles = newTriangles;
 
 
+
+        //Disables the drawing of the line renderer
 		LineRenderer[] listLR = GetComponentsInChildren<LineRenderer>();
 		for (int i = 0; i < listLR.Length; i++)
 		{
 			listLR[i].enabled = false;
 		}
+
+        //Disables the drawing of the physicobjects underneath the softbody
 		MeshRenderer[] listMR = GetComponentsInChildren<MeshRenderer>();
 		for (int i = 0; i < listMR.Length; i++)
 		{
@@ -57,6 +70,8 @@ public class SoftBody : MonoBehaviour
 		}
 
 	}
+
+    //Update the appearance of the mesh each frame
     public void UpdateSoftBody() 
     {
         Mesh mesh = new Mesh();

@@ -2,6 +2,13 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
+/*
+ * Filename : ObjectFluidManager
+ * 
+ * Goal : Central processing unit of the simulation of the fluid
+ * 
+ * Requirements : Create a single instance of this script in the scene
+ */
 public class ObjectFluidManager : MonoBehaviour
 {
 	//Change the variable numberOfStepsPerSecond to change the timerate calculations

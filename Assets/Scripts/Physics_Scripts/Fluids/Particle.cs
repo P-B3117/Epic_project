@@ -1,6 +1,13 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+/*
+ * Filename : Particle
+ * 
+ * Goal : Encapsulate the data of a particle
+ * 
+ * Requirements : Create instances to create particles
+ */
 public struct intPosition
 {
     public intPosition(int X, int Y)
@@ -24,7 +31,7 @@ public class Particle
 
     List<int> neighbors;
 
-
+    //Instantiate the particle and create the mesh
     public Particle(Vector3 initialPos, Vector3 initialVel, int i, float radius, PrefabsHolder ph) 
     {
         particle = GameObject.CreatePrimitive(PrimitiveType.Sphere);
