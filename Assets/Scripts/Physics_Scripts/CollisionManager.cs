@@ -6,7 +6,7 @@ using UnityEngine.UIElements;
 
 /*
  * Filename : CollisinManager
- * 
+ * Author: Justin, Clovis
  * Goal : Class that holds the key function of resolving collisions
  * 
  * Requirements : No instance required to use this class, just reference it to access the function

@@ -4,7 +4,7 @@ using UnityEngine;
 
 /*
  * Filename : UniversalVariable
- * 
+ * Author : Louis-E, Charles
  * Goal : Provides a public single instance of universal physic constants, those constants will be used in every physics based calculations
  * 
  * Requirements : NaN - Simply reference the static class and functions to use them

@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 /*
  * Filename : Particle
- * 
+ * Author:Louis-E
  * Goal : Encapsulate the data of a particle
  * 
  * Requirements : Create instances to create particles

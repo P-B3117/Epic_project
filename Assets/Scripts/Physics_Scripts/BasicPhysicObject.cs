@@ -5,7 +5,7 @@ using UnityEngine;
 
 /*
 * Filename : BasicPhysicObjects
- * 
+ * Author : Clovis, Louis-E, Justin
  * Goal : Encapsulates and calculates physics properties of the object
  * 
  * Requirements : Attach this script to physical objects of the Scene

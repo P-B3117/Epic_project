@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 /*
  * Filename : FluidGrid
- * 
+ *  Author:Louis-E
  * Goal : Create the info grid for the search algorithm
  * 
  * Requirements : Create an instance in a script to use as a container

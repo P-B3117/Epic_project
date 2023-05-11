@@ -7,7 +7,7 @@ using UnityEngine;
 
 /*
  * Filename : PhysicsManager
- * Author : Louis-E, Charles, Clovis 
+ * Author : Louis-E, Charles, Clovis,Antony,Justin
  * Goal : Central authority of the physic calculations. The PhysicsManager holds references to every physics object in the scene to allow interactions
  * 
  * Requirements : Put a single instance in a Scene attached to an empty GameObject

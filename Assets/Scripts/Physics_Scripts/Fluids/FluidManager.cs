@@ -4,7 +4,7 @@ using UnityEngine;
 
 /*
  * Filename : FluidManager
- * 
+ *  Author:Louis-E
  * Goal : handles the computation of the fluid simulation
  * 
  * Requirements : Create an instance of this script in the Objectfluidmanager
