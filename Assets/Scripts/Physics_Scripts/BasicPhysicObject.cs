@@ -70,6 +70,8 @@ public class BasicPhysicObject : MonoBehaviour
         velocity = Vector2.zero;
         angularVelocity = 0;
     }
+
+    //Update call every tick of the simulation, moves the objet depending of the resulting force and torque
 	public void UpdateState(float timeStep) 
     {
         if (isStatic) { velocity = Vector3.zero; angularVelocity = 0; resultingForce = Vector3.zero; torque = 0; return; }
@@ -95,13 +97,14 @@ public class BasicPhysicObject : MonoBehaviour
         torque = 0;
     }
 
-
+    //Apply force at center of mass
     public void ApplyForceAtCenterOfMass(Vector3 force) 
     {
         
         resultingForce += force;
     }
 
+    //Apply force of gravity
     public void ApplyForceGravity() 
     {
         //F = mg
@@ -123,6 +126,7 @@ public class BasicPhysicObject : MonoBehaviour
 
     }
 
+    //Apply force of air density
     public void ApplyAirDensity()
     {
         Rect bond = collider.GetBoundariesAABB();

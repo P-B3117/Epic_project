@@ -2,6 +2,13 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
+/*
+ * Filename : FluidManager
+ * 
+ * Goal : handles the computation of the fluid simulation
+ * 
+ * Requirements : Create an instance of this script in the Objectfluidmanager
+ */
 public class FluidManager : MonoBehaviour
 {
 	List<Particle> particles;
@@ -32,6 +39,8 @@ public class FluidManager : MonoBehaviour
 	{
 
 	}
+
+	//Create the basic particles
 	public void InitialiseParticlesSystem(int numberOfParticles, PrefabsHolder ph)
 	{
 		particles = new List<Particle>();
@@ -52,18 +61,22 @@ public class FluidManager : MonoBehaviour
 		}
 
 	}
+
+	//Add a particle to the simulation
 	public void AddParticle(Vector3 pos, PrefabsHolder ph) 
 	{
 		particles.Add(new Particle(pos, Vector3.zero, particles.Count, radius, ph));
 		grid.AddParticle(particles[particles.Count - 1]);
 		
 	}
+
+	//Simulation of the fluid
 	public void FluidPhysicsCalculations(float timeStep, Vector2 g, bool isCursorClick, Vector3 mousePos)
 	{
 		
 		Vector3 gravity = -g * timeStep;
 
-		
+		//Allows cursor to take particles
 		if (isCursorClick) 
 		{
 			
@@ -75,15 +88,17 @@ public class FluidManager : MonoBehaviour
 				Vector3 diff = realMousePos - particles[i].GetPosition();
 				if(diff.magnitude < 8) 
 				{
-					particles[i].AddVelocity((9.8f * timeStep * diff.normalized));
+					particles[i].AddVelocity((25f * timeStep * diff.normalized));
 				}
 				
 			}
 		}
+
+
 		for (int i = 0; i < particles.Count; i++)
 		{
 			Particle p = particles[i];
-
+			//Add gravity
 			particles[i].AddVelocity(gravity);
 
 			//ApplyViscosity

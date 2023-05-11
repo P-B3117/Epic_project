@@ -92,6 +92,8 @@ public class MeshColliderScript : MonoBehaviour
 		boundariesAABB.y += vector.y;
 	}
 
+
+	//Update the basic AABB collider to form a rotation-less rectangle
 	private void UpdateAABB() 
 	{
 

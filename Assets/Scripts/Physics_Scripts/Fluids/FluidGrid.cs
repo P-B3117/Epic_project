@@ -1,7 +1,13 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
-
+/*
+ * Filename : FluidGrid
+ * 
+ * Goal : Create the info grid for the search algorithm
+ * 
+ * Requirements : Create an instance in a script to use as a container
+ */
 public class FluidGrid 
 {
 	float cellSize;
@@ -12,7 +18,7 @@ public class FluidGrid
 
 	List<int>[,] gridInfo;
 
-
+	//Create the grid
 	public FluidGrid(float cellSize, int gridLengthX, int gridLengthY, Vector2 offset)
 	{
 		this.cellSize = cellSize;
@@ -30,6 +36,8 @@ public class FluidGrid
 
 	}
 
+
+	//Reset the value of all cells
 	public void ResetGrid() 
 	{
 		for (int i = 0; i < gridLengthX; i++) 
@@ -40,6 +48,8 @@ public class FluidGrid
 			}
 		}
 	}
+
+	//Add particle to grid
 	public void AddParticle( Particle p) 
 	{
 		Vector3 pPos = p.GetPosition();
@@ -53,7 +63,7 @@ public class FluidGrid
 	}
 
 	
-
+	//Return the list of all possible neighbors for a give particle
 	public List<int> PossibleNeighbors(Particle p) 
 	{
 		List<int> possibleNeighbors = new List<int>();

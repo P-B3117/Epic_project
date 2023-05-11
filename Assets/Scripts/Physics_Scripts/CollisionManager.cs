@@ -4,10 +4,19 @@ using System.Collections.Specialized;
 using UnityEngine;
 using UnityEngine.UIElements;
 
+/*
+ * Filename : CollisinManager
+ * 
+ * Goal : Class that holds the key function of resolving collisions
+ * 
+ * Requirements : No instance required to use this class, just reference it to access the function
+ */
 public class CollisionManager
 {
     public CollisionManager() { }
 
+
+    //Solve collisions
     public List<object> CollisionHasHappened(Vector3 objectVelocity, Vector3 otherObjectVelocity, Vector3 normal, float objectMass, float otherObjectMass, float coefficientOfRestitution, float objectAngularVelocity,
         float otherObjectAngularVelocity, Vector3 rVectorObject, Vector3 rVectorOtherObject, float objectInertia, float otherObjectInertia, float friction1Static, float friction1Dynamic, float friction2Static, float friction2Dynamic)
     {

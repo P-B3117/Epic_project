@@ -7,7 +7,7 @@ using UnityEngine;
 
 /*
  * Filename : PhysicsManager
- * 
+ * Author : Louis-E, Charles, Clovis 
  * Goal : Central authority of the physic calculations. The PhysicsManager holds references to every physics object in the scene to allow interactions
  * 
  * Requirements : Put a single instance in a Scene attached to an empty GameObject
@@ -93,6 +93,8 @@ public class PhysicsManager : MonoBehaviour
 		}
 	}
 
+
+	//Refresh all reference lists
 	public void ResetList()
 	{
 		int count = physicObjects.Count;
@@ -414,6 +416,8 @@ public class PhysicsManager : MonoBehaviour
 		physicObjects.Add(po);
 		
 	}
+
+	//Add sotfbody to the simulation scene with all the references requirements
 	public void AddSoftBody(GameObject softBody) 
 	{
 		BasicPhysicObject[] bos = softBody.GetComponentsInChildren<BasicPhysicObject>();
@@ -473,7 +477,7 @@ public class PhysicsManager : MonoBehaviour
 	//when index is bigger or equal to 0 : Resets all objects except for the selected one;
 	public BasicPhysicObject SelectSpecificObject(int index, PrefabsHolder ph, GameObject oldSelectedObject) 
 	{
-		print("Test");
+		
 		//For deselecting the selected softbody
 		if (oldSelectedObject != null)
 		{
@@ -607,6 +611,8 @@ public class PhysicsManager : MonoBehaviour
 		}
 	}
 
+
+	//Return the list of all the distanceJoints that are not part of a SoftBody
 	public List<DistanceJoints> GetAllNonSoftBodyJoints() 
 	{
 		List<DistanceJoints> list = new List<DistanceJoints>();
