@@ -9,7 +9,7 @@ using Unity.VisualScripting;
 using System.Runtime.CompilerServices;
 /*
  * Filename : UIGameManager
- * 
+ * Author(s): Charles, Louis, Justin
  * Goal : Contains all the button functionalities of the BASIC Physic SIMULATION
  * 
  * Requirements : Attach this script to the UIManager

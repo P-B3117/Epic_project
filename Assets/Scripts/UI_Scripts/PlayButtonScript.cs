@@ -3,6 +3,12 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 
+/*
+ * Filename : PlayButtonScript
+ * Author(s): Charles
+ * Goal : switch between scenes
+ * 
+ */
 public class PlayButtonScript : MonoBehaviour
 {
 

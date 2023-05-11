@@ -1,6 +1,12 @@
 using UnityEngine;
 using System.Collections;
 
+/*
+ * Filename : ObjectsCollision
+ * Author(s): Louis, Justin
+ * Goal : prints collision detection
+ * 
+ */
 public class ObjectCollision : MonoBehaviour
 {
 

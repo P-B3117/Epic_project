@@ -5,6 +5,13 @@ using UnityEngine.UI;
 using UnityEngine.Audio;
 using TMPro;
 
+/*
+ * Filename : UiManager
+ * Author(s): Charles
+ * Goal : manages all the UI functions in the menu scene
+ * 
+ */
+
 public class UiManager : MonoBehaviour
 {
     public GameObject MenuPanel;

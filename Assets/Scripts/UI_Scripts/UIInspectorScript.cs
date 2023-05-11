@@ -10,7 +10,7 @@ using UnityEngine.UI;
 
 /*
  * Filename : UISliderScript
- * 
+ * Author(s): Louis, Charles, Justin
  * Goal : Contains all the functionalities of the INSPECTOR (The menu that allows to change parameters of the object) in the Basic Physic Simulation
  * 
  * Requirements : Attach this script to the UIManager

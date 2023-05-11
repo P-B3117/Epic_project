@@ -4,7 +4,7 @@ using UnityEngine;
 
 /*
  * Filename : GameConstants
- * 
+ * Author(s): Charles
  * Goal : Provides a public single instance of settings that stays the same between scenes
  * 
  */

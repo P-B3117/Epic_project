@@ -4,7 +4,7 @@ using UnityEngine;
 
 /*
  * Filename : UISliderScript
- * 
+ * Author(s): Louis, Charles
  * Goal : Contains all the functionalities of the SLIDER in the Basic Physic Simulation
  * 
  * Requirements : Attach this script to the UIManager

@@ -7,7 +7,7 @@ using UnityEngine.SceneManagement;
 using TMPro;
 /*
  * Filename : UIFluidManager
- * 
+ * Author(s): Charles, Louis
  * Goal : Contains all the UI functionnalities of the FLUID SIMULATION
  * 
  * Requirements : Attach this script to the UIManager
