@@ -115,12 +115,12 @@ public class DistanceJoints : MonoBehaviour
         Transform bodyB = bo2.transform;
         anchorA = bodyA.position;
         anchorB = bodyB.position;
-        Vector3 ra  = (bodyA.rotation) * (offsetA);
+        Vector3 ra = (bodyA.rotation) * (offsetA);
         Vector3 rb = (bodyB.rotation) * (offsetB);
 
         // Compute the vector between the two anchor points
         Vector3 pa = anchorA + ra;
-        Vector3 pb = anchorB+ rb;
+        Vector3 pb = anchorB + rb;
         Vector3 d = (pb - pa);
        
         // Compute the current length 
@@ -144,7 +144,7 @@ public class DistanceJoints : MonoBehaviour
         ComputeBetaAndGamma(timeStep);
 
         // Compute the joint mass
-        float m = invEffectiveMass + gamma != 0 ? 1 / invEffectiveMass + gamma : 0;
+        float m = invEffectiveMass + gamma != 0 ? 1 / (invEffectiveMass + gamma ): 0;
 
         if (frequency >= 0.0f)
         {
@@ -166,10 +166,10 @@ public class DistanceJoints : MonoBehaviour
         Vector3 rbCross = new Vector3(-w2*rb.y,w2*rb.x,0);
         //vitesse relative (dériver de vitesse)
         Vector3 dv = v2 + rbCross - v1 - raCross;
-
-        // Compute Jacobian for the constraint (C = impulse Dir)
+        float jv = Vector3.Dot(dv, n);
+        // Compute Jacobian for the constraint (C = impulse Dir) here its defined by x^/sqrt(||x||)
+        // la racine est pour rendres les parametres plus mous parce que ma simulation est trop rigide sans.
         Vector3 J = d / d.sqrMagnitude ;
-        float jv = Vector3.Dot(dv, J);
         // Compute the corrective impulse 
         float impulseMag = -m *(jv + bias);
         
@@ -179,7 +179,7 @@ public class DistanceJoints : MonoBehaviour
         if (!bpA.getIsStatic())
         {
             v1 -= impulse * invMassA ;
-            w1 -= Vector3.Dot(new Vector3( -ra.y*impulseMag,ra.x*impulseMag), J) * invInertiaA;
+            w1 -= Vector3.Dot(new Vector3(-ra.y*impulseMag,ra.x*impulseMag), J) * invInertiaA;
             bpA.SetVelocity(v1, w1, timeStep);
         }
         if (!bpB.getIsStatic())

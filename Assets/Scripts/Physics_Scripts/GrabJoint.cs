@@ -50,6 +50,7 @@ public class GrabJoint : MonoBehaviour
         
         if(parent != null && parent.GetComponent<SoftBody>() != null && parent.GetComponent<SoftBody>().type == 1) invMassA = invMassA*  6;
         if (parent != null && parent.GetComponent<SoftBody>() != null && parent.GetComponent<SoftBody>().type == 2) invMassA = invMassA * 2;
+        
         invInertiaA = 1.0f / mcA.GetInertia();
        
         lr = this.gameObject.AddComponent<LineRenderer>();
