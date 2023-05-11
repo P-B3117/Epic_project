@@ -4,7 +4,7 @@ using UnityEngine;
 
 /*
 * Filename : MeshColliderScript
- * 
+ * Author : Charles, Louis-E
  * Goal : Encapsulate the properties of the mesh of the RigidBodies (mass, inertia, shape)
  * 
  * Requirements : Attach this script to physical objects of the Scene with a BasicPhysicObjects script (necessery to have both in order for the good functionning of the code)

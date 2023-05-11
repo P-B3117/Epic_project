@@ -4,7 +4,7 @@ using UnityEngine;
 
 /*
  * Filename : ObjectFluidManager
- * 
+ *  Author:Louis-E
  * Goal : Central processing unit of the simulation of the fluid
  * 
  * Requirements : Create a single instance of this script in the scene

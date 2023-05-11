@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 /*
 * Filename : CollisionInfo
- * 
+ * Author : Justin,Louis-E
  * Goal : Datatype that encapsulate all the informations about collisions
  * 
  * Requirements : Common return type used during collision detection and collision response (Do not use outside of these purposes)

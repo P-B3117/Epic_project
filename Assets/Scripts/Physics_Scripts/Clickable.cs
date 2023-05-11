@@ -2,6 +2,9 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
+/*
+ * Author : Justin
+ */
 public class Clickable : MonoBehaviour
 {
     // Start is called before the first frame update

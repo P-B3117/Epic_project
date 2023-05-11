@@ -4,7 +4,7 @@ using UnityEngine;
 
 /*
  * Filename : DistanceJoints
- * 
+ * Author : Antony
  * Goal : Creates a joint between 2 physicsObject
  * 
  * Requirements : Create an instance of this script and feed him the necessary data

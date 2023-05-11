@@ -4,7 +4,7 @@ using UnityEngine;
 
 /*
  * Filename : GrabJoint
- * 
+ * Author : Antony
  * Goal : Variation of a distance joint that allows to create a joint between the mouse and an object
  * 
  * Requirements : Create an instance of the script and feed him the necessary data

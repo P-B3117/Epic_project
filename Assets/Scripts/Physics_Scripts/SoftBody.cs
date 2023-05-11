@@ -4,7 +4,7 @@ using UnityEngine;
 
 /*
  * Filename : SoftBody
- * 
+ * Author: Louis-E
  * Goal : Puts a skin (mesh) over softbodies to make them appear as soft material
  * 
  * Requirements : Put this script in the parent of a softbody

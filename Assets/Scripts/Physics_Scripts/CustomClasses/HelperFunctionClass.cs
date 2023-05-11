@@ -5,7 +5,7 @@ using UnityEngine;
 
 /*
  * Filename : HelperFunctionClass
- * 
+ * Author : Louis-E, Justin
  * Goal : Static class that encapsulate all of the CollisionResponse algorithm's
  * 
  * Requirements : NaN (The class is static and all of it's functions aswell) 
